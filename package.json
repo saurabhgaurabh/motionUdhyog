@@ -18,6 +18,10 @@
   },
   "homepage": "https://github.com/saurabhgaurabh/motionUdhyog#readme",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "mysql2": "^3.14.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }
