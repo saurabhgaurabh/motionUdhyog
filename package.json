@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/saurabhgaurabh/motionUdhyog/issues"
   },
-  "homepage": "https://github.com/saurabhgaurabh/motionUdhyog#readme"
+  "homepage": "https://github.com/saurabhgaurabh/motionUdhyog#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
 }
