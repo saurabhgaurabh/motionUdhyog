@@ -6,4 +6,4 @@ const userController = require('../controller/userController');
 // routes.post('/udhyog_registration', userController.udhyog_registration);
 routes.post('/udhyog_registration', userController.udhyog_registration);
 
-module.exports = routes;
+module.exports = routes; 
