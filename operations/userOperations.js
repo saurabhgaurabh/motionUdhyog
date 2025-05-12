@@ -71,19 +71,41 @@ module.exports = {
             });
         });
     },
-    motion_add_dealer_registration_routes: (dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state, city, address, postal_code) => {
-        return new Promise((resolve, reject) => {
-            const query = `insert into motion_add_dealer_registration (dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state, city, address, postal_code)
-            values (?,?,?,?,?,?,?,?,?,?,?,?)`;
-
-            const add_dealer_values = [dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state, city, address, postal_code];
-            connection.execute(query, add_dealer_values, (error, result) => {
-                if (error) {
-                    console.log(error, "dealer error")
-                    return reject('Something went wrong while inserting data.');
-                }
-                resolve(result);
+    motion_add_dealer_registration_routes: (dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state,
+         city, address, postal_code) => {
+            return new Promise((resolve, reject) => {
+                // Duplicate check
+                const checkQuery = `SELECT * FROM motion_add_dealer_registration WHERE dealer_Code = ? OR dealer_GST = ?`;
+        
+                connection.execute(checkQuery, [dealer_Code, dealer_GST], (checkErr, checkResult) => {
+                    if (checkErr) {
+                        return reject('Error checking existing records.');
+                    }
+        
+                    if (checkResult.length > 0) {
+                        return reject('Dealer with same Code or GST already exists. Duplicate entry not allowed.');
+                    }
+        
+                    // Insert query
+                    const insertQuery = `INSERT INTO motion_add_dealer_registration (
+                        dealer_Code, dealer_name, dealer_GST, mobile_number,
+                        adhar_number, pan, password, country, state,
+                        city, address, postal_code
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        
+                    const values = [
+                        dealer_Code, dealer_name, dealer_GST, mobile_number,
+                        adhar_number, pan, password, country, state,
+                        city, address, postal_code
+                    ];
+        
+                    connection.execute(insertQuery, values, (insertErr, result) => {
+                        if (insertErr) {
+                            console.error(insertErr);
+                            return reject('Something went wrong while inserting data.');
+                        }
+                        resolve(result);
             })
         })
-    }
+         }) }
 }
