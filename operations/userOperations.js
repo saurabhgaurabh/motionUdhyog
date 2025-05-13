@@ -3,7 +3,7 @@ const connection = require('../config/database');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const { v4: uuidv4 } = require('uuid');
-const { generateRandomOrderId, generateDealerCode, generatePurchaseId } = require('../utils/helper');
+const { generateRandomId, generateRandomCode, generatePurchaseId } = require('../utils/helper');
 
 
 // modules for Operations
@@ -77,7 +77,7 @@ module.exports = {
     motion_add_dealer_registration_routes: (dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state,
         city, address, postal_code) => {
         return new Promise((resolve, reject) => {
-            dealer_Code = generateDealerCode();
+            dealer_Code = generateRandomCode();
             // Duplicate check
             const checkQuery = `SELECT * FROM motion_add_dealer_registration WHERE dealer_Code = ? OR dealer_GST = ?`;
 
@@ -117,8 +117,8 @@ module.exports = {
         password, country, state, city, address, freight, material_amount, material_amount_remaining) => {
         return new Promise((resolve, reject) => {
             purchase_id = generatePurchaseId();
-            order_id = generateRandomOrderId();
-         
+            order_id = generateRandomId();
+
             const checkQuery = `select * from motion_purchase_row_material where order_id = ? OR dealer_name = ? OR purchase_id = ?`;
             connection.execute(checkQuery, [purchase_id, order_id, dealer_name], (checkErr, checkResult) => {
                 if (checkErr) {
@@ -146,6 +146,32 @@ module.exports = {
                     }
                     resolve(insertResult);
                 })
+            })
+        })
+    },
+    motion_employee_registration_routes: (emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email) => {
+        return new Promise((resolve, reject) => {
+            emp_id = generateRandomId();
+            emp_code = generateRandomCode();
+            const checkQuery = `select * from motion_employee_registration where emp_id = ? or emp_code = ?`;
+            connection.execute(checkQuery,[emp_id, emp_code], (checkErr, checkResult)=>{
+                if(checkErr){
+                    return reject('Getting Existing Records.')
+                }
+                if(checkResult.length > 0){
+                    return reject(`Employee id or Employees Code exists. Duplicate entry not allow. 1062`)
+                }
+            })
+            const insertQuery = `insert into motion_employee_registration 
+            (emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email) values (?,?,?,?,?,?,?,?,?,?,?,?)`;
+            const values = [emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email];
+            console.log(values,"insertQuery")
+            connection.execute(insertQuery, values, (insertErr, insertResult) => {
+                if (insertErr) {
+                    console.log(insertErr, "inserterror")
+                     return reject(`Data, Inserting error ${insertErr}`);
+                }
+                resolve(insertResult);
             })
         })
     }
