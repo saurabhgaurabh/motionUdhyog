@@ -54,7 +54,7 @@ module.exports = {
             const { dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state, city, address, postal_code } = req.body;
 
             const result = await userOperations.motion_add_dealer_registration_routes(dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state, city, address, postal_code);
-            console.log(result, 'result dealer');
+            // console.log(result, 'result dealer');
             return res.status(200).json({ status: true, message: 'Dealer Added Successfully.' });
 
 
@@ -62,5 +62,28 @@ module.exports = {
             return res.status(500).json({ status: false, message: `Internal server error. ${error}` });
         }
 
+    },
+    motion_purchase_row_material_routes: async (req, res) => {
+        try {
+            const requiredFields = ['order_id', 'dealer_name', 'material_type', 'postal_code', 'password', 'country', 'state', 
+                'city', 'address', 'freight', 'material_amount', 'material_amount_remaining'
+            ];
+
+            for (field of requiredFields) {
+                if (!req.body[field]) {
+                    return res.status(500).json({ status: false, message: `${field.replace('_', ' ')} is required.` });
+                }
+            }
+
+            const { order_id, dealer_name, material_type, postal_code, password, country, state, city, address, freight, material_amount,
+                material_amount_remaining } = req.body;
+
+            const result = await userOperations.motion_purchase_row_material_routes(order_id, dealer_name, material_type, postal_code, 
+                password, country, state, city, address, freight, material_amount, material_amount_remaining);
+                console.log(result, "row material")
+            return res.status(200).json({ status: true, message: 'Purchase Added Successfully.' });
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal server error: ${error.message || error}` })
+        }
     }
 }

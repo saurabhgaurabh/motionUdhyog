@@ -1,5 +1,5 @@
 const connection = require('../config/database');
-const { motion_user_registration_routes } = require('../controller/userController');
+// const { motion_user_registration_routes } = require('../controller/userController');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -72,40 +72,74 @@ module.exports = {
         });
     },
     motion_add_dealer_registration_routes: (dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state,
-         city, address, postal_code) => {
-            return new Promise((resolve, reject) => {
-                // Duplicate check
-                const checkQuery = `SELECT * FROM motion_add_dealer_registration WHERE dealer_Code = ? OR dealer_GST = ?`;
-        
-                connection.execute(checkQuery, [dealer_Code, dealer_GST], (checkErr, checkResult) => {
-                    if (checkErr) {
-                        return reject('Error checking existing records.');
-                    }
-        
-                    if (checkResult.length > 0) {
-                        return reject('Dealer with same Code or GST already exists. Duplicate entry not allowed.');
-                    }
-        
-                    // Insert query
-                    const insertQuery = `INSERT INTO motion_add_dealer_registration (
+        city, address, postal_code) => {
+        return new Promise((resolve, reject) => {
+            // Duplicate check
+            const checkQuery = `SELECT * FROM motion_add_dealer_registration WHERE dealer_Code = ? OR dealer_GST = ?`;
+
+            connection.execute(checkQuery, [dealer_Code, dealer_GST], (checkErr, checkResult) => {
+                if (checkErr) {
+                    return reject('Error checking existing records.');
+                }
+
+                if (checkResult.length > 0) {
+                    return reject('Dealer with same Code or GST already exists. Duplicate entry not allowed. error 1062');
+                }
+
+                // Insert query
+                const insertQuery = `INSERT INTO motion_add_dealer_registration (
                         dealer_Code, dealer_name, dealer_GST, mobile_number,
                         adhar_number, pan, password, country, state,
                         city, address, postal_code
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        
-                    const values = [
-                        dealer_Code, dealer_name, dealer_GST, mobile_number,
-                        adhar_number, pan, password, country, state,
-                        city, address, postal_code
-                    ];
-        
-                    connection.execute(insertQuery, values, (insertErr, result) => {
-                        if (insertErr) {
-                            console.error(insertErr);
-                            return reject('Something went wrong while inserting data.');
-                        }
-                        resolve(result);
+
+                const values = [
+                    dealer_Code, dealer_name, dealer_GST, mobile_number,
+                    adhar_number, pan, password, country, state,
+                    city, address, postal_code
+                ];
+
+                connection.execute(insertQuery, values, (insertErr, insertresult) => {
+                    if (insertErr) {
+                        console.error(insertErr);
+                        return reject(`Something went wrong while inserting data.${insertErr}`);
+                    }
+                    resolve(insertresult);
+                })
             })
         })
-         }) }
+    },
+    motion_purchase_row_material_routes: (order_id, dealer_name, material_type, postal_code,
+        password, country, state, city, address, freight, material_amount, material_amount_remaining) => {
+        return new Promise((resolve, reject) => {
+            const checkQuery = `select * from motion_purchase_row_material where order_id = ? OR dealer_name = ?`;
+            connection.execute(checkQuery, [order_id, dealer_name], (checkErr, checkResult) => {
+                if (checkErr) {
+                    return reject('Getting existing Records.');
+                }
+                if (checkResult.length > 0) {
+                    return reject(`Dealer id or name exists. Duplicate entry not allow. 1062`)
+                }
+            })
+
+            bcrypt.hash(password, saltRounds, (Error, hashedPassword) => {
+                if(Error){
+                    reject(`Error Hashing the Password. ${Error}`)
+                }
+                const insertquery = `insert into motion_purchase_row_material
+                 (order_id, dealer_name, material_type, postal_code, password, country, state, 
+                city, address, freight, material_amount, material_amount_remaining) values (?,?,?,?,?,?,?,?,?,?,?,?)`;
+                const values = [
+                    order_id, dealer_name, material_type, postal_code,
+                    hashedPassword, country, state, city, address, freight, material_amount, material_amount_remaining
+                ];
+                connection.execute(insertquery, values, (insertErr, insertResult) => {
+                    if (insertErr) {
+                        return reject(`Something went wrong while inserting data.${insertErr}`);
+                    }
+                    resolve(insertResult);
+                })
+            })
+        })
+    }
 }
