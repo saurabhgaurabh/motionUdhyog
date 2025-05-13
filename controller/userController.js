@@ -65,7 +65,7 @@ module.exports = {
     },
     motion_purchase_row_material_routes: async (req, res) => {
         try {
-            const requiredFields = ['order_id', 'dealer_name', 'material_type', 'postal_code', 'password', 'country', 'state', 
+            const requiredFields = ['order_id', 'dealer_name', 'material_type', 'postal_code', 'password', 'country', 'state',
                 'city', 'address', 'freight', 'material_amount', 'material_amount_remaining'
             ];
 
@@ -75,15 +75,28 @@ module.exports = {
                 }
             }
 
-            const { order_id, dealer_name, material_type, postal_code, password, country, state, city, address, freight, material_amount,
+            const { purchase_id, order_id, dealer_name, material_type, postal_code, password, country, state, city, address, freight, material_amount,
                 material_amount_remaining } = req.body;
 
-            const result = await userOperations.motion_purchase_row_material_routes(order_id, dealer_name, material_type, postal_code, 
+            const result = await userOperations.motion_purchase_row_material_routes(purchase_id, order_id, dealer_name, material_type, postal_code,
                 password, country, state, city, address, freight, material_amount, material_amount_remaining);
-                console.log(result, "row material")
             return res.status(200).json({ status: true, message: 'Purchase Added Successfully.' });
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal server error: ${error.message || error}` })
+        }
+    },
+    motion_employee_registration_routes: async (req, res) => {
+        try {
+            const requiredFields = ['name', 'state', 'city', 'address', 'postal_code', 'qualification', 'adhar', 'pan', 'mobile', 'email'];
+            for (fields of requiredFields) {
+                if (!req.body[fields]) { return res.status(500).json({ status: false, message: `${fields.replace('_', ' ')} 'is required'` }) };
+            }
+            const { name, state, city, address, postal_code, qualification, adhar, pan, mobile, emial } = req.body;
+            const resValue = [name, state, city, address, postal_code, qualification, adhar, pan, mobile, emial];
+            const result = await userOperations.motion_employee_registration_routes(resValue);
+            return res.status(200).json({ stats: true, message: 'Employee Registered Successfully.' });
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal server Error. ${error}`, result: result });
         }
     }
 }

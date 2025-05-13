@@ -2,7 +2,11 @@ const connection = require('../config/database');
 // const { motion_user_registration_routes } = require('../controller/userController');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const { v4: uuidv4 } = require('uuid');
+const { generateRandomOrderId, generateDealerCode, generatePurchaseId } = require('../utils/helper');
 
+
+// modules for Operations
 module.exports = {
     udhyog_registration: (name, city, postal_code) => {
         return new Promise((resolve, reject) => {
@@ -18,7 +22,6 @@ module.exports = {
     },
 
     // Api for motion user registration 
-
     motion_user_registration_routes: (
         userCode, company_name, owner_name, industry_type, GST_number,
         registration_email, mobile_number, password, confirm_password,
@@ -74,6 +77,7 @@ module.exports = {
     motion_add_dealer_registration_routes: (dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state,
         city, address, postal_code) => {
         return new Promise((resolve, reject) => {
+            dealer_Code = generateDealerCode();
             // Duplicate check
             const checkQuery = `SELECT * FROM motion_add_dealer_registration WHERE dealer_Code = ? OR dealer_GST = ?`;
 
@@ -109,11 +113,14 @@ module.exports = {
             })
         })
     },
-    motion_purchase_row_material_routes: (order_id, dealer_name, material_type, postal_code,
+    motion_purchase_row_material_routes: (purchase_id, order_id, dealer_name, material_type, postal_code,
         password, country, state, city, address, freight, material_amount, material_amount_remaining) => {
         return new Promise((resolve, reject) => {
-            const checkQuery = `select * from motion_purchase_row_material where order_id = ? OR dealer_name = ?`;
-            connection.execute(checkQuery, [order_id, dealer_name], (checkErr, checkResult) => {
+            purchase_id = generatePurchaseId();
+            order_id = generateRandomOrderId();
+         
+            const checkQuery = `select * from motion_purchase_row_material where order_id = ? OR dealer_name = ? OR purchase_id = ?`;
+            connection.execute(checkQuery, [purchase_id, order_id, dealer_name], (checkErr, checkResult) => {
                 if (checkErr) {
                     return reject('Getting existing Records.');
                 }
@@ -123,14 +130,14 @@ module.exports = {
             })
 
             bcrypt.hash(password, saltRounds, (Error, hashedPassword) => {
-                if(Error){
+                if (Error) {
                     reject(`Error Hashing the Password. ${Error}`)
                 }
                 const insertquery = `insert into motion_purchase_row_material
-                 (order_id, dealer_name, material_type, postal_code, password, country, state, 
-                city, address, freight, material_amount, material_amount_remaining) values (?,?,?,?,?,?,?,?,?,?,?,?)`;
+                 (purchase_id, order_id, dealer_name, material_type, postal_code, password, country, state, 
+                city, address, freight, material_amount, material_amount_remaining) values (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
                 const values = [
-                    order_id, dealer_name, material_type, postal_code,
+                    purchase_id, order_id, dealer_name, material_type, postal_code,
                     hashedPassword, country, state, city, address, freight, material_amount, material_amount_remaining
                 ];
                 connection.execute(insertquery, values, (insertErr, insertResult) => {
