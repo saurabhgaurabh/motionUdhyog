@@ -204,19 +204,28 @@ module.exports = {
             })
         })
     },
-    motion_parties_registration_routes: (organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) => {
+    motion_parties_registration_routes: (party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) => {
         return new Promise((resolve, reject) => {
-            const insertQuery = `insert into motion_parties_registration (
-            organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) values (?,?,?,?,?,?,?,?,?,?,?)`;
+            const checkQuery = `select * from motion_parties_registration where gst = ? or party_id = ?`;
+            connection.execute(checkQuery, [party_id, gst], (checkErr, checkResult)=>{
+                if(checkErr){
+                    return reject(`Getting existing Records.`);
+                }
+                if(checkResult.length > 0){
+                    return reject('GST or Party ID already exists. Duplicate entry not allow.');
+                }
+            })
+            const insertQuery = `insert into motion_parties_registration (party_id,
+            organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) values (?,?,?,?,?,?,?,?,?,?,?,?)`;
 
             const insertValues = [
-                organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan
+                party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan
 
             ];
             connection.execute(insertQuery, insertValues, (insertError, insertResult)=>{
                 if(insertError){
                     console.log(insertError,"insertError")
-                    return reject('Error while inserting Data.')
+                    return reject(`Error while inserting Data.${insertError}`)
                 }
                 resolve(insertResult);
             })

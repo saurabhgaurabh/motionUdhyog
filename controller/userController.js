@@ -123,17 +123,17 @@ module.exports = {
     },
     motion_parties_registration_routes: async (req, res) => {
         try {
-            const { organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan } = req.body;
+            const { party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan } = req.body;
             const requiredFields = [
-                'organization_name', 'owner_name', 'mobile', 'email', 'gst', 'country', 'state', 'city', 'address', 'adhar', 'pan'
+                'party_id','organization_name', 'owner_name', 'mobile', 'email', 'gst', 'country', 'state', 'city', 'address', 'adhar', 'pan'
             ];
             for (fields of requiredFields) {
                 if (!req.body[fields]) {
-                    return res.status(404).json({ status: false, message: 'Fetching error while inserting the data' })
+                    return res.status(404).json({ status: false, message: `${fields.replace('_', ' ')} 'is required.'` })
                 }
             }
             const result = await userOperations.motion_parties_registration_routes(
-                organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan);
+                party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan);
                 console.log(result,"result")
             return res.status(200).json({ status: true, message: `Parties Added Successfully.`, result: result });
         } catch (error) {
