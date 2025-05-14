@@ -125,7 +125,7 @@ module.exports = {
         try {
             const { party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan } = req.body;
             const requiredFields = [
-                'party_id','organization_name', 'owner_name', 'mobile', 'email', 'gst', 'country', 'state', 'city', 'address', 'adhar', 'pan'
+                'party_id', 'organization_name', 'owner_name', 'mobile', 'email', 'gst', 'country', 'state', 'city', 'address', 'adhar', 'pan'
             ];
             for (fields of requiredFields) {
                 if (!req.body[fields]) {
@@ -134,10 +134,33 @@ module.exports = {
             }
             const result = await userOperations.motion_parties_registration_routes(
                 party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan);
-                console.log(result,"result")
+            console.log(result, "result")
             return res.status(200).json({ status: true, message: `Parties Added Successfully.`, result: result });
         } catch (error) {
             return res.status(500).json({ status: false, message: `internal server error.${error}` });
+        }
+    },
+    motion_dispatch_product_routes: async (req, res) => {
+        try {
+            const { dispatch_id, dispatch_code, organization_name, owner_name, mobile, email, product_name, product_type,
+                quantity, height, width, color, packing_type, dispatch_mode, address, city, state, country, postal_code, gst, freight,
+            } = req.body;
+            const requiredFields = [
+                'dispatch_id', 'dispatch_code', 'organization_name', 'owner_name', 'mobile', 'email', 'product_name', 'product_type', 'quantity',
+                'height', 'width', 'color', 'packing_type', 'dispatch_mode', 'address', 'city', 'state', 'country', 'postal_code', 'gst', 'freight',
+            ];
+            for (fields of requiredFields) {
+                if (!req.body[fields]) {
+                    return res.status(404).json({ status: false, message: `${field.replace('_', ' ')} is required.` })
+                }
+            }
+            const result = await userOperations.motion_dispatch_product_routes(
+                dispatch_id, dispatch_code, organization_name, owner_name, mobile, email, product_name, product_type,
+                quantity, height, width, color, packing_type, dispatch_mode, address, city, state, country, postal_code, gst, freight,
+            );
+            return res.status(200).json({ status: true, message: 'Product Dispatch Successfully.', result: result });
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `insernal server error. ${error}` });
         }
     }
 }

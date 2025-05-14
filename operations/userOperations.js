@@ -230,5 +230,34 @@ module.exports = {
                 resolve(insertResult);
             })
         })
-    }
+    },
+    motion_dispatch_product_routes: (dispatch_id, dispatch_code, organization_name, owner_name, mobile, email, product_name, product_type,
+        quantity, height, width, color, packing_type, dispatch_mode, address, city, state, country, postal_code, gst, freight)=>{
+            return new Promise((resolve, reject)=>{
+                const checkQuery = `select * from motion_dispatch_product where dispatch_id = ? or dispatch_code = ?`;
+                connection.execute(checkQuery, [dispatch_id, dispatch_code], (checkErr, checkResult)=>{
+                    if(checkErr){
+                        return reject('Error while inserting the data.');
+                    }
+                    if(checkResult.length > 0){
+                        return reject('Matching Dispatch Id or Dispatch Code. Duplicate entry not allow. Code: 1062')
+                    }
+                })
+                const insertQuery = `insert into motion_dispatch_product 
+                (dispatch_id, dispatch_code, organization_name, owner_name, mobile, email, product_name, product_type,
+                quantity, height, width, color, packing_type, dispatch_mode, address, city, state, country, postal_code, gst, freight)
+                values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+
+                const insertValues = [
+                    dispatch_id, dispatch_code, organization_name, owner_name, mobile, email, product_name, product_type,
+                quantity, height, width, color, packing_type, dispatch_mode, address, city, state, country, postal_code, gst, freight
+                ];
+                connection.execute(insertQuery, insertValues, (insertErr, insertResult)=>{
+                    if(insertErr){
+                        return reject(`Error while inserting data. ${insertErr}`);
+                    }
+                    resolve(insertResult);
+                })
+            })
+        }
 }
