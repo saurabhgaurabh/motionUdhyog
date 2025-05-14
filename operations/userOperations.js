@@ -3,7 +3,7 @@ const connection = require('../config/database');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const { v4: uuidv4 } = require('uuid');
-const { generateRandomId, generateRandomCode, generatePurchaseId } = require('../utils/helper');
+const { generateRandomId, generateRandomCode, generatePurchaseId, generateManufacturingId, fourDigitCode } = require('../utils/helper');
 
 
 // modules for Operations
@@ -153,23 +153,52 @@ module.exports = {
         return new Promise((resolve, reject) => {
             emp_id = generateRandomId();
             emp_code = generateRandomCode();
+
             const checkQuery = `select * from motion_employee_registration where emp_id = ? or emp_code = ?`;
-            connection.execute(checkQuery,[emp_id, emp_code], (checkErr, checkResult)=>{
-                if(checkErr){
+            connection.execute(checkQuery, [emp_id, emp_code], (checkErr, checkResult) => {
+                if (checkErr) {
                     return reject('Getting Existing Records.')
                 }
-                if(checkResult.length > 0){
+                if (checkResult.length > 0) {
                     return reject(`Employee id or Employees Code exists. Duplicate entry not allow. 1062`)
                 }
             })
             const insertQuery = `insert into motion_employee_registration 
             (emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email) values (?,?,?,?,?,?,?,?,?,?,?,?)`;
             const values = [emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email];
-            console.log(values,"insertQuery")
             connection.execute(insertQuery, values, (insertErr, insertResult) => {
                 if (insertErr) {
                     console.log(insertErr, "inserterror")
-                     return reject(`Data, Inserting error ${insertErr}`);
+                    return reject(`Data, Inserting error ${insertErr}`);
+                }
+                resolve(insertResult);
+            })
+        })
+    },
+    motion_product_manufacturing_routes: (mfr_id, product_name, material_type_one, material_quantity, material_quality, unit, batch_number,
+        supervisor_name, total_cost, remarks, created_by, last_modified_by) => {
+        return new Promise((resolve, reject) => {
+            mfr_id = fourDigitCode();
+
+            const checkQuery = `select * from motion_product_manufacturing where mfr_id = ?`;
+            connection.execute(checkQuery, [mfr_id], (checkErr, checkResult) => {
+                if (checkErr) {
+                    return reject('Getting existing records.');
+                }
+                if (checkResult.length > 0) {
+                    return reject(`Manufacturing Id already Exists. Duplicate entry not allow`);
+                }
+            })
+            
+            const insertQuery = `insert into motion_product_manufacturing ( mfr_id, product_name, material_type_one, material_quantity, material_quality, 
+                unit, batch_number, supervisor_name, total_cost, remarks, created_by, last_modified_by) values (?,?,?,?,?,?,?,?,?,?,?,?)`;
+            const insertValues = [
+                mfr_id, product_name, material_type_one, material_quantity, material_quality, unit, batch_number, supervisor_name, total_cost, remarks,
+                created_by, last_modified_by
+            ];
+            connection.execute(insertQuery, insertValues, (insertErr, insertResult) => {
+                if (insertErr) {
+                    return reject(`Error While Inserting Data. ${insertErr}`);
                 }
                 resolve(insertResult);
             })

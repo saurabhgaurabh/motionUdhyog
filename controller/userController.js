@@ -92,12 +92,51 @@ module.exports = {
                 if (!req.body[fields]) { return res.status(500).json({ status: false, message: `${fields.replace('_', ' ')} 'is required'` }) };
             }
             const { emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email } = req.body;
-            // const resValue = [name, state, city, address, postal_code, qualification, adhar, pan, mobile, emial];
             const result = await userOperations.motion_employee_registration_routes(emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email);
-            console.log(result, "insert")
-            return res.status(200).json({ stats: true, message: 'Employee Registered Successfully.'});
+            return res.status(200).json({ stats: true, message: 'Employee Registered Successfully.' });
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal server Error. ${error}` });
+        }
+    },
+    motion_product_manufacturing_routes: async (req, res) => {
+        try {
+            const { mfr_id, product_name, material_type_one, material_quantity, material_quality, unit, batch_number, supervisor_name, total_cost, remarks,
+                created_by, last_modified_by } = req.body;
+
+            const requiredFields = [
+                'mfr_id', 'product_name', 'material_type_one', 'material_quantity', 'material_quality', 'unit', 'batch_number',
+                'supervisor_name', 'total_cost', 'remarks', 'created_by', 'last_modified_by'
+            ];
+            for (fields of requiredFields) {
+                if (!req.body[fields]) {
+                    return res.status(404).json({ status: false, message: `${fields.replace('_', ' ')} 'is required.'` })
+                }
+            }
+
+            const result = await userOperations.motion_product_manufacturing_routes(mfr_id, product_name, material_type_one, material_quantity,
+                material_quality, unit, batch_number, supervisor_name, total_cost, remarks, created_by, last_modified_by);
+            return res.status(200).json({ status: true, message: `Product Manufactured Completed.`, result: result });
+
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal Server Error.${error}` });
+        }
+    },
+    motion_parties_registration_routes: async (req, res) => {
+        try {
+            const { organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan } = req.body;
+            const requiredFields = [
+                'organization_name', 'owner_name', 'mobile', 'email', gst, 'country', 'state', 'city', 'address', 'adhar', 'pan'
+            ];
+            for (fileds of requiredFields) {
+                if (!req.body[fields]) {
+                    return res.status(404).json({ status: false, message: 'Fetching error while inserting the data' })
+                }
+            }
+            const result = await userOperations.motion_parties_registration_routes(
+                organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan);
+            return res.status(200).json({ status: true, message: `Parties Added Successfully.`, result: result });
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `internal server error.${error}` });
         }
     }
 }
