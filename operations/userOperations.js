@@ -189,7 +189,7 @@ module.exports = {
                     return reject(`Manufacturing Id already Exists. Duplicate entry not allow`);
                 }
             })
-            
+
             const insertQuery = `insert into motion_product_manufacturing ( mfr_id, product_name, material_type_one, material_quantity, material_quality, 
                 unit, batch_number, supervisor_name, total_cost, remarks, created_by, last_modified_by) values (?,?,?,?,?,?,?,?,?,?,?,?)`;
             const insertValues = [
@@ -199,6 +199,24 @@ module.exports = {
             connection.execute(insertQuery, insertValues, (insertErr, insertResult) => {
                 if (insertErr) {
                     return reject(`Error While Inserting Data. ${insertErr}`);
+                }
+                resolve(insertResult);
+            })
+        })
+    },
+    motion_parties_registration_routes: (organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) => {
+        return new Promise((resolve, reject) => {
+            const insertQuery = `insert into motion_parties_registration (
+            organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) values (?,?,?,?,?,?,?,?,?,?,?)`;
+
+            const insertValues = [
+                organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan
+
+            ];
+            connection.execute(insertQuery, insertValues, (insertError, insertResult)=>{
+                if(insertError){
+                    console.log(insertError,"insertError")
+                    return reject('Error while inserting Data.')
                 }
                 resolve(insertResult);
             })

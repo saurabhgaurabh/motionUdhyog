@@ -125,15 +125,16 @@ module.exports = {
         try {
             const { organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan } = req.body;
             const requiredFields = [
-                'organization_name', 'owner_name', 'mobile', 'email', gst, 'country', 'state', 'city', 'address', 'adhar', 'pan'
+                'organization_name', 'owner_name', 'mobile', 'email', 'gst', 'country', 'state', 'city', 'address', 'adhar', 'pan'
             ];
-            for (fileds of requiredFields) {
+            for (fields of requiredFields) {
                 if (!req.body[fields]) {
                     return res.status(404).json({ status: false, message: 'Fetching error while inserting the data' })
                 }
             }
             const result = await userOperations.motion_parties_registration_routes(
                 organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan);
+                console.log(result,"result")
             return res.status(200).json({ status: true, message: `Parties Added Successfully.`, result: result });
         } catch (error) {
             return res.status(500).json({ status: false, message: `internal server error.${error}` });
