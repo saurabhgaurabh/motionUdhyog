@@ -263,15 +263,25 @@ module.exports = {
     },
     motion_product_category_routes: (product_name, description) => {
         return new Promise((resolve, reject) => {
+            const checkQuery = `select * from motion_product_category where product_name = ?`;
+            connection.execute(checkQuery, [product_name], (checkQueryError, checkQueryResult) => {
+                if (checkQueryError) {
+                    return reject(`Error while inserting records. ${checkQueryError}`);
+                }
+                if (checkQueryResult.length > 0) {
+                    return reject(`Product Name or Id already exists. Duplicate Entry Not Allowed.`);
+                }
+            })
             const insertQuery = `insert into motion_product_category (product_name, description) values ( ?,? )`;
 
             const insertValues = [
                 product_name, description
             ];
-            execution.execute(insertQuery, insertValues, (insertError, insertResult) => {
+            connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
                 if (insertError) {
                     return reject(`Error Occured While Inserting the data. ${insertError}.`);
                 }
+                console.log(insertResult, "insertError");
                 resolve(insertResult);
             })
         })

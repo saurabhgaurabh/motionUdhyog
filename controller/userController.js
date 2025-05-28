@@ -178,6 +178,7 @@ module.exports = {
             console.log(result, "result.")
             return res.status(201).json({ status: true, message: `Registred Successfully.` })
         } catch (error) {
+            console.log(error, "error in motion_product_category_routes")
             return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
         }
     }
