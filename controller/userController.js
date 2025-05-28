@@ -184,19 +184,20 @@ module.exports = {
     }, // motion_product_category_routes
     motion_product_subcategories_routes: async (req, res) => {
         try {
-            const { cub_Cat_name, description, category_id } = req.body;
+            const { sub_Cat_name, description, category_id } = req.body;
             const requiredFields = [
-                'cub_Cat_name', 'description', 'category_id'
+                'sub_Cat_name', 'description', 'category_id'
             ];
             for (fields of requiredFields) {
                 if (!req.body[fields]) {
                     return res.status(404).json({ status: false, message: `${fields.replace('_', ' ')} is required.` });
                 }
             }
-            const result = await userOperations.motion_product_category_routes(cub_Cat_name, description, category_id);
+            const result = await userOperations.motion_product_subcategories_routes(sub_Cat_name, description, category_id);
             console.log(result, "result in motion_product_subcategories_routes");
             return res.status(201).json({ status: true, message: `Subcategory Registered Successfully.` });
         } catch (error) {
+            console.log(error, "error in motion_product_subcategories_routes");
             return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
         }
     }

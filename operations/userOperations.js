@@ -283,5 +283,28 @@ module.exports = {
             })
         })
     },// Api for motion product category
-    motion_product_category_routes: (product_name, description)
+    motion_product_subcategories_routes: (sub_Cat_name, description, category_id) => {
+        return new Promise((resolve, reject) => {
+            id = fourDigitCode();
+            const checkQuery = `select * from motion_product_subcategories where sub_Cat_name = ? or category_id = ?`;
+            // Check for existing product name or cat_id
+            connection.execute(checkQuery, [sub_Cat_name, category_id], (checkQueryError, checkQueryResult) => {
+                if (checkQueryError) {
+                    return reject(`Error while inserting records. ${checkQueryError}`);
+                }
+                if (checkQueryResult.length > 0) {
+                    return reject(`Sub Category Name or Id already exists. Duplicate Entry Not Allowed.1062`);
+                }
+            })
+            const insertQuery = `insert into motion_product_subcategories (sub_cat_name, description, category_id ) values ( ?, ?,? )`;
+            const insertValues = [sub_Cat_name, description, category_id];
+            connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
+                if (insertError) {
+                    return reject(`Error Occured While Inserting the data. ${insertError}.`);
+                }
+                console.log(insertResult, "insertError");
+                resolve(insertResult);
+            })
+        })
+    },
 }
