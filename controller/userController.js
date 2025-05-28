@@ -16,7 +16,7 @@ module.exports = {
         } catch (error) {
             return res.status(509).json({ result: [], status: false, message: `Internasl Server Error ${error}` })
         }
-    },
+    },// udhyog_registration
     motion_user_registration_routes: async (req, res) => {
         try {
             const requiredFields = ['userCode', 'company_name', 'owner_name', 'industry_type', 'GST_number',
@@ -40,7 +40,7 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ result: [], status: false, message: `Internal Server Error. ${error}` })
         }
-    },
+    },// motion_user_registration_routes
     motion_add_dealer_registration_routes: async (req, res) => {
         try {
             const requiredFields = ['dealer_Code', 'dealer_name', 'dealer_GST', 'mobile_number', 'adhar_number', 'pan', 'password', 'country',
@@ -62,7 +62,7 @@ module.exports = {
             return res.status(500).json({ status: false, message: `Internal server error. ${error}` });
         }
 
-    },
+    },// motion_add_dealer_registration_routes
     motion_purchase_row_material_routes: async (req, res) => {
         try {
             const requiredFields = ['order_id', 'dealer_name', 'material_type', 'postal_code', 'password', 'country', 'state',
@@ -84,7 +84,7 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal server error: ${error.message || error}` })
         }
-    },
+    },//  motion_purchase_row_material_routes
     motion_employee_registration_routes: async (req, res) => {
         try {
             const requiredFields = ['emp_id', 'emp_code', 'name', 'state', 'city', 'address', 'postal_code', 'qualification', 'adhar', 'pan', 'mobile', 'email'];
@@ -97,7 +97,7 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal server Error. ${error}` });
         }
-    },
+    },// motion_employee_registration_routes
     motion_product_manufacturing_routes: async (req, res) => {
         try {
             const { mfr_id, product_name, material_type_one, material_quantity, material_quality, unit, batch_number, supervisor_name, total_cost, remarks,
@@ -120,7 +120,7 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal Server Error.${error}` });
         }
-    },
+    },// motion_product_manufacturing_routes
     motion_parties_registration_routes: async (req, res) => {
         try {
             const { party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan } = req.body;
@@ -139,7 +139,7 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ status: false, message: `internal server error.${error}` });
         }
-    },
+    }, // motion_parties_registration_routes
     motion_dispatch_product_routes: async (req, res) => {
         try {
             const { dispatch_id, dispatch_code, organization_name, owner_name, mobile, email, product_name, product_type,
@@ -162,7 +162,7 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ status: false, message: `insernal server error. ${error}` });
         }
-    },
+    }, // motion_dispatch_product_routes
     motion_product_category_routes: async (req, res) => {
         try {
             const { product_name, description } = req.body;
@@ -179,6 +179,24 @@ module.exports = {
             return res.status(201).json({ status: true, message: `Registred Successfully.` })
         } catch (error) {
             console.log(error, "error in motion_product_category_routes")
+            return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
+        }
+    }, // motion_product_category_routes
+    motion_product_subcategories_routes: async (req, res) => {
+        try {
+            const { cub_Cat_name, description, category_id } = req.body;
+            const requiredFields = [
+                'cub_Cat_name', 'description', 'category_id'
+            ];
+            for (fields of requiredFields) {
+                if (!req.body[fields]) {
+                    return res.status(404).json({ status: false, message: `${fields.replace('_', ' ')} is required.` });
+                }
+            }
+            const result = await userOperations.motion_product_category_routes(cub_Cat_name, description, category_id);
+            console.log(result, "result in motion_product_subcategories_routes");
+            return res.status(201).json({ status: true, message: `Subcategory Registered Successfully.` });
+        } catch (error) {
             return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
         }
     }

@@ -74,7 +74,7 @@ module.exports = {
                 });
             });
         });
-    },
+    },// Api for motion add dealer registration
     motion_add_dealer_registration_routes: (dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state,
         city, address, postal_code) => {
         return new Promise((resolve, reject) => {
@@ -113,7 +113,7 @@ module.exports = {
                 })
             })
         })
-    },
+    },// Api for motion purchase row material
     motion_purchase_row_material_routes: (purchase_id, order_id, dealer_name, material_type, postal_code,
         password, country, state, city, address, freight, material_amount, material_amount_remaining) => {
         return new Promise((resolve, reject) => {
@@ -149,7 +149,7 @@ module.exports = {
                 })
             })
         })
-    },
+    },// Api for motion employee registration
     motion_employee_registration_routes: (emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email) => {
         return new Promise((resolve, reject) => {
             emp_id = generateRandomId();
@@ -175,7 +175,7 @@ module.exports = {
                 resolve(insertResult);
             })
         })
-    },
+    },// Api for motion product manufacturing
     motion_product_manufacturing_routes: (mfr_id, product_name, material_type_one, material_quantity, material_quality, unit, batch_number,
         supervisor_name, total_cost, remarks, created_by, last_modified_by) => {
         return new Promise((resolve, reject) => {
@@ -204,7 +204,7 @@ module.exports = {
                 resolve(insertResult);
             })
         })
-    },
+    },// Api for motion parties registration
     motion_parties_registration_routes: (party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) => {
         return new Promise((resolve, reject) => {
             const checkQuery = `select * from motion_parties_registration where gst = ? or party_id = ?`;
@@ -231,7 +231,7 @@ module.exports = {
                 resolve(insertResult);
             })
         })
-    },
+    },// Api for motion dispatch product    
     motion_dispatch_product_routes: (dispatch_id, dispatch_code, organization_name, owner_name, mobile, email, product_name, product_type,
         quantity, height, width, color, packing_type, dispatch_mode, address, city, state, country, postal_code, gst, freight) => {
         return new Promise((resolve, reject) => {
@@ -260,7 +260,7 @@ module.exports = {
                 resolve(insertResult);
             })
         })
-    },
+    },//    Api for motion product category
     motion_product_category_routes: (product_name, description) => {
         return new Promise((resolve, reject) => {
             const checkQuery = `select * from motion_product_category where product_name = ?`;
@@ -273,10 +273,7 @@ module.exports = {
                 }
             })
             const insertQuery = `insert into motion_product_category (product_name, description) values ( ?,? )`;
-
-            const insertValues = [
-                product_name, description
-            ];
+            const insertValues = [product_name, description];
             connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
                 if (insertError) {
                     return reject(`Error Occured While Inserting the data. ${insertError}.`);
@@ -285,5 +282,6 @@ module.exports = {
                 resolve(insertResult);
             })
         })
-    }
+    },// Api for motion product category
+    motion_product_category_routes: (product_name, description)
 }
