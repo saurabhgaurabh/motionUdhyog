@@ -3,7 +3,8 @@ const connection = require('../config/database');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const { v4: uuidv4 } = require('uuid');
-const { generateRandomId, generateRandomCode, generatePurchaseId, generateManufacturingId, fourDigitCode } = require('../utils/helper');
+const { generateRandomId, generateRandomCode, generatePurchaseId, fourDigitCode, generateManufacturingId } = require('../utils/helper');
+const { reject } = require('bcrypt/promises');
 
 
 // modules for Operations
@@ -207,11 +208,11 @@ module.exports = {
     motion_parties_registration_routes: (party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) => {
         return new Promise((resolve, reject) => {
             const checkQuery = `select * from motion_parties_registration where gst = ? or party_id = ?`;
-            connection.execute(checkQuery, [party_id, gst], (checkErr, checkResult)=>{
-                if(checkErr){
+            connection.execute(checkQuery, [party_id, gst], (checkErr, checkResult) => {
+                if (checkErr) {
                     return reject(`Getting existing Records.`);
                 }
-                if(checkResult.length > 0){
+                if (checkResult.length > 0) {
                     return reject('GST or Party ID already exists. Duplicate entry not allow.');
                 }
             })
@@ -222,9 +223,9 @@ module.exports = {
                 party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan
 
             ];
-            connection.execute(insertQuery, insertValues, (insertError, insertResult)=>{
-                if(insertError){
-                    console.log(insertError,"insertError")
+            connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
+                if (insertError) {
+                    console.log(insertError, "insertError")
                     return reject(`Error while inserting Data.${insertError}`)
                 }
                 resolve(insertResult);
@@ -232,32 +233,47 @@ module.exports = {
         })
     },
     motion_dispatch_product_routes: (dispatch_id, dispatch_code, organization_name, owner_name, mobile, email, product_name, product_type,
-        quantity, height, width, color, packing_type, dispatch_mode, address, city, state, country, postal_code, gst, freight)=>{
-            return new Promise((resolve, reject)=>{
-                const checkQuery = `select * from motion_dispatch_product where dispatch_id = ? or dispatch_code = ?`;
-                connection.execute(checkQuery, [dispatch_id, dispatch_code], (checkErr, checkResult)=>{
-                    if(checkErr){
-                        return reject('Error while inserting the data.');
-                    }
-                    if(checkResult.length > 0){
-                        return reject('Matching Dispatch Id or Dispatch Code. Duplicate entry not allow. Code: 1062')
-                    }
-                })
-                const insertQuery = `insert into motion_dispatch_product 
+        quantity, height, width, color, packing_type, dispatch_mode, address, city, state, country, postal_code, gst, freight) => {
+        return new Promise((resolve, reject) => {
+            const checkQuery = `select * from motion_dispatch_product where dispatch_id = ? or dispatch_code = ?`;
+            connection.execute(checkQuery, [dispatch_id, dispatch_code], (checkErr, checkResult) => {
+                if (checkErr) {
+                    return reject('Error while inserting the data.');
+                }
+                if (checkResult.length > 0) {
+                    return reject('Matching Dispatch Id or Dispatch Code. Duplicate entry not allow. Code: 1062')
+                }
+            })
+            const insertQuery = `insert into motion_dispatch_product 
                 (dispatch_id, dispatch_code, organization_name, owner_name, mobile, email, product_name, product_type,
                 quantity, height, width, color, packing_type, dispatch_mode, address, city, state, country, postal_code, gst, freight)
                 values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
-                const insertValues = [
-                    dispatch_id, dispatch_code, organization_name, owner_name, mobile, email, product_name, product_type,
+            const insertValues = [
+                dispatch_id, dispatch_code, organization_name, owner_name, mobile, email, product_name, product_type,
                 quantity, height, width, color, packing_type, dispatch_mode, address, city, state, country, postal_code, gst, freight
-                ];
-                connection.execute(insertQuery, insertValues, (insertErr, insertResult)=>{
-                    if(insertErr){
-                        return reject(`Error while inserting data. ${insertErr}`);
-                    }
-                    resolve(insertResult);
-                })
+            ];
+            connection.execute(insertQuery, insertValues, (insertErr, insertResult) => {
+                if (insertErr) {
+                    return reject(`Error while inserting data. ${insertErr}`);
+                }
+                resolve(insertResult);
             })
-        }
+        })
+    },
+    motion_product_category_routes: (product_name, description) => {
+        return new Promise((resolve, reject) => {
+            const insertQuery = `insert into motion_product_category (product_name, description) values ( ?,? )`;
+
+            const insertValues = [
+                product_name, description
+            ];
+            execution.execute(insertQuery, insertValues, (insertError, insertResult) => {
+                if (insertError) {
+                    return reject(`Error Occured While Inserting the data. ${insertError}.`);
+                }
+                resolve(insertResult);
+            })
+        })
+    }
 }

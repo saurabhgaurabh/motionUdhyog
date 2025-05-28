@@ -162,5 +162,23 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ status: false, message: `insernal server error. ${error}` });
         }
+    },
+    motion_product_category_routes: async (req, res) => {
+        try {
+            const { product_name, description } = req.body;
+            const requiredFields = [
+                'product_name', 'description'
+            ];
+            for (fields of requiredFields) {
+                if (!req.body[fields]) {
+                    return res.status(404).json({ status: false, message: `${fields.replace('_', ' ')} is required.` });
+                }
+            }
+            const result = await userOperations.motion_product_category_routes(product_name, description);
+            console.log(result, "result.")
+            return res.status(201).json({ status: true, message: `Registred Successfully.` })
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
+        }
     }
 }

@@ -11,6 +11,8 @@ routes.post('/motion_employee_registration_routes', userController.motion_employ
 routes.post('/motion_product_manufacturing_routes', userController.motion_product_manufacturing_routes);
 routes.post('/motion_parties_registration_routes', userController.motion_parties_registration_routes);
 routes.post('/motion_dispatch_product_routes', userController.motion_dispatch_product_routes);
+routes.post('/motion_product_category_routes', userController.motion_product_category_routes);
+
 
 module.exports = routes; 
 
