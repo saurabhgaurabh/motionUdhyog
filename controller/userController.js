@@ -200,5 +200,21 @@ module.exports = {
             console.log(error, "error in motion_product_subcategories_routes");
             return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
         }
+    },
+    motion_product_sub_subcategories_routes: async (req, res) => {
+        try {
+            const { sub_sub_cat_name, description, subcategory_id } = req.body;
+            const requiredFileds = [sub_sub_cat_name, description, subcategory_id];
+            for (fields of requiredFileds) {
+                if (!req.body[fields]) {
+                    return res.status(404).json({ status: false, message: `${fileds.replace('_', '')} is required.` });
+                }
+                const result = await userController.motion_product_sub_subcategories_routes(sub_sub_cat_name, description, subcategory_id);
+                console.log(result, "result in motion_product_sub_subcategories_routes");
+                return res.status(201).json({ status: true, message: `Sub Subcategory Registered Successfully.` });
+            }
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` })
+        }
     }
 }

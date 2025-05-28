@@ -13,6 +13,7 @@ routes.post('/motion_parties_registration_routes', userController.motion_parties
 routes.post('/motion_dispatch_product_routes', userController.motion_dispatch_product_routes); // Dispatch Product
 routes.post('/motion_product_category_routes', userController.motion_product_category_routes); // Product Category
 routes.post('/motion_product_subcategories_routes', userController.motion_product_subcategories_routes); // Product Subcategories
+routes.post('/motion_product_sub_subcategories_routes', userController.motion_product_sub_subcategories_routes); // Product Sub Subcategories
 
 
 module.exports = routes; 
