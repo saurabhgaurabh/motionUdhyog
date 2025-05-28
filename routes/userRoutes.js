@@ -14,7 +14,7 @@ routes.post('/motion_dispatch_product_routes', userController.motion_dispatch_pr
 routes.post('/motion_product_category_routes', userController.motion_product_category_routes); // Product Category
 routes.post('/motion_product_subcategories_routes', userController.motion_product_subcategories_routes); // Product Subcategories
 routes.post('/motion_product_sub_subcategories_routes', userController.motion_product_sub_subcategories_routes); // Product Sub Subcategories
-
+routes.post('/motion_products_routes', userController.motion_products_routes); // Products optionsl
 
 module.exports = routes; 
 

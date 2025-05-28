@@ -329,5 +329,27 @@ module.exports = {
                 resolve(insertResult);
             })
         })
+    },
+    motion_products_routes: (product_name, category_id, subcategory_id, sub_subcategory_id) => {
+        return new Promise((resolve, reject) => {
+            const checkQuery = `select * from motion_products where product_name = ? or category_id = ? or subcategory_id = ? or sub_subcategory_id = ?`;
+            // Check for existing product name or cat_id
+            connection.execute(checkQuery, [product_name, category_id, subcategory_id, sub_subcategory_id], (checkQueryError, checkQueryResult) => {
+                if (checkQueryError) {
+                    return reject(`Error while inserting records. ${checkQueryError}`);
+                }
+                if (checkQueryResult.length > 0) {
+                    return reject(`Product Name or Id already exists. Duplicate Entry Not Allowed.1062`);
+                }
+            })
+            const insertQuery = `insert into motion_products (product_name, category_id, subcategory_id, sub_subcategory_id) values (?,?,?,?)`;
+            const insertValues = [product_name, category_id, subcategory_id, sub_subcategory_id];
+            connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
+                if (insertError) {
+                    return reject(`Error Occured While Inserting the data. ${insertError}.`);
+                }
+                resolve(insertResult);
+            })
+        })
     }
 }

@@ -216,5 +216,22 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` })
         }
-    }
+    },
+    motion_products_routes: async (req, res) => {
+        try {
+            const { product_name, category_id, subcategory_id, sub_subcategory_id } = req.body;
+            const requiredFields = ['product_name', 'category_id', 'subcategory_id', 'sub_subcategory_id'];
+            for (fields of requiredFields) {
+                if (!req.body[fields]) {
+                    return res.status(404).json({ status: false, message: `${fields.replace('_', ' ')} is required.` });
+                }
+            }
+            const result = await userOperations.motion_products_routes(product_name, category_id, subcategory_id, sub_subcategory_id);
+            console.log(result, "result in motion_products_routes");
+            return res.status(201).json({ status: true, message: `Product Registered Successfully.` });
+        } catch (error) {
+            console.log(error, "error in motion_products_routes");
+            return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
+        }
+    }, // motion_products_routesx
 }
