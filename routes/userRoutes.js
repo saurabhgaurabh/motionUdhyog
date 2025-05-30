@@ -16,6 +16,9 @@ routes.post('/motion_product_subcategories_routes', userController.motion_produc
 routes.post('/motion_product_sub_subcategories_routes', userController.motion_product_sub_subcategories_routes); // Product Sub Subcategories
 routes.post('/motion_products_routes', userController.motion_products_routes); // Products optionsl
 
+// Your api's for get data.
+routes.get('/motion_add_dealer_registration_get_routes', userController.motion_add_dealer_registration_get_routes); // Get Dealer Registration
+
 module.exports = routes; 
 
 

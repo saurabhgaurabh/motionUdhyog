@@ -5,7 +5,6 @@ const saltRounds = 10;
 const { v4: uuidv4 } = require('uuid');
 const { generateRandomId, generateRandomCode, generatePurchaseId, fourDigitCode, generateManufacturingId } = require('../utils/helper');
 const { reject } = require('bcrypt/promises');
-const { motion_product_sub_subcategories_routes } = require('../controller/userController');
 
 
 // modules for Operations
@@ -33,11 +32,7 @@ module.exports = {
             const checkQuery = `SELECT * FROM motion_user_registration WHERE userCode = ? OR registration_email = ?`;
 
             connection.execute(checkQuery, [userCode, registration_email], (checkErr, checkResult) => {
-                if (checkErr) {
-                    // console.log(checkErr, "check error");
-                    return reject(`Error checking existing records.`);
-                }
-
+                if (checkErr) { return reject(`Error checking existing records.`); }
                 if (checkResult.length > 0) {
                     return reject('User with same userCode or email already exists. Duplicate Entry Not Allowed');
                 }
@@ -80,9 +75,7 @@ module.exports = {
         city, address, postal_code) => {
         return new Promise((resolve, reject) => {
             dealer_Code = generateRandomCode();
-            // Duplicate check
             const checkQuery = `SELECT * FROM motion_add_dealer_registration WHERE dealer_Code = ? OR dealer_GST = ?`;
-
             connection.execute(checkQuery, [dealer_Code, dealer_GST], (checkErr, checkResult) => {
                 if (checkErr) {
                     return reject('Error checking existing records.');
@@ -91,8 +84,6 @@ module.exports = {
                 if (checkResult.length > 0) {
                     return reject('Dealer with same Code or GST already exists. Duplicate entry not allowed. error 1062');
                 }
-
-                // Insert query
                 const insertQuery = `INSERT INTO motion_add_dealer_registration (
                         dealer_Code, dealer_name, dealer_GST, mobile_number,
                         adhar_number, pan, password, country, state,
@@ -110,11 +101,23 @@ module.exports = {
                         console.error(insertErr);
                         return reject(`Something went wrong while inserting data.${insertErr}`);
                     }
-                    resolve(insertresult);
+                    const insertedId = insertresult.insertId;
+                    // Fetch the inserted row
+                    const fetchQuery = `SELECT * FROM motion_add_dealer_registration WHERE id = ?`;
+                    connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
+                        if (fetchError) {
+                            console.error(fetchError);
+                            return reject(`Inserted but failed to fetch data. ${fetchError}`);
+                        }
+                        // Return the inserted row
+                        resolve({ message: "Dealer Registered Successfully", data: fetchResult[0] });
+                    })
+                    // resolve(insertresult);
                 })
             })
         })
-    },// Api for motion purchase row material
+    },
+    // Api for motion purchase row material
     motion_purchase_row_material_routes: (purchase_id, order_id, dealer_name, material_type, postal_code,
         password, country, state, city, address, freight, material_amount, material_amount_remaining) => {
         return new Promise((resolve, reject) => {
@@ -351,5 +354,20 @@ module.exports = {
                 resolve(insertResult);
             })
         })
+    },
+
+
+
+    motion_add_dealer_registration_get_routes: () => {
+        return new Promise((resolve, reject) => {
+            const query = `SELECT * FROM motion_add_dealer_registration`;
+            connection.execute(query, [], (error, result) => {
+                if (error) {
+                    console.error(error);
+                    return reject('Something went wrong while fetching data.');
+                }
+                resolve(result);
+            });
+        });
     }
 }

@@ -43,3 +43,4 @@ const generatePurchaseId = () => {
 module.exports = {
     generateRandomId, generateRandomCode, generatePurchaseId, generateManufacturingId, fourDigitCode
 }
+

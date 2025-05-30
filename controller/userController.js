@@ -22,7 +22,6 @@ module.exports = {
             const requiredFields = ['userCode', 'company_name', 'owner_name', 'industry_type', 'GST_number',
                 'registration_email', 'mobile_number', 'password', 'confirm_password',
                 'country', 'state', 'city', 'address', 'postal_code', 'website'];
-            // validate required fields
             for (const field of requiredFields) {
                 if (!req.body[field]) { // checks if that field exists in the incoming request.
                     return res.status(200).json({ status: false, message: `${field.replace('_', ' ')} is required.` });
@@ -200,7 +199,7 @@ module.exports = {
             console.log(error, "error in motion_product_subcategories_routes");
             return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
         }
-    },
+    }, // motion_product_subcategories_routes
     motion_product_sub_subcategories_routes: async (req, res) => {
         try {
             const { sub_sub_cat_name, description, subcategory_id } = req.body;
@@ -216,7 +215,7 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` })
         }
-    },
+    },// motion_product_sub_subcategories_routes
     motion_products_routes: async (req, res) => {
         try {
             const { product_name, category_id, subcategory_id, sub_subcategory_id } = req.body;
@@ -233,5 +232,18 @@ module.exports = {
             console.log(error, "error in motion_products_routes");
             return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
         }
-    }, // motion_products_routesx
+    }, // motion_products_routes
+
+
+
+    // get api
+    motion_add_dealer_registration_get_routes: async (req, res) => {
+        try {
+            const result = await userOperations.motion_add_dealer_registration_get_routes();
+            return res.status(200).json({ status: true, message: 'Dealer Registration Data Fetched Successfully.', result: result });
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
+        }
+    }, // motion_add_dealer_registration_get_routes
+    
 }
