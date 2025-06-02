@@ -61,7 +61,7 @@ module.exports = {
             return res.status(500).json({ status: false, message: `Internal server error. ${error}` });
         }
 
-    },// motion_add_dealer_registration_routes
+    },// motion_add_dealer_registration_routes                -----  FETCHING DATA  -------------
     motion_purchase_row_material_routes: async (req, res) => {
         try {
             const requiredFields = ['order_id', 'dealer_name', 'material_type', 'postal_code', 'password', 'country', 'state',
@@ -83,7 +83,7 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal server error: ${error.message || error}` })
         }
-    },//  motion_purchase_row_material_routes
+    },//  motion_purchase_row_material_routes                 -----  FETCHING DATA  -------------
     motion_employee_registration_routes: async (req, res) => {
         try {
             const requiredFields = ['emp_id', 'emp_code', 'name', 'state', 'city', 'address', 'postal_code', 'qualification', 'adhar', 'pan', 'mobile', 'email'];
@@ -236,14 +236,6 @@ module.exports = {
 
 
 
-    // get api
-    motion_add_dealer_registration_get_routes: async (req, res) => {
-        try {
-            const result = await userOperations.motion_add_dealer_registration_get_routes();
-            return res.status(200).json({ status: true, message: 'Dealer Registration Data Fetched Successfully.', result: result });
-        } catch (error) {
-            return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
-        }
-    }, // motion_add_dealer_registration_get_routes
-    
+
+
 }

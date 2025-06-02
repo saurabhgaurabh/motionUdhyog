@@ -1,10 +1,9 @@
 const connection = require('../config/database');
-// const { motion_user_registration_routes } = require('../controller/userController');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const { v4: uuidv4 } = require('uuid');
 const { generateRandomId, generateRandomCode, generatePurchaseId, fourDigitCode, generateManufacturingId } = require('../utils/helper');
-const { reject } = require('bcrypt/promises');
+
 
 
 // modules for Operations
@@ -20,9 +19,7 @@ module.exports = {
                 resolve(result);
             });
         });
-    },
-
-    // Api for motion user registration 
+    },    // Api for motion user registration 
     motion_user_registration_routes: (
         userCode, company_name, owner_name, industry_type, GST_number,
         registration_email, mobile_number, password, confirm_password,
@@ -103,7 +100,7 @@ module.exports = {
                     }
                     const insertedId = insertresult.insertId;
                     // Fetch the inserted row
-                    const fetchQuery = `SELECT * FROM motion_add_dealer_registration WHERE id = ?`;
+                    const fetchQuery = `SELECT * FROM motion_add_dealer_registration`;
                     connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
                         if (fetchError) {
                             console.error(fetchError);
@@ -116,8 +113,7 @@ module.exports = {
                 })
             })
         })
-    },
-    // Api for motion purchase row material
+    },    // Api for motion purchase row material  -----  FETCHING DATA  -------------
     motion_purchase_row_material_routes: (purchase_id, order_id, dealer_name, material_type, postal_code,
         password, country, state, city, address, freight, material_amount, material_amount_remaining) => {
         return new Promise((resolve, reject) => {
@@ -149,11 +145,20 @@ module.exports = {
                     if (insertErr) {
                         return reject(`Something went wrong while inserting data.${insertErr}`);
                     }
-                    resolve(insertResult);
+                    const insertedId = insertResult.insertId;
+                    const fetchQuery = `select * from motion_purchase_row_material`;
+                    connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult)=>{
+                        if(fetchError){
+                            console.error(fetchError);
+                            return reject(`Inserted but failed to fetch data. ${fetchError}`);
+                        }
+                        resolve({ message: "Purchase Row Material Registered Successfully & Data Fetched", data: fetchResult[0]})
+                    })
+                    // resolve(insertResult);
                 })
             })
         })
-    },// Api for motion employee registration
+    },// Api for motion employee registration    -----  FETCHING DATA  -------------
     motion_employee_registration_routes: (emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email) => {
         return new Promise((resolve, reject) => {
             emp_id = generateRandomId();
@@ -358,16 +363,5 @@ module.exports = {
 
 
 
-    motion_add_dealer_registration_get_routes: () => {
-        return new Promise((resolve, reject) => {
-            const query = `SELECT * FROM motion_add_dealer_registration`;
-            connection.execute(query, [], (error, result) => {
-                if (error) {
-                    console.error(error);
-                    return reject('Something went wrong while fetching data.');
-                }
-                resolve(result);
-            });
-        });
-    }
+
 }
