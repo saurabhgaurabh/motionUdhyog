@@ -188,7 +188,6 @@ module.exports = {
                     }
                     resolve({message: `Employee Registered Successfully & Data Fetched`, data: fetchResult[0]});
                 })
-                // resolve(insertResult);
             })
         })
     },// Api for motion product manufacturing        -----  FETCHING DATA  -------------
@@ -217,7 +216,15 @@ module.exports = {
                 if (insertErr) {
                     return reject(`Error While Inserting Data. ${insertErr}`);
                 }
-                resolve(insertResult);
+                const insertedId = insertResult.insertId;
+                const fetchQuery = `select * from motion_product_manufacturing`;
+                connection.exercute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
+                    if(fetchError){
+                        return reject(`Failed to Fetch Data after Insertion. ${fetchError}`);
+                    }
+                    resolve({message: `Product Manufacturing Registered Successfully & Data Fetched`, data: fetchResult[0]});
+                })
+                // resolve(insertResult);
             })
         })
     },// Api for motion parties registration

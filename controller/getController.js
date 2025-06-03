@@ -25,4 +25,12 @@ module.exports = {
             return res.status(500).json({ status: false, messsage: `Internal Server Error. ${error}` });
         }
     },
+    motion_product_manufacturing_get_routes: async (req, res) => {
+        try {
+            const prd_maf_result = await getOperations.motion_product_manufacturing_get_routes();
+            return res.status(200).json({ status: true, message: 'Proeduct Manufacturing Data Fetched Successfully.', result: prd_maf_result });
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
+        }
+    }
 }
