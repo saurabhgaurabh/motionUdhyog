@@ -178,13 +178,20 @@ module.exports = {
             const values = [emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email];
             connection.execute(insertQuery, values, (insertErr, insertResult) => {
                 if (insertErr) {
-                    console.log(insertErr, "inserterror")
                     return reject(`Data, Inserting error ${insertErr}`);
                 }
-                resolve(insertResult);
+                const insertedId = insertResult.insertId;
+                const fetchQuery = `select * from motion_employee_registration`;
+                connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) =>{
+                    if(fetchError){
+                        return reject(`Inserted But Failed to Fetch Data. ${fetchError}`);
+                    }
+                    resolve({message: `Employee Registered Successfully & Data Fetched`, data: fetchResult[0]});
+                })
+                // resolve(insertResult);
             })
         })
-    },// Api for motion product manufacturing
+    },// Api for motion product manufacturing        -----  FETCHING DATA  -------------
     motion_product_manufacturing_routes: (mfr_id, product_name, material_type_one, material_quantity, material_quality, unit, batch_number,
         supervisor_name, total_cost, remarks, created_by, last_modified_by) => {
         return new Promise((resolve, reject) => {

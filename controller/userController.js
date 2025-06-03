@@ -86,9 +86,13 @@ module.exports = {
     },//  motion_purchase_row_material_routes                 -----  FETCHING DATA  -------------
     motion_employee_registration_routes: async (req, res) => {
         try {
-            const requiredFields = ['emp_id', 'emp_code', 'name', 'state', 'city', 'address', 'postal_code', 'qualification', 'adhar', 'pan', 'mobile', 'email'];
+            const requiredFields = [
+                'emp_id', 'emp_code', 'name', 'state', 'city', 'address', 'postal_code', 'qualification', 'adhar', 'pan', 'mobile', 'email'
+            ];
             for (fields of requiredFields) {
-                if (!req.body[fields]) { return res.status(500).json({ status: false, message: `${fields.replace('_', ' ')} 'is required'` }) };
+                if (!req.body[fields]) {
+                    return res.status(500).json({ status: false, message: `${fields.replace('_', ' ')} 'is required'` })
+                };
             }
             const { emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email } = req.body;
             const result = await userOperations.motion_employee_registration_routes(emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email);
@@ -96,7 +100,7 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal server Error. ${error}` });
         }
-    },// motion_employee_registration_routes
+    },// motion_employee_registration_routes                      -----  FETCHING DATA  -------------
     motion_product_manufacturing_routes: async (req, res) => {
         try {
             const { mfr_id, product_name, material_type_one, material_quantity, material_quality, unit, batch_number, supervisor_name, total_cost, remarks,

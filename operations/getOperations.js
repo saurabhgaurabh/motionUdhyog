@@ -9,7 +9,7 @@ module.exports = {
                 if (error) {
                     return reject('Something went wrong while fetching data.');
                 }
-                resolve(result);
+                resolve({result: result, message: 'Dealer Registration Data Fetched Successfully.'});
             });
         });
     },
@@ -20,7 +20,18 @@ module.exports = {
                 if (getError) {
                     return reject(`Something went wrong while fetching purchase row material data. ${getError})`);
                 }
-                resolve(getResult);
+                resolve({data: getResult, message: `Purchase Row Material Data Fetched Successfully.`});
+            })
+        })
+    },
+    motion_employee_registration_get_routes: () => {
+        return new Promise((resolve, reject) => {
+            const employeeQuery = `select * from motion_Employee_registration`;
+            connection.execute(employeeQuery, [], (queryError, queryResult) => {
+                if (queryError) {
+                    return reject(`Something Went Wrong While Fetching The Employees Registration Data. ${queryError}`);
+                }
+                resolve({result : queryResult, message: `Employee Registration Data Fetched Successfully.`});
             })
         })
     }

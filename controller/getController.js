@@ -17,4 +17,12 @@ module.exports = {
             return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
         }
     },
+    motion_employee_registration_get_routes: async (req, res) => {
+        try {
+            const employeeResult = await getOperations.motion_employee_registration_get_routes();
+            return res.status(200).json({ status: true, message: `Employee Registration Data FEtched Successfully.`, result: employeeResult });
+        } catch (error) {
+            return res.status(500).json({ status: false, messsage: `Internal Server Error. ${error}` });
+        }
+    },
 }
