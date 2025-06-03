@@ -1,5 +1,5 @@
 const userOperations = require('../operations/userOperations');
-
+const logger = require('../utils/logger');
 
 
 module.exports = {
@@ -42,6 +42,8 @@ module.exports = {
     },// motion_user_registration_routes
     motion_add_dealer_registration_routes: async (req, res) => {
         try {
+            logger.info('Dealer registration initiated');
+
             const requiredFields = ['dealer_Code', 'dealer_name', 'dealer_GST', 'mobile_number', 'adhar_number', 'pan', 'password', 'country',
                 'state', 'city', 'address', 'postal_code'];
 
@@ -53,11 +55,12 @@ module.exports = {
             const { dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state, city, address, postal_code } = req.body;
 
             const result = await userOperations.motion_add_dealer_registration_routes(dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state, city, address, postal_code);
-            // console.log(result, 'result dealer');
+            logger.info('Dealer registration successful');
             return res.status(200).json({ status: true, message: 'Dealer Added Successfully.' });
 
 
         } catch (error) {
+            logger.error('Dealer registration error:', error);
             return res.status(500).json({ status: false, message: `Internal server error. ${error}` });
         }
 

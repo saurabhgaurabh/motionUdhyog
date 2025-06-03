@@ -224,10 +224,9 @@ module.exports = {
                     }
                     resolve({message: `Product Manufacturing Registered Successfully & Data Fetched`, data: fetchResult[0]});
                 })
-                // resolve(insertResult);
             })
         })
-    },// Api for motion parties registration
+    },// Api for motion parties registration          -----  FETCHING DATA  -------------
     motion_parties_registration_routes: (party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) => {
         return new Promise((resolve, reject) => {
             const checkQuery = `select * from motion_parties_registration where gst = ? or party_id = ?`;

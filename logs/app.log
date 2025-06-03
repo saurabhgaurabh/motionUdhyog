@@ -1,0 +1,32 @@
+[2025-06-03T13:02:50.856] [INFO] default - Dealer registration initiated
+[2025-06-03T13:02:50.878] [ERROR] default - Dealer registration error: Dealer with same Code or GST already exists. Duplicate entry not allowed. error 1062
+[2025-06-03T13:04:27.758] [INFO] default - Dealer registration initiated
+[2025-06-03T13:04:27.779] [ERROR] default - Dealer registration error: Dealer with same Code or GST already exists. Duplicate entry not allowed. error 1062
+[2025-06-03T13:05:56.059] [INFO] default - Dealer registration initiated
+[2025-06-03T13:05:56.078] [ERROR] default - Dealer registration error: Dealer with same Code or GST already exists. Duplicate entry not allowed. error 1062
+[2025-06-03T13:06:41.964] [INFO] default - Dealer registration initiated
+[2025-06-03T13:06:41.997] [INFO] default - Dealer registration successful
+[2025-06-03T13:06:44.451] [INFO] default - Dealer registration initiated
+[2025-06-03T13:06:44.454] [ERROR] default - Dealer registration error: Dealer with same Code or GST already exists. Duplicate entry not allowed. error 1062
+[2025-06-03T13:06:54.401] [INFO] default - Dealer registration initiated
+[2025-06-03T13:06:54.404] [ERROR] default - Dealer registration error: Dealer with same Code or GST already exists. Duplicate entry not allowed. error 1062
+[2025-06-03T13:10:32.527] [INFO] default - Dealer registration initiated
+[2025-06-03T13:10:32.553] [ERROR] default - Dealer registration error: Something went wrong while inserting data.Error: Column count doesn't match value count at row 1
+[2025-06-03T13:11:12.942] [INFO] default - Dealer registration initiated
+[2025-06-03T13:11:12.969] [ERROR] default - Dealer registration error: Something went wrong while inserting data.Error: Field 'dealer_Code' doesn't have a default value
+[2025-06-03T13:12:17.951] [INFO] default - Dealer registration initiated
+[2025-06-03T13:12:17.954] [ERROR] default - Dealer registration error: ReferenceError: dealer_code is not defined
+    at motion_add_dealer_registration_routes (J:\motionUdhyog\controller\userController.js:57:87)
+    at Layer.handleRequest (J:\motionUdhyog\node_modules\router\lib\layer.js:152:17)
+    at next (J:\motionUdhyog\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (J:\motionUdhyog\node_modules\router\lib\route.js:117:3)
+    at handle (J:\motionUdhyog\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (J:\motionUdhyog\node_modules\router\lib\layer.js:152:17)
+    at J:\motionUdhyog\node_modules\router\index.js:295:15
+    at processParams (J:\motionUdhyog\node_modules\router\index.js:582:12)
+    at next (J:\motionUdhyog\node_modules\router\index.js:291:5)
+    at Function.handle (J:\motionUdhyog\node_modules\router\index.js:186:3)
+[2025-06-03T13:12:29.816] [INFO] default - Dealer registration initiated
+[2025-06-03T13:12:29.841] [ERROR] default - Dealer registration error: Something went wrong while inserting data.Error: Field 'dealer_Code' doesn't have a default value
+[2025-06-03T13:13:38.810] [INFO] default - Dealer registration initiated
+[2025-06-03T13:13:38.844] [INFO] default - Dealer registration successful
