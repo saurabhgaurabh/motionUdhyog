@@ -87,6 +87,7 @@ module.exports = {
                         return reject(`Something went wrong while inserting data.${insertErr}`);
                     }
                     const insertedId = insertresult.insertId;
+                    console.log(insertresult,"check")
                     // Fetch the inserted row
                     const fetchQuery = `SELECT * FROM motion_add_dealer_registration`;
                     connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {

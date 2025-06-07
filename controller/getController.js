@@ -4,9 +4,10 @@ module.exports = {
     motion_add_dealer_registration_get_routes: async (req, res) => {
         try {
             const result = await getOperations.motion_add_dealer_registration_get_routes();
+            console.log(result, "dealer get")
             return res.status(200).json({ status: true, message: 'Dealer Registration Data Fetched Successfully.', result: result });
         } catch (error) {
-            return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
+            return res.status(500).json({ status: false, message: `Internal Server Error Get. ${error}` });
         }
     }, // motion_add_dealer_registration_get_routes
     motion_purchase_row_material_get_routes: async (req, res) => {

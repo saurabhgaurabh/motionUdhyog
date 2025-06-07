@@ -7,8 +7,10 @@ module.exports = {
             const query = `SELECT * FROM motion_add_dealer_registration`;
             connection.execute(query, [], (error, result) => {
                 if (error) {
+                    console.log(error, "get")
                     return reject('Something went wrong while fetching data.');
                 }
+                console.log(result, "get operations")
                 resolve({ result: result, message: 'Dealer Registration Data Fetched Successfully.' });
             });
         });
