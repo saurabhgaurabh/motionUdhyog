@@ -4,7 +4,6 @@ const userController = require('../controller/userController');
 const getController = require('../controller/getController');
 
 // Your api's for post data.
-routes.post('/udhyog_registration', userController.udhyog_registration); // Udhyog Registration
 routes.post('/motion_user_registration_routes', userController.motion_user_registration_routes); // User Registration
  /*GET*/  routes.post('/motion_add_dealer_registration_routes', userController.motion_add_dealer_registration_routes); // Add Dealer Registration       
  /*GET*/  routes.post('/motion_purchase_row_material_routes', userController.motion_purchase_row_material_routes); // Purchase Row Material             

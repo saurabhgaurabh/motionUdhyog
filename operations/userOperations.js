@@ -8,18 +8,6 @@ const { generateRandomId, generateRandomCode, generatePurchaseId, fourDigitCode,
 
 // modules for Operations
 module.exports = {
-    udhyog_registration: (name, city, postal_code) => {
-        return new Promise((resolve, reject) => {
-            const query = `INSERT INTO udhyog_registration (name, city, postal_code) VALUES (?, ?, ?)`;
-            connection.execute(query, [name, city, postal_code], (error, result) => {
-                if (error) {
-                    // console.log(error);
-                    return reject('Something went wrong while inserting data.');
-                }
-                resolve(result);
-            });
-        });
-    },    // Api for motion user registration 
     motion_user_registration_routes: (
         userCode, company_name, owner_name, industry_type, GST_number,
         registration_email, mobile_number, password, confirm_password,

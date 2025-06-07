@@ -3,20 +3,6 @@ const logger = require('../utils/logger');
 
 
 module.exports = {
-    udhyog_registration: async (req, res) => {
-        try {
-            const { name, city, postal_code } = req.body;
-            if (!name) return res.status(200).json({ status: false, message: 'Name is require.' });
-            if (!city) return res.status(200).json({ status: false, message: 'City is required.' });
-            if (!postal_code) return res.status(200).json({ status: false, message: 'Postal code is required.' });
-
-            const result = await userOperations.udhyog_registration(name, city, postal_code);
-            return res.status(201).json({ status: true, message: "Registration successful!", result: result });
-
-        } catch (error) {
-            return res.status(509).json({ result: [], status: false, message: `Internasl Server Error ${error}` })
-        }
-    },// udhyog_registration
     motion_user_registration_routes: async (req, res) => {
         try {
             const requiredFields = ['userCode', 'company_name', 'owner_name', 'industry_type', 'GST_number',
