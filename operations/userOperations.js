@@ -182,7 +182,7 @@ module.exports = {
     motion_product_manufacturing_routes: (mfr_id, product_name, material_type_one, material_quantity, material_quality, unit, batch_number,
         supervisor_name, total_cost, remarks, created_by, last_modified_by) => {
         return new Promise((resolve, reject) => {
-            mfr_id = fourDigitCode();
+            mfr_id = generate6DigitCode();
 
             const checkQuery = `select * from motion_product_manufacturing where mfr_id = ?`;
             connection.execute(checkQuery, [mfr_id], (checkErr, checkResult) => {
