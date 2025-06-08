@@ -2,7 +2,7 @@ const connection = require('../config/database');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const { v4: uuidv4 } = require('uuid');
-const { generateRandomId, generateRandomCode, generatePurchaseId, fourDigitCode, generateManufacturingId, generate8DigitCode } = require('../utils/helper');
+const { generateRandomId, generateRandomCode, generatePurchaseId, fourDigitCode, generateManufacturingId, generate8DigitCode, generate6DigitCode } = require('../utils/helper');
 
 
 
@@ -149,7 +149,7 @@ module.exports = {
     },// Api for motion employee registration    -----  FETCHING DATA  -------------
     motion_employee_registration_routes: (emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email) => {
         return new Promise((resolve, reject) => {
-            emp_id = generateRandomId();
+            emp_id = generate6DigitCode();
             emp_code = generateRandomCode();
 
             const checkQuery = `select * from motion_employee_registration where emp_id = ? or emp_code = ?`;
