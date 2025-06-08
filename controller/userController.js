@@ -119,7 +119,6 @@ module.exports = {
             }
             const result = await userOperations.motion_parties_registration_routes(
                 party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan);
-            console.log(result, "result")
             return res.status(200).json({ status: true, message: `Parties Added Successfully.`, result: result });
         } catch (error) {
             return res.status(500).json({ status: false, message: `internal server error.${error}` });

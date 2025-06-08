@@ -216,7 +216,8 @@ module.exports = {
     },// Api for motion parties registration          -----  FETCHING DATA  -------------
     motion_parties_registration_routes: (party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) => {
         return new Promise((resolve, reject) => {
-            const checkQuery = `select * from motion_parties_registration where gst = ? or party_id = ?`;
+            party_id = generate6DigitCode();
+            const checkQuery = `select * from motion_parties_registration where gst = ? OR party_id = ?`;
             connection.execute(checkQuery, [party_id, gst], (checkErr, checkResult) => {
                 if (checkErr) {
                     return reject(`Getting existing Records.`);
@@ -234,7 +235,7 @@ module.exports = {
             ];
             connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
                 if (insertError) {
-                    console.log(insertError, "insertError")
+                    // console.log(insertError, "insertError")
                     return reject(`Error while inserting Data.${insertError}`)
                 }
                 resolve(insertResult);
