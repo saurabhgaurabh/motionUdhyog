@@ -39,8 +39,15 @@ const generatePurchaseId = () => {
     }
     return code;
 };
+// function generate8DigitCode() {
+//   return Math.floor(10000000 + Math.random() * 90000000).toString();
+// }
+ const generate8DigitCode = () =>{
+      return Math.floor(10000000 + Math.random() * 90000000).toString();
+
+ }
 
 module.exports = {
-    generateRandomId, generateRandomCode, generatePurchaseId, generateManufacturingId, fourDigitCode
+    generateRandomId, generateRandomCode, generatePurchaseId, generateManufacturingId, fourDigitCode,generate8DigitCode
 }
 

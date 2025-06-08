@@ -30,3 +30,10 @@
 [2025-06-03T13:12:29.841] [ERROR] default - Dealer registration error: Something went wrong while inserting data.Error: Field 'dealer_Code' doesn't have a default value
 [2025-06-03T13:13:38.810] [INFO] default - Dealer registration initiated
 [2025-06-03T13:13:38.844] [INFO] default - Dealer registration successful
+[2025-06-07T23:05:35.160] [INFO] default - Dealer registration initiated
+[2025-06-07T23:05:58.538] [INFO] default - Dealer registration initiated
+[2025-06-08T19:03:49.198] [INFO] default - Dealer registration initiated
+[2025-06-08T19:05:25.080] [INFO] default - Dealer registration initiated
+[2025-06-08T19:05:42.573] [INFO] default - Dealer registration initiated
+[2025-06-08T19:06:10.582] [INFO] default - Dealer registration initiated
+[2025-06-08T19:06:24.202] [INFO] default - Dealer registration initiated

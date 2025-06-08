@@ -2,7 +2,7 @@ const connection = require('../config/database');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const { v4: uuidv4 } = require('uuid');
-const { generateRandomId, generateRandomCode, generatePurchaseId, fourDigitCode, generateManufacturingId } = require('../utils/helper');
+const { generateRandomId, generateRandomCode, generatePurchaseId, fourDigitCode, generateManufacturingId, generate8DigitCode } = require('../utils/helper');
 
 
 
@@ -87,7 +87,6 @@ module.exports = {
                         return reject(`Something went wrong while inserting data.${insertErr}`);
                     }
                     const insertedId = insertresult.insertId;
-                    console.log(insertresult,"check")
                     // Fetch the inserted row
                     const fetchQuery = `SELECT * FROM motion_add_dealer_registration`;
                     connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
@@ -106,9 +105,8 @@ module.exports = {
     motion_purchase_row_material_routes: (purchase_id, order_id, dealer_name, material_type, postal_code,
         password, country, state, city, address, freight, material_amount, material_amount_remaining) => {
         return new Promise((resolve, reject) => {
-            purchase_id = generatePurchaseId();
+            purchase_id = generate8DigitCode();
             order_id = generateRandomId();
-
             const checkQuery = `select * from motion_purchase_row_material where order_id = ? OR dealer_name = ? OR purchase_id = ?`;
             connection.execute(checkQuery, [purchase_id, order_id, dealer_name], (checkErr, checkResult) => {
                 if (checkErr) {
@@ -132,6 +130,7 @@ module.exports = {
                 ];
                 connection.execute(insertquery, values, (insertErr, insertResult) => {
                     if (insertErr) {
+                        console.log(insertErr,"insertErr")
                         return reject(`Something went wrong while inserting data.${insertErr}`);
                     }
                     const insertedId = insertResult.insertId;
