@@ -272,10 +272,10 @@ module.exports = {
             })
         })
     },//    Api for motion product category
-    motion_product_category_routes: (product_name, description) => {
+    motion_product_category_routes: (category_name, description) => {
         return new Promise((resolve, reject) => {
-            const checkQuery = `select * from motion_product_category where product_name = ?`;
-            connection.execute(checkQuery, [product_name], (checkQueryError, checkQueryResult) => {
+            const checkQuery = `select * from motion_product_category where category_name = ?`;
+            connection.execute(checkQuery, [category_name], (checkQueryError, checkQueryResult) => {
                 if (checkQueryError) {
                     return reject(`Error while inserting records. ${checkQueryError}`);
                 }
@@ -283,23 +283,23 @@ module.exports = {
                     return reject(`Product Name or Id already exists. Duplicate Entry Not Allowed.`);
                 }
             })
-            const insertQuery = `insert into motion_product_category (product_name, description) values ( ?,? )`;
-            const insertValues = [product_name, description];
+            const insertQuery = `insert into motion_product_category (category_name, description) values ( ?,? )`;
+            const insertValues = [category_name, description];
             connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
                 if (insertError) {
-                    return reject(`Error Occured While Inserting the data. ${insertError}.`);
+                    return reject(`Error While Inserting the data. ${insertError}.`);
                 }
                 console.log(insertResult, "insertError");
                 resolve(insertResult);
             })
         })
     },// Api for motion product category
-    motion_product_subcategories_routes: (sub_Cat_name, description, category_id) => {
+    motion_product_subcategories_routes: (sub_category_name, description, category_id) => {
         return new Promise((resolve, reject) => {
             id = fourDigitCode();
-            const checkQuery = `select * from motion_product_subcategories where sub_Cat_name = ? or category_id = ?`;
+            const checkQuery = `select * from motion_product_subcategories where sub_category_name = ? or category_id = ?`;
             // Check for existing product name or cat_id
-            connection.execute(checkQuery, [sub_Cat_name, category_id], (checkQueryError, checkQueryResult) => {
+            connection.execute(checkQuery, [sub_category_name, category_id], (checkQueryError, checkQueryResult) => {
                 if (checkQueryError) {
                     return reject(`Error while inserting records. ${checkQueryError}`);
                 }
@@ -307,11 +307,11 @@ module.exports = {
                     return reject(`Sub Category Name or Id already exists. Duplicate Entry Not Allowed.1062`);
                 }
             })
-            const insertQuery = `insert into motion_product_subcategories (sub_cat_name, description, category_id ) values ( ?, ?,? )`;
-            const insertValues = [sub_Cat_name, description, category_id];
+            const insertQuery = `insert into motion_product_subcategories (sub_category_name, description, category_id ) values ( ?, ?,? )`;
+            const insertValues = [sub_category_name, description, category_id];
             connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
                 if (insertError) {
-                    return reject(`Error Occured While Inserting the data. ${insertError}.`);
+                    return reject(`Error While Inserting the data. ${insertError}.`);
                 }
                 // console.log(insertResult, "insertError");
                 resolve(insertResult);
