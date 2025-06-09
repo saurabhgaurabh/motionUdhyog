@@ -135,16 +135,17 @@ module.exports = {
             ];
             for (fields of requiredFields) {
                 if (!req.body[fields]) {
-                    return res.status(404).json({ status: false, message: `${field.replace('_', ' ')} is required.` })
+                    return res.status(404).json({ status: false, message: `${fields.replace('_', ' ')} is required.` })
                 }
             }
             const result = await userOperations.motion_dispatch_product_routes(
                 dispatch_id, dispatch_code, organization_name, owner_name, mobile, email, product_name, product_type,
                 quantity, height, width, color, packing_type, dispatch_mode, address, city, state, country, postal_code, gst, freight,
             );
+            // console.log(result,"result")
             return res.status(200).json({ status: true, message: 'Product Dispatch Successfully.', result: result });
         } catch (error) {
-            return res.status(500).json({ status: false, message: `insernal server error. ${error}` });
+            return res.status(500).json({ status: false, message: `internal server Error. ${error}` });
         }
     }, // motion_dispatch_product_routes
     motion_product_category_routes: async (req, res) => {
