@@ -340,9 +340,9 @@ module.exports = {
             })
         })
     },
-    motion_products_routes: (product_name, category_id, sub_category_id, sub_sub_category_id) => {
+    motion_products_routes: (product_name, category_id, sub_category_id, sub_sub_category_id, price) => {
         return new Promise((resolve, reject) => {
-            const checkQuery = `select * from motion_products where product_name = ? or 
+            const checkQuery = `select * from motion_products where product_name = ? or
             category_id = ? or sub_category_id = ? or sub_sub_category_id = ?`;
             // Check for existing product name or cat_id
             connection.execute(checkQuery, [product_name, category_id, sub_category_id, sub_sub_category_id], (checkQueryError, checkQueryResult) => {
@@ -353,8 +353,8 @@ module.exports = {
                     return reject(`Product Name or Id already exists. Duplicate Entry Not Allowed.1062`);
                 }
             })
-            const insertQuery = `insert into motion_products (product_name, category_id, sub_category_id, sub_sub_category_id) values (?,?,?,?)`;
-            const insertValues = [product_name, category_id, sub_category_id, sub_sub_category_id];
+            const insertQuery = `insert into motion_products (product_name, category_id, sub_category_id, sub_sub_category_id, price) values (?,?,?,?,?)`;
+            const insertValues = [product_name, category_id, sub_category_id, sub_sub_category_id, price];
             connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
                 if (insertError) {
                     return reject(`Error While Inserting the data. ${insertError}.`);

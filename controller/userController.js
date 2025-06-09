@@ -204,15 +204,16 @@ module.exports = {
     },// motion_product_sub_subcategories_routes
     motion_products_routes: async (req, res) => {
         try {
-            const { product_name, category_id, sub_category_id, sub_sub_category_id } = req.body;
-            const requiredFields = ['product_name', 'category_id', 'sub_category_id', 'sub_sub_category_id'];
+            const { product_name, category_id, sub_category_id, sub_sub_category_id, price } = req.body;
+            const requiredFields = ['product_name', 'category_id', 'sub_category_id', 'sub_sub_category_id', 'price'];
             for (fields of requiredFields) {
                 if (!req.body[fields]) {
                     return res.status(404).json({ status: false, message: `${fields.replace('_', ' ')} is required.` });
                 }
             }
-            const result = await userOperations.motion_products_routes(product_name, category_id, sub_category_id, sub_sub_category_id);
-            console.log(result, "result in motion_products_routes");
+            const result = await userOperations.motion_products_routes(
+                product_name, category_id, sub_category_id, sub_sub_category_id, price);
+            // console.log(result, "result in motion_products_routes");
             return res.status(201).json({ status: true, message: `Product Registered Successfully.` });
         } catch (error) {
             console.log(error, "error in motion_products_routes");
