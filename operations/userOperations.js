@@ -318,11 +318,11 @@ module.exports = {
             })
         })
     },
-    motion_product_sub_subcategories_routes: (sub_sub_cat_name, description, subcategory_id) => {
+    motion_product_sub_subcategories_routes: (sub_sub_category_name, description, sub_category_id) => {
         return new Promise((resolve, reject) => {
-            const checkQuery = `select * from motion_product_sub_subcategories where sub_sub_cat_name = ? or subcategory_id = ?`;
+            const checkQuery = `select * from motion_product_sub_subcategories where sub_sub_category_name = ? or sub_category_id = ?`;
             // Check for existing product name or cat_id
-            connection.execute(checkQuery, [sub_sub_cat_name, subcategory_id], (checkQueryError, checkQueryResult) => {
+            connection.execute(checkQuery, [sub_sub_category_name, sub_category_id], (checkQueryError, checkQueryResult) => {
                 if (checkQueryError) {
                     return reject(`Error while inserting the records. ${checkQueryError}`);
                 }
@@ -330,21 +330,22 @@ module.exports = {
                     return reject(`Sub Sub Category Name or Id already exists. Duplicate Entry Not Allowed.1062`);
                 }
             })
-            const insertQuery = `insert into motion_product_sub_subcategories (sub_sub_cat_name, description, subcategory_id) values (?,?,?)`;
-            const insertValues = [sub_sub_cat_name, description, subcategory_id];
+            const insertQuery = `insert into motion_product_sub_subcategories (sub_sub_category_name, description, sub_category_id) values (?,?,?)`;
+            const insertValues = [sub_sub_category_name, description, sub_category_id];
             connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
                 if (insertError) {
-                    return reject(`Error Occured While Inserting the data. ${insertError}.`);
+                    return reject(`Error While Inserting the data. ${insertError}.`);
                 }
                 resolve(insertResult);
             })
         })
     },
-    motion_products_routes: (product_name, category_id, subcategory_id, sub_subcategory_id) => {
+    motion_products_routes: (product_name, category_id, sub_category_id, sub_sub_category_id) => {
         return new Promise((resolve, reject) => {
-            const checkQuery = `select * from motion_products where product_name = ? or category_id = ? or subcategory_id = ? or sub_subcategory_id = ?`;
+            const checkQuery = `select * from motion_products where product_name = ? or 
+            category_id = ? or sub_category_id = ? or sub_sub_category_id = ?`;
             // Check for existing product name or cat_id
-            connection.execute(checkQuery, [product_name, category_id, subcategory_id, sub_subcategory_id], (checkQueryError, checkQueryResult) => {
+            connection.execute(checkQuery, [product_name, category_id, sub_category_id, sub_sub_category_id], (checkQueryError, checkQueryResult) => {
                 if (checkQueryError) {
                     return reject(`Error while inserting records. ${checkQueryError}`);
                 }
@@ -352,11 +353,11 @@ module.exports = {
                     return reject(`Product Name or Id already exists. Duplicate Entry Not Allowed.1062`);
                 }
             })
-            const insertQuery = `insert into motion_products (product_name, category_id, subcategory_id, sub_subcategory_id) values (?,?,?,?)`;
-            const insertValues = [product_name, category_id, subcategory_id, sub_subcategory_id];
+            const insertQuery = `insert into motion_products (product_name, category_id, sub_category_id, sub_sub_category_id) values (?,?,?,?)`;
+            const insertValues = [product_name, category_id, sub_category_id, sub_sub_category_id];
             connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
                 if (insertError) {
-                    return reject(`Error Occured While Inserting the data. ${insertError}.`);
+                    return reject(`Error While Inserting the data. ${insertError}.`);
                 }
                 resolve(insertResult);
             })

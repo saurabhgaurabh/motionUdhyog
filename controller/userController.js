@@ -188,13 +188,13 @@ module.exports = {
     }, // motion_product_subcategories_routes
     motion_product_sub_subcategories_routes: async (req, res) => {
         try {
-            const { sub_sub_cat_name, description, subcategory_id } = req.body;
-            const requiredFields = ['sub_sub_cat_name', 'description', 'subcategory_id'];
+            const { sub_sub_category_name, description, sub_category_id } = req.body;
+            const requiredFields = ['sub_sub_category_name', 'description', 'sub_category_id'];
             for (fields of requiredFields) {
                 if (!req.body[fields]) {
                     return res.status(404).json({ status: false, message: `${fields.replace('_', ' ')} is required.` });
                 }
-                const result = await userOperations.motion_product_sub_subcategories_routes(sub_sub_cat_name, description, subcategory_id);
+                const result = await userOperations.motion_product_sub_subcategories_routes(sub_sub_category_name, description, sub_category_id);
                 console.log(result, "result in motion_product_sub_subcategories_routes");
                 return res.status(201).json({ status: true, message: `Sub Subcategory Registered Successfully.` });
             }
@@ -204,14 +204,14 @@ module.exports = {
     },// motion_product_sub_subcategories_routes
     motion_products_routes: async (req, res) => {
         try {
-            const { product_name, category_id, subcategory_id, sub_subcategory_id } = req.body;
-            const requiredFields = ['product_name', 'category_id', 'subcategory_id', 'sub_subcategory_id'];
+            const { product_name, category_id, sub_category_id, sub_sub_category_id } = req.body;
+            const requiredFields = ['product_name', 'category_id', 'sub_category_id', 'sub_sub_category_id'];
             for (fields of requiredFields) {
                 if (!req.body[fields]) {
                     return res.status(404).json({ status: false, message: `${fields.replace('_', ' ')} is required.` });
                 }
             }
-            const result = await userOperations.motion_products_routes(product_name, category_id, subcategory_id, sub_subcategory_id);
+            const result = await userOperations.motion_products_routes(product_name, category_id, sub_category_id, sub_sub_category_id);
             console.log(result, "result in motion_products_routes");
             return res.status(201).json({ status: true, message: `Product Registered Successfully.` });
         } catch (error) {
