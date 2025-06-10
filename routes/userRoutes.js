@@ -9,7 +9,7 @@ routes.post('/motion_user_registration_routes', userController.motion_user_regis
  /*GET*/  routes.post('/motion_purchase_row_material_routes', userController.motion_purchase_row_material_routes); // Purchase Row Material             
  /*GET*/  routes.post('/motion_employee_registration_routes', userController.motion_employee_registration_routes); // Employee Registration
 /*GET*/   routes.post('/motion_product_manufacturing_routes', userController.motion_product_manufacturing_routes); // Product Manufacturing
-routes.post('/motion_parties_registration_routes', userController.motion_parties_registration_routes); // Parties Registration
+/*GET*/   routes.post('/motion_parties_registration_routes', userController.motion_parties_registration_routes); // Parties Registration
 routes.post('/motion_dispatch_product_routes', userController.motion_dispatch_product_routes); // Dispatch Product
 routes.post('/motion_product_category_routes', userController.motion_product_category_routes); // Product Category
 routes.post('/motion_product_subcategories_routes', userController.motion_product_subcategories_routes); // Product Subcategories
@@ -21,9 +21,6 @@ routes.get('/motion_add_dealer_registration_get_routes', getController.motion_ad
 routes.get('/motion_purchase_row_material_get_routes', getController.motion_purchase_row_material_get_routes); // Get Purchase Row Material
 routes.get('/motion_employee_registration_get_routes', getController.motion_employee_registration_get_routes); // Get Employee Registration
 routes.get('/motion_product_manufacturing_get_routes', getController.motion_product_manufacturing_get_routes); // Get Product Manufacturing
+routes.get('/motion_parties_registration_get_routes', getController.motion_parties_registration_get_routes); // Get Parties
 
 module.exports = routes;
-
-
-
-

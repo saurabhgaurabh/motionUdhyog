@@ -123,7 +123,7 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ status: false, message: `internal server error.${error}` });
         }
-    }, // motion_parties_registration_routes
+    }, // motion_parties_registration_routes          -----  FETCHING DATA  -------------
     motion_dispatch_product_routes: async (req, res) => {
         try {
             const { dispatch_id, dispatch_code, organization_name, owner_name, mobile, email, product_name, product_type,

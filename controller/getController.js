@@ -29,9 +29,17 @@ module.exports = {
     motion_product_manufacturing_get_routes: async (req, res) => {
         try {
             const prd_maf_result = await getOperations.motion_product_manufacturing_get_routes();
-            return res.status(200).json({ status: true, message: 'Proeduct Manufacturing Data Fetched Successfully.', result: prd_maf_result });
+            return res.status(200).json({ status: true, message: 'Product Manufacturing Data Fetched Successfully.', result: prd_maf_result });
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
         }
     },
+    motion_parties_registration_get_routes: async (req, res) => {
+        try {
+            const parties_result = await getOperations.motion_parties_registration_get_routes();
+            return res.status(200).json({ status: true, message: `Parties Fetched Successfully.`, result: parties_result });
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal Server Error.${error}` });
+        }
+    }
 }

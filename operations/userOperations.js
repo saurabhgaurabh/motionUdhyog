@@ -130,17 +130,17 @@ module.exports = {
                 ];
                 connection.execute(insertquery, values, (insertErr, insertResult) => {
                     if (insertErr) {
-                        console.log(insertErr,"insertErr")
+                        console.log(insertErr, "insertErr")
                         return reject(`Something went wrong while inserting data.${insertErr}`);
                     }
                     const insertedId = insertResult.insertId;
                     const fetchQuery = `select * from motion_purchase_row_material`;
-                    connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult)=>{
-                        if(fetchError){
+                    connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
+                        if (fetchError) {
                             console.error(fetchError);
                             return reject(`Inserted but failed to fetch data. ${fetchError}`);
                         }
-                        resolve({ message: "Purchase Row Material Registered Successfully & Data Fetched", data: fetchResult[0]})
+                        resolve({ message: "Purchase Row Material Registered Successfully & Data Fetched", data: fetchResult[0] })
                     })
                     // resolve(insertResult);
                 })
@@ -170,11 +170,11 @@ module.exports = {
                 }
                 const insertedId = insertResult.insertId;
                 const fetchQuery = `select * from motion_employee_registration`;
-                connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) =>{
-                    if(fetchError){
+                connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
+                    if (fetchError) {
                         return reject(`Inserted But Failed to Fetch Data. ${fetchError}`);
                     }
-                    resolve({message: `Employee Registered Successfully & Data Fetched`, data: fetchResult[0]});
+                    resolve({ message: `Employee Registered Successfully & Data Fetched`, data: fetchResult[0] });
                 })
             })
         })
@@ -205,11 +205,11 @@ module.exports = {
                 }
                 const insertedId = insertResult.insertId;
                 const fetchQuery = `select * from motion_product_manufacturing`;
-                connection.exercute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
-                    if(fetchError){
+                connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
+                    if (fetchError) {
                         return reject(`Failed to Fetch Data after Insertion. ${fetchError}`);
                     }
-                    resolve({message: `Product Manufacturing Registered Successfully & Data Fetched`, data: fetchResult[0]});
+                    resolve({ message: `Product Manufacturing Registered Successfully & Data Fetched`, data: fetchResult[0] });
                 })
             })
         })
@@ -238,10 +238,17 @@ module.exports = {
                     // console.log(insertError, "insertError")
                     return reject(`Error while inserting Data.${insertError}`)
                 }
-                resolve(insertResult);
+                const insertedId = insertResult.insertId;
+                const fetchQuery = `select * from motion_parties_registration`;
+                connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
+                    if (fetchResult) {
+                        return reject(`Error While fetching The Data. ${fetchError}`);
+                    }
+                    resolve({ data: insertResult, message: `Parties Data Fetched successfully. ` });
+                })
             })
         })
-    },// Api for motion dispatch product    
+    },// Api for motion dispatch product       -----  FETCHING DATA  -------------
     motion_dispatch_product_routes: (dispatch_id, dispatch_code, organization_name, owner_name, mobile, email, product_name, product_type,
         quantity, height, width, color, packing_type, dispatch_mode, address, city, state, country, postal_code, gst, freight) => {
         return new Promise((resolve, reject) => {
@@ -354,7 +361,7 @@ module.exports = {
                 }
             })
             const insertQuery = `insert into motion_products (product_name, category_id, sub_category_id, sub_sub_category_id, price) values (?,?,?,?,?)`;
-            const insertValues = [product_name, category_id, sub_category_id, sub_sub_category_id, price];
+            const insertValues = [product_name, category_id, sub_category_id, sub_sub_category_id,];
             connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
                 if (insertError) {
                     return reject(`Error While Inserting the data. ${insertError}.`);

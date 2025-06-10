@@ -47,5 +47,11 @@ module.exports = {
                 resolve({ result: pd_maf_result, message: 'Product Manufacturing Data Fetched Successfully.' });
             })
         })
+    },
+    motion_parties_registration_get_routes: () => {
+        return new Promise((resolve, reject) =>{
+            const partiesQuery = `select * from motion_parties_registration`;
+            connection.execute(partiesQuery, [], ())
+        })
     }
 }
