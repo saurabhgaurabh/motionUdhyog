@@ -49,9 +49,14 @@ module.exports = {
         })
     },
     motion_parties_registration_get_routes: () => {
-        return new Promise((resolve, reject) =>{
+        return new Promise((resolve, reject) => {
             const partiesQuery = `select * from motion_parties_registration`;
-            connection.execute(partiesQuery, [], ())
+            connection.execute(partiesQuery, [], (partiesError, partiesResult) => {
+                if (partiesError) {
+                    return reject(`Something went wrong while fetching the Parties Data. ${partiesError}`);
+                }
+                resolve({ result: partiesResult, message: `Parties Data Fetched Successfully.` });
+            })
         })
     }
 }
