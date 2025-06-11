@@ -50,4 +50,41 @@ module.exports = {
             return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
         }
     },
+    motion_product_category_get_routes: async (req, res) => {
+        try {
+            const productCategoryResult = await getOperations.motion_product_category_get_routes();
+            // console.log(productCategoryResult," pro result")
+            return res.status(200).json({ status: false, message: `Product Category Fetched Successfully.`, result: productCategoryResult });
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal Server Errors. ${error}` });
+        }
+    },
+    motion_product_subcategories_get_routes: async (req, res) => {
+        try {
+            const subCategoryResult = await getOperations.motion_product_subcategories_get_routes();
+            return res.status(200).json({ status: true, message: `sub Category Fetched Successfully.`, result: subCategoryResult })
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal Server Errors. ${error}` });
+        }
+    },
+    motion_product_sub_subcategories_get_routes: async (req, res) => {
+        try {
+            const sub_subCategoryResult = await getOperations.motion_product_sub_subcategories_get_routes();
+            return res.status(200).json({
+                status: true, message: `sub Category Fetched Successfully.`,
+                result: sub_subCategoryResult
+            })
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal Server Errors. ${error}` });
+        }
+    },
+    motion_products_get_routes: async (req, res) => {
+        try {
+            const productResult = await getOperations.motion_products_get_routes();
+            return res.status(200).json({ status: true, message: `Product Data Fetched.`, result: productResult });
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal Server Errors. ${error}` });
+
+        }
+    }
 }

@@ -69,5 +69,89 @@ module.exports = {
                 resolve({ result: dispatchProductResult, message: `Dispatch Product Data Fetched successfully.` });
             })
         })
+    },
+    motion_product_category_get_routes: () => {
+        return new Promise((resolve, reject) => {
+            const productCategoryQuery = `
+            SELECT 
+                p.product_id, p.product_name, p.product_description, p.price, p.created_at,
+                c.category_id, c.category_name,
+                sc.sub_category_id, sc.sub_category_name,
+                ssc.sub_sub_category_id, ssc.sub_sub_category_name
+            FROM motion_products AS p
+            JOIN motion_product_category AS c ON p.category_id = c.category_id
+            JOIN motion_product_subcategories AS sc ON p.sub_category_id = sc.sub_category_id
+            JOIN motion_product_sub_subcategories AS ssc ON p.sub_sub_category_id = ssc.sub_sub_category_id
+        `;
+            connection.execute(productCategoryQuery, [], (productCategoryError, productCategoryResult) => {
+                if (productCategoryError) {
+                    return reject(`Something went wrong while fetching the data. ${productCategoryError}`);
+                }
+
+                resolve({
+                    result: productCategoryResult,
+                    status: true,
+                    message: "Product Category Fetched Successfully."
+                });
+            });
+        });
+    },
+    motion_product_subcategories_get_routes: () => {
+        return new Promise((resolve, reject) => {
+            const subCategoryQuery = `
+            SELECT 
+                p.product_id, p.product_name, p.product_description, p.price, p.created_at,
+                c.category_id, c.category_name,
+                sc.sub_category_id, sc.sub_category_name,
+                ssc.sub_sub_category_id, ssc.sub_sub_category_name
+            FROM motion_products AS p
+            JOIN motion_product_category AS c ON p.category_id = c.category_id
+            JOIN motion_product_subcategories AS sc ON p.sub_category_id = sc.sub_category_id
+            JOIN motion_product_sub_subcategories AS ssc ON p.sub_sub_category_id = ssc.sub_sub_category_id`;
+            connection.execute(subCategoryQuery, [], (subCategoryError, subCategoryResult) => {
+                if (subCategoryError) {
+                    return reject(509).json({
+                        status: false,
+                        message: `Something went wrong while fetching the data. ${subCategoryError}`
+                    })
+                }
+                resolve({ result: subCategoryResult, status: true, message: `Sub Category Data Fetched Succeed.` })
+            })
+        })
+    },
+    motion_product_sub_subcategories_get_routes: () => {
+        return new Promise((resolve, reject) => {
+            const sub_subCategoryQuery = `
+            SELECT 
+                p.product_id, p.product_name, p.product_description, p.price, p.created_at,
+                c.category_id, c.category_name,
+                sc.sub_category_id, sc.sub_category_name,
+                ssc.sub_sub_category_id, ssc.sub_sub_category_name
+            FROM motion_products AS p
+            JOIN motion_product_category AS c ON p.category_id = c.category_id
+            JOIN motion_product_subcategories AS sc ON p.sub_category_id = sc.sub_category_id
+            JOIN motion_product_sub_subcategories AS ssc ON p.sub_sub_category_id = ssc.sub_sub_category_id`;
+            connection.execute(sub_subCategoryQuery, [], (sub_subCategoryError, sub_subCategoryResult) => {
+                if (sub_subCategoryError) {
+                    return reject(509).json({
+                        status: false,
+                        message: `Something went wrong while fetching the data. ${sub_subCategoryError}`
+                    })
+                }
+                resolve({ result: sub_subCategoryResult, status: true, message: `Sub Category Data Fetched Succeed.` })
+            })
+        })
+    },
+    motion_products_get_routes: () => {
+        return new Promise((resolve, reject) => {
+            const productQuery = `select * from motion_products`;
+            connection.execute(productQuery, [], (productError, productResult) => {
+                if (productError) {
+                    reject(`Something went wrong while fetching data. ${productError}`);
+                }
+                resolve({ result: productResult, message: `Products Data Fetched.`, status: true })
+            })
+        })
     }
+
 }

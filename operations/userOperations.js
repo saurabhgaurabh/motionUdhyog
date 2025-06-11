@@ -248,7 +248,7 @@ module.exports = {
                 })
             })
         })
-    },// Api for motion dispatch product       -----  FETCHING DATA  -------------
+    },// Api for motion dispatch product      
     motion_dispatch_product_routes: (dispatch_id, dispatch_code, organization_name, owner_name, mobile, email, product_name, product_type,
         quantity, height, width, color, packing_type, dispatch_mode, address, city, state, country, postal_code, gst, freight) => {
         return new Promise((resolve, reject) => {
@@ -294,12 +294,11 @@ module.exports = {
             const insertValues = [category_name, description];
             connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
                 if (insertError) {
-                    return reject(`Error While Inserting the data. ${insertError}.`);
+                    return reject(`Error while inserting the data. ${insertError}`);
                 }
-                console.log(insertResult, "insertError");
                 resolve(insertResult);
             })
-        })
+        });
     },// Api for motion product category
     motion_product_subcategories_routes: (sub_category_name, description, category_id) => {
         return new Promise((resolve, reject) => {
