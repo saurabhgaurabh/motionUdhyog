@@ -21,6 +21,7 @@ routes.get('/motion_add_dealer_registration_get_routes', getController.motion_ad
 routes.get('/motion_purchase_row_material_get_routes', getController.motion_purchase_row_material_get_routes); // Get Purchase Row Material
 routes.get('/motion_employee_registration_get_routes', getController.motion_employee_registration_get_routes); // Get Employee Registration
 routes.get('/motion_product_manufacturing_get_routes', getController.motion_product_manufacturing_get_routes); // Get Product Manufacturing
-routes.get('/motion_parties_registration_get_routes', getController.motion_parties_registration_get_routes); // Get Parties
+routes.get('/motion_parties_registration_get_routes',   getController.motion_parties_registration_get_routes); // Get Parties
+routes.get('/motion_dispatch_product_get_routes', getController.motion_dispatch_product_get_routes); // Get DispatchProduct
 
 module.exports = routes;

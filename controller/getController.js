@@ -41,5 +41,13 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal Server Error.${error}` });
         }
-    }
+    },
+    motion_dispatch_product_get_routes: async (req, res) => {
+        try {
+            const dsp_prd_result = await getOperations.motion_dispatch_product_get_routes();
+            return res.status(200).json({ status: false, message: `Dispatched Product Fetched Successfully.`, result: dsp_prd_result });
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
+        }
+    },
 }

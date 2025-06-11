@@ -58,5 +58,16 @@ module.exports = {
                 resolve({ result: partiesResult, message: `Parties Data Fetched Successfully.` });
             })
         })
+    },
+    motion_dispatch_product_get_routes: () => {
+        return new Promise((resolve, reject) => {
+            const dispatchProductQuery = `select * from motion_dispatch_product`;
+            connection.execute(dispatchProductQuery, [], (dispatchProductError, dispatchProductResult) => {
+                if (dispatchProductError) {
+                    return reject(`Something went wrong while fetching the Data. ${dispatchProductError}`);
+                }
+                resolve({ result: dispatchProductResult, message: `Dispatch Product Data Fetched successfully.` });
+            })
+        })
     }
 }
