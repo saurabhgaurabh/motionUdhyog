@@ -30,4 +30,9 @@ routes.get('/motion_product_subcategories_get_routes', getController.motion_prod
 routes.get('/motion_product_sub_subcategories_get_routes', getController.motion_product_sub_subcategories_get_routes);
 routes.get('/motion_products_get_routes', getController.motion_products_get_routes);
 
+
+
+
+// Your api's for Update data.
+
 module.exports = routes;
