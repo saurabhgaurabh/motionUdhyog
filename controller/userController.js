@@ -39,7 +39,7 @@ module.exports = {
             }
             const { dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state, city, address, postal_code } = req.body;
             const result = await userOperations.motion_add_dealer_registration_routes(dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state, city, address, postal_code);
-            console.log(result, "resklj")
+         
             return res.status(200).json({ status: true, message: 'Dealer Added Successfully.' });
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal server error. ${error}` });
