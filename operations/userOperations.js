@@ -1,11 +1,31 @@
 const connection = require('../config/database');
+const { generateRandomId, generateRandomCode, generatePurchaseId, fourDigitCode, generateManufacturingId, generate8DigitCode, generate6DigitCode } = require('../utils/helper');
+const { v4: uuidv4 } = require('uuid');
+const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const { v4: uuidv4 } = require('uuid');
-const { generateRandomId, generateRandomCode, generatePurchaseId, fourDigitCode, generateManufacturingId, generate8DigitCode, generate6DigitCode } = require('../utils/helper');
 
 
-
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user: 'leadchainsaurabh7@gmail.com', pass: 'viqc qaim yhtg ngmj' }
+});
+function generateOTP() {
+    return Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+}
+// const mailOptions = {
+//     from: 'leadchainsaurabh7@gmail.com',
+//     to: 'registration_email',
+//     subject: 'ApkaUdhyog.com',
+//     text: `Hello user, your OTP is ${userOTP}`,
+//     html: `<b>This is your OTP: ${userOTP}</b>`,
+// }
+// transporter.sendMail(mailOptions, (error, info) => {
+//     if (error) {
+//         return console.log('Error while sending mail:', error);
+//     }
+//     console.log('Email sent: ' + info.response);
+// });
 // modules for Operations
 module.exports = {
     motion_user_registration_routes: (
@@ -21,41 +41,62 @@ module.exports = {
                 if (checkResult.length > 0) {
                     return reject('User with same userCode or email already exists. Duplicate Entry Not Allowed');
                 }
+                const userOTP = generateOTP(); //  generate OTP
+                //  Send OTP Email
+                const mailOptions = {
+                    from: 'leadchainsaurabh7@gmail.com',
+                    to: registration_email, //  Use the actual email variable
+                    subject: 'ApkaUdhyog.com - OTP Verification',
+                    text: `Hello user, your OTP is ${userOTP}`,
+                    html: `hello otp is ${userOTP} `
+                };
 
-                // ✅ Hash password and confirm_password AFTER checking for duplicates
-                bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
-                    if (err) {
-                        return reject('Error hashing the password.');
+                transporter.sendMail(mailOptions, (mailErr, info) => {
+                    if (mailErr) {
+                        console.error('Mail sending error:', mailErr);
+                        return reject('Failed to send OTP email.');
                     }
 
-                    bcrypt.hash(confirm_password, saltRounds, (err2, hashedConfirmPassword) => {
-                        if (err2) {
-                            return reject('Error hashing the confirm password.');
+                    console.log('OTP email sent:', info.response);
+                    // hash password
+                    bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
+                        if (err) {
+                            return reject('Error hashing the password.');
                         }
-
-                        const insertQuery = `INSERT INTO motion_user_registration 
-                        (userCode, company_name, owner_name, industry_type, GST_number, registration_email, mobile_number,
-                        password, confirm_password, country, state, city, address, postal_code, website)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-
-                        const values = [
-                            userCode, company_name, owner_name, industry_type, GST_number,
-                            registration_email, mobile_number, hashedPassword, hashedConfirmPassword,
-                            country, state, city, address, postal_code, website
-                        ];
-
-                        connection.execute(insertQuery, values, (insertErr, insertResult) => {
-                            if (insertErr) {
-                                console.error(insertErr);
-                                return reject('Something went wrong while inserting data.');
+                        bcrypt.hash(confirm_password, saltRounds, (err2, hashedConfirmPassword) => {
+                            if (err2) {
+                                return reject('Error hashing the confirm password.');
                             }
-                            resolve(insertResult);
+                            const insertQuery = `INSERT INTO motion_user_registration (
+                            userCode, company_name, owner_name, industry_type, GST_number, registration_email,
+                             mobile_number, password, confirm_password, country, state, city, address, postal_code,
+                              website, flag, userOTP
+                              )   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+                            const values = [
+                                userCode, company_name, owner_name, industry_type, GST_number,
+                                registration_email, mobile_number, hashedPassword, hashedConfirmPassword,
+                                country, state, city, address, postal_code, website, 'unverified', userOTP
+                            ];
+
+                            connection.execute(insertQuery, values, (insertErr, insertResult) => {
+                                if (insertErr) {
+                                    console.error(insertErr);
+                                    return reject('Something went wrong while inserting data.');
+                                }
+                                resolve({
+                                    result: insertResult,
+                                    message: `Registration initiated. OTP sent to  ${registration_email}. Successfully`
+                                });
+                            });
                         });
                     });
                 });
             });
         });
     },// Api for motion add dealer registration
+
+
     motion_add_dealer_registration_routes: (dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state,
         city, address, postal_code) => {
         return new Promise((resolve, reject) => {
