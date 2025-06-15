@@ -48,7 +48,23 @@ module.exports = {
                     to: registration_email, //  Use the actual email variable
                     subject: 'ApkaUdhyog.com - OTP Verification',
                     text: `Hello user, your OTP is ${userOTP}`,
-                    html: `hello otp is ${userOTP} `
+                    html: `
+                    <div style="font-family: Arial, sans-serif; color: #333; padding: 20px; background-color: #f9f9f9;">
+                       <div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+                            <h2 style="color: #4CAF50;">Welcome to ApkaUdhyog.com!</h2>      
+                                <p>Hi <strong>${owner_name}</strong>,</p>      
+                                <p>We’re excited to have <strong>${company_name}</strong> join the ApkaUdhyog platform.</p>      
+                                <p>To complete your registration, please use the following One-Time Password (OTP):</p>      
+                            <div style="text-align: center; margin: 20px 0;">
+                                <span style="display: inline-block; background: #4CAF50; color: white; font-size: 24px; padding: 12px 24px; border-radius: 6px; letter-spacing: 2px;"> ${userOTP}</span>
+                            </div>      
+                                <p>This OTP is valid for the next 10 minutes. Please do not share it with anyone.</p>                    
+                                <p>If you didn’t initiate this request, please ignore this message or contact our support team.</p><br>
+                                <p>Regards,</p>
+                                <p><strong>Team ApkaUdhyog</strong></p>
+                                <p style="font-size: 12px; color: #999;">www.apkaudhyog.com | support@apkaudhyog.com</p>
+                        </div>
+                    </div>`
                 };
 
                 transporter.sendMail(mailOptions, (mailErr, info) => {
