@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-
+const speakeasy = require('speakeasy');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -13,19 +13,8 @@ const transporter = nodemailer.createTransport({
 function generateOTP() {
     return Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
 }
-// const mailOptions = {
-//     from: 'leadchainsaurabh7@gmail.com',
-//     to: 'registration_email',
-//     subject: 'ApkaUdhyog.com',
-//     text: `Hello user, your OTP is ${userOTP}`,
-//     html: `<b>This is your OTP: ${userOTP}</b>`,
-// }
-// transporter.sendMail(mailOptions, (error, info) => {
-//     if (error) {
-//         return console.log('Error while sending mail:', error);
-//     }
-//     console.log('Email sent: ' + info.response);
-// });
+
+
 // modules for Operations
 module.exports = {
     motion_user_registration_routes: (
@@ -39,9 +28,20 @@ module.exports = {
             connection.execute(checkQuery, [userCode, registration_email], (checkErr, checkResult) => {
                 if (checkErr) { return reject(`Error checking existing records.`); }
                 if (checkResult.length > 0) {
-                    return reject('User with same userCode or email already exists. Duplicate Entry Not Allowed');
+                    const user = checkResult[0];
+                    if (user.flag === 'verified') {
+                        return reject('User already registered and verified.');
+                    }
                 }
-                const userOTP = generateOTP(); //  generate OTP
+                const baseSecret = speakeasy.generateSecret({ length: 20 });
+                const otp_secret = baseSecret.base32;
+
+                const userOTP = speakeasy.totp({
+                    secret: otp_secret,
+                    encoding: 'base32',
+                    step: 300 //5 min
+                });
+                const otpExpiry = new Date(Date.now() + 5 * 60000); // 5 minutes later
                 //  Send OTP Email
                 const mailOptions = {
                     from: 'leadchainsaurabh7@gmail.com',
@@ -56,8 +56,8 @@ module.exports = {
                         console.error('Mail sending error:', mailErr);
                         return reject('Failed to send OTP email.');
                     }
-
                     console.log('OTP email sent:', info.response);
+
                     // hash password
                     bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
                         if (err) {
@@ -70,13 +70,14 @@ module.exports = {
                             const insertQuery = `INSERT INTO motion_user_registration (
                             userCode, company_name, owner_name, industry_type, GST_number, registration_email,
                              mobile_number, password, confirm_password, country, state, city, address, postal_code,
-                              website, flag, userOTP
-                              )   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                              website, flag, userOTP, otp_secret, otp_expiry
+                              )   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
                             const values = [
                                 userCode, company_name, owner_name, industry_type, GST_number,
                                 registration_email, mobile_number, hashedPassword, hashedConfirmPassword,
                                 country, state, city, address, postal_code, website, 'unverified', userOTP
+                                , otp_secret, otpExpiry
                             ];
 
                             connection.execute(insertQuery, values, (insertErr, insertResult) => {
