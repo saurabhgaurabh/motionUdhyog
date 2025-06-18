@@ -18,6 +18,11 @@ routes.post('/motion_product_subcategories_routes', userController.motion_produc
 routes.post('/motion_product_sub_subcategories_routes', userController.motion_product_sub_subcategories_routes); // Product Sub Subcategories
 routes.post('/motion_products_routes', userController.motion_products_routes); // Products optionals
 
+// authentication 
+// routes.post('/verify_user_otp', userController.verify_user_otp);
+routes.post('/verify_user_otp', userController.verify_user_otp);
+
+
 // Your api's for get data.
 routes.get('/motion_add_dealer_registration_get_routes', getController.motion_add_dealer_registration_get_routes);
 routes.get('/motion_purchase_row_material_get_routes', getController.motion_purchase_row_material_get_routes);

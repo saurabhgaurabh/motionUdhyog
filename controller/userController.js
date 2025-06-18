@@ -1,6 +1,6 @@
 const userOperations = require('../operations/userOperations');
 const logger = require('../utils/logger');
-
+const speakeasy = require('speakeasy');
 
 module.exports = {
     motion_user_registration_routes: async (req, res) => {
@@ -26,9 +26,23 @@ module.exports = {
     },// motion_user_registration_routes
 
 
+    verify_user_otp: async (req, res) => {
+        try {
+            const { userCode, userOTP } = req.body;
+            if (!userCode || !userOTP) {
+                return res.status(400).json({ status: false, message: 'User code and OTP are required.' });
+            }
+            const user = await userOperations.verify_user_otp(userCode, userOTP);
+            return res.status(200).json({ status: true, message: 'OTP verified successfully.', user: user });
+        } catch (error) {
+            console.error('Error verifying OTP:', error);
+            return res.status(500).json({ status: false, message: `Internal server error. ${error.message}` });
+        }
+    }, // verify_user_otp
+
     motion_add_dealer_registration_routes: async (req, res) => {
         try {
-            logger.info('Dealer registration initiated');
+            // logger.info('Dealer registration initiated');
             const requiredFields = ['dealer_Code', 'dealer_name', 'dealer_GST', 'mobile_number', 'adhar_number', 'pan', 'password', 'country',
                 'state', 'city', 'address', 'postal_code'];
 
@@ -39,7 +53,7 @@ module.exports = {
             }
             const { dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state, city, address, postal_code } = req.body;
             const result = await userOperations.motion_add_dealer_registration_routes(dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state, city, address, postal_code);
-         
+
             return res.status(200).json({ status: true, message: 'Dealer Added Successfully.' });
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal server error. ${error}` });

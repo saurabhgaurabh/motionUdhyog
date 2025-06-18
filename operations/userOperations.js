@@ -66,7 +66,6 @@ module.exports = {
                         </div>
                     </div>`
                 };
-
                 transporter.sendMail(mailOptions, (mailErr, info) => {
                     if (mailErr) {
                         console.error('Mail sending error:', mailErr);
@@ -113,6 +112,38 @@ module.exports = {
         });
     },// Api for motion add dealer registration
 
+    verify_user_otp: (dealerCode, userOTP) => {
+        return new Promise((resolve, reject) => {
+            const fetchQuery = `SELECT * FROM motion_user_registration WHERE userCode = ?`;
+            connection.execute(fetchQuery, [dealerCode], (err, results) => {
+                if (err || results.length === 0) { 
+                    return reject({ status: false, message: 'User not found.' });
+                }
+                const user = results[0];
+                const currentTime = new Date();
+                if (currentTime > user.otp_expiry) {
+                    return reject({ status: false, message: 'OTP has expired.' });
+                }
+                const isVerified = speakeasy.totp.verify({
+                    secret: user.otp_secret,
+                    encoding: 'base32',
+                    token: userOTP,
+                    window: 1,
+                    step: 300
+                });
+                if (!isVerified) {
+                    return reject({ status: false, message: 'Invalid OTP.' });
+                }
+                const updateQuery = `UPDATE motion_user_registration SET flag = 'verified' WHERE userCode = ?`;
+                connection.execute(updateQuery, [dealerCode], (updateErr) => {
+                    if (updateErr) {
+                        return reject({ status: false, message: 'Verification failed while updating user.' });
+                    }
+                    resolve({ status: true, message: 'User verified successfully.' });
+                });
+            });
+        })
+    },
 
     motion_add_dealer_registration_routes: (dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state,
         city, address, postal_code) => {
