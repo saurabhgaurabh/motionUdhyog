@@ -120,7 +120,7 @@ module.exports = {
                     return reject({ status: false, message: 'User not found.' });
                 }
                 const user = results[0];
-                const currentTime = new Date();
+                const currentTime = new Date(); // not required
                 if (currentTime > user.otp_expiry) {
                     return reject({ status: false, message: 'OTP has expired.' });
                 }

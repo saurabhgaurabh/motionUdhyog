@@ -39,6 +39,7 @@ module.exports = {
             return res.status(500).json({ status: false, message: `Internal server error. ${error.message}` });
         }
     }, // verify_user_otp
+    
 
     motion_add_dealer_registration_routes: async (req, res) => {
         try {
