@@ -23,6 +23,7 @@ routes.post('/motion_products_routes', userController.motion_products_routes); /
 routes.post('/verify_user_otp', userController.verify_user_otp);
 
 
+
 // Your api's for get data.
 routes.get('/motion_add_dealer_registration_get_routes', getController.motion_add_dealer_registration_get_routes);
 routes.get('/motion_purchase_row_material_get_routes', getController.motion_purchase_row_material_get_routes);

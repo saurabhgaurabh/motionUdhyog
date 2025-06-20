@@ -10,7 +10,7 @@ module.exports = {
                 'country', 'state', 'city', 'address', 'postal_code', 'website'];
             for (const field of requiredFields) {
                 if (!req.body[field]) { // checks if that field exists in the incoming request.
-                    return res.status(200).json({ status: false, message: `${field.replace('_', ' ')} is required.` }); //If any field is missing or empty, it stops and returns a message like: //field.replace('_', ' ') just makes the message more readable (postal_code ➝ postal code)
+                    return res.status(404).json({ status: false, message: `${field.replace('_', ' ')} is required.` }); //If any field is missing or empty, it stops and returns a message like: //field.replace('_', ' ') just makes the message more readable (postal_code ➝ postal code)
                 }
             }
             const { userCode, company_name, owner_name, industry_type, GST_number, registration_email, mobile_number, password, confirm_password, country,
