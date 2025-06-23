@@ -76,4 +76,24 @@ module.exports = {
             })
         })
     },
+    motion_product_manufacturing_update: (product_name, material_type_one, material_quantity, material_quality, unit,
+        batch_number, supervisor_name, total_cost, remarks, mfr_id) => {
+        return new Promise((resolve, reject) => {
+            const updateQuery = `update motion_product_manufacturing set 
+                product_name = ?, material_type_one = ?, material_quantity = ?,
+                material_quality = ?, unit = ?, batch_number = ?, supervisor_name = ?,
+                    total_cost = ?, remarks = ? where mfr_id = ?`;
+
+            const updateValues = [
+                product_name, material_type_one, material_quantity, material_quality, unit,
+                batch_number, supervisor_name, total_cost, remarks, mfr_id
+            ];
+            connection.execute(updateQuery, updateValues, (updateErr, updateResult) => {
+                if (updateErr) {
+                    return reject(`Error updating manufacturing data. ${updateErr}`);
+                }
+                resolve({ status: true, message: "Manufacturing updated successfully", result: updateResult });
+            })
+        })
+    },
 }

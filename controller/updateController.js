@@ -85,10 +85,10 @@ module.exports = {
         try {
             const {
                 product_name, material_type_one, material_quantity, material_quality, unit, batch_number,
-                supervisor_name, total_cost, remarks, created_by, last_modified_by } = req.body;
+                supervisor_name, total_cost, remarks,mfr_id } = req.body;
             const requiredFields = [
                 'product_name', 'material_type_one', 'material_quantity', 'material_quality', 'unit',
-                'batch_number', 'supervisor_name', 'total_cost', 'remarks', 'created_by', 'last_modified_by'
+                'batch_number', 'supervisor_name', 'total_cost', 'remarks','mfr_id'
             ];
             for (const fields of requiredFields) {
                 if (!req.body[fields]) {
@@ -97,7 +97,7 @@ module.exports = {
             };
             const productManufacturingResult = await updateOperations.motion_product_manufacturing_update(
                 product_name, material_type_one, material_quantity, material_quality, unit,
-                batch_number, supervisor_name, total_cost, remarks, created_by, last_modified_by
+                batch_number, supervisor_name, total_cost, remarks,mfr_id
             );
             return res.status(200).json({ status: true, message: `Product Updated Successfully.`, result: productManufacturingResult.result });
         } catch (error) {

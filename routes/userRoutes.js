@@ -42,7 +42,7 @@ routes.get('/motion_products_get_routes', getController.motion_products_get_rout
 routes.post('/motion_add_dealer_registration_update', updateController.update_dealer_registration);
 routes.post('/motion_purchase_row_material_update', updateController.motion_purchase_row_material_update);
 routes.post('/motion_employee_registration_update', updateController.motion_employee_registration_update);
-routes.put('/motion_product_manufacturing_update', updateController.motion_product_manufacturing_update);
+routes.post('/motion_product_manufacturing_update', updateController.motion_product_manufacturing_update);
 
 
 module.exports = routes;
