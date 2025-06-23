@@ -60,7 +60,7 @@ module.exports = {
             } = req.body;
 
             const requiredFields = [
-                 'emp_code', 'name', 'state', 'city', 'address', 'postal_code', 'qualification',
+                'emp_code', 'name', 'state', 'city', 'address', 'postal_code', 'qualification',
                 'adhar', 'pan', 'mobile', 'email'
             ];
             for (const fields of requiredFields) {
@@ -69,7 +69,7 @@ module.exports = {
                 }
             }
             const empRegResult = await updateOperations.motion_employee_registration_update(
-              emp_code, name, state, city, address, postal_code, qualification,
+                emp_code, name, state, city, address, postal_code, qualification,
                 adhar, pan, mobile, email
             );
             return res.status(200).json({ status: true, message: empRegResult.message, result: empRegResult.result });
@@ -79,6 +79,29 @@ module.exports = {
                 stratus: false,
                 message: `Internal Server Error While Update. ${error}`
             })
+        }
+    },
+    motion_product_manufacturing_update: async (req, res) => {
+        try {
+            const {
+                product_name, material_type_one, material_quantity, material_quality, unit, batch_number,
+                supervisor_name, total_cost, remarks, created_by, last_modified_by } = req.body;
+            const requiredFields = [
+                'product_name', 'material_type_one', 'material_quantity', 'material_quality', 'unit',
+                'batch_number', 'supervisor_name', 'total_cost', 'remarks', 'created_by', 'last_modified_by'
+            ];
+            for (const fields of requiredFields) {
+                if (!req.body[fields]) {
+                    return res.status(400).json({ status: false, message: `${fields.replace(/_/g, ' ')} is required` });
+                }
+            };
+            const productManufacturingResult = await updateOperations.motion_product_manufacturing_update(
+                product_name, material_type_one, material_quantity, material_quality, unit,
+                batch_number, supervisor_name, total_cost, remarks, created_by, last_modified_by
+            );
+            return res.status(200).json({ status: true, message: `Product Updated Successfully.`, result: productManufacturingResult.result });
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal server Error while update. ${error}` });
         }
     }
 
