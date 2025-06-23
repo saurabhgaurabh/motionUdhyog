@@ -31,6 +31,11 @@ module.exports = {
     },
     motion_purchase_row_material_update: async (req, res) => {
         try {
+             const disallowedFields = ['created_at', 'updated_at'];
+            const invalidFields = Object.keys(req.body).filter(field => disallowedFields.includes(field));
+            if (invalidFields.length > 0) {
+                return res.status(400).json({ status: false, message: `Update not allowed for fields: ${invalidFields.join(', ')}` });
+            }
             const requiredFields = ['order_id', 'dealer_name', 'material_type', 'postal_code', 'password', 'country',
                 'state', 'city', 'address', 'freight', 'material_amount', 'material_amount_remaining'
             ];
