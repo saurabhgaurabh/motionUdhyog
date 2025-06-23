@@ -210,14 +210,14 @@ module.exports = {
                 if (Error) {
                     reject(`Error Hashing the Password. ${Error}`)
                 }
-                const insertquery = `insert into motion_purchase_row_material
+                const insertQuery = `insert into motion_purchase_row_material
                  (purchase_id, order_id, dealer_name, material_type, postal_code, password, country, state, 
                 city, address, freight, material_amount, material_amount_remaining) values (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
                 const values = [
                     purchase_id, order_id, dealer_name, material_type, postal_code,
                     hashedPassword, country, state, city, address, freight, material_amount, material_amount_remaining
                 ];
-                connection.execute(insertquery, values, (insertErr, insertResult) => {
+                connection.execute(insertQuery, values, (insertErr, insertResult) => {
                     if (insertErr) {
                         console.log(insertErr, "insertErr")
                         return reject(`Something went wrong while inserting data.${insertErr}`);

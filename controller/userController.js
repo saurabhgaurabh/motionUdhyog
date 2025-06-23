@@ -18,7 +18,6 @@ module.exports = {
 
             const result = await userOperations.motion_user_registration_routes(userCode, company_name, owner_name, industry_type, GST_number, registration_email,
                 mobile_number, password, confirm_password, country, state, city, address, postal_code, website);
-            // console.log(result, 'my new result')
             return res.status(200).json({ status: true, message: `Registration Completed Successfully.`, result: result });
         } catch (error) {
             return res.status(500).json({ result: [], status: false, message: `Internal Server Errors. ${error}` })
@@ -39,7 +38,7 @@ module.exports = {
             return res.status(500).json({ status: false, message: `Internal server error. ${error.message}` });
         }
     }, // verify_user_otp
-    
+
 
     motion_add_dealer_registration_routes: async (req, res) => {
         try {
@@ -63,8 +62,8 @@ module.exports = {
     },// motion_add_dealer_registration_routes                -----  FETCHING DATA  -------------
     motion_purchase_row_material_routes: async (req, res) => {
         try {
-            const requiredFields = ['order_id', 'dealer_name', 'material_type', 'postal_code', 'password', 'country', 'state',
-                'city', 'address', 'freight', 'material_amount', 'material_amount_remaining'
+            const requiredFields = ['order_id', 'dealer_name', 'material_type', 'postal_code', 'password', 'country',
+                 'state', 'city', 'address', 'freight', 'material_amount', 'material_amount_remaining'
             ];
 
             for (field of requiredFields) {

@@ -7,8 +7,10 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(approute)
 
-
+app.use((req, res) => {
+  res.status(404).json({ message: 'Bhai tu kuch galat kar raha hai. (Bad Request...)' });
+})
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);    
+  console.log(`Server is running on port ${PORT}`);
 });
 

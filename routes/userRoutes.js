@@ -19,7 +19,6 @@ routes.post('/motion_product_sub_subcategories_routes', userController.motion_pr
 routes.post('/motion_products_routes', userController.motion_products_routes); // Products optionals
 
 // authentication 
-// routes.post('/verify_user_otp', userController.verify_user_otp);
 routes.post('/verify_user_otp', userController.verify_user_otp);
 
 
@@ -40,10 +39,8 @@ routes.get('/motion_products_get_routes', getController.motion_products_get_rout
 
 
 // Your api's for Update data.
-// routes.post('/motion_add_dealer_registration_routes_update', updateController.motion_add_dealer_registration_routes_update);
-// In routes.js or your route file
-routes.post('/update_dealer_registration', updateController.update_dealer_registration);
-// routes.post('/motion_purchase_row_material_update', updateController.motion_purchase_row_material_update);
+routes.post('/motion_add_dealer_registration_update', updateController.update_dealer_registration);
+routes.post('/motion_purchase_row_material_update', updateController.motion_purchase_row_material_update);
 
 
 module.exports = routes;

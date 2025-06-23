@@ -10,7 +10,7 @@ module.exports = {
                     console.log(error, "get")
                     return reject('Something went wrong while fetching data.');
                 }
-                console.log(result, "get operations")
+                // console.log(result, "get operations")
                 resolve({ result: result, message: 'Dealer Registration Data Fetched Successfully.' });
             });
         });

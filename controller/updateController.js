@@ -29,12 +29,29 @@ module.exports = {
             return res.status(500).json({ status: false, message: `Internal Server Error While Update. ${error}` });
         }
     },
-    // motion_purchase_row_material_update: async (req, res) => {
-    //     try {
+    motion_purchase_row_material_update: async (req, res) => {
+        try {
+            const requiredFields = ['order_id', 'dealer_name', 'material_type', 'postal_code', 'password', 'country',
+                'state', 'city', 'address', 'freight', 'material_amount', 'material_amount_remaining'
+            ];
+            for (const fields of requiredFields) {
+                if (!req.body[fields]) {
+                    return res.status(400).json({ status: false, message: `${fields.replace(/_/g, ' ')} is required.` });
+                }
+            }
+            const { order_id, dealer_name, material_type, postal_code, password, country, state,
+                city, address, freight, material_amount, material_amount_remaining
+            } = req.body;
 
-    //     } catch (error) {
-    //         return res.status(500).json({ status: false, message: `Internal Server Error While Update. ${error}` });
-    //     }
-    // }
+            const result = await updateOperations.motion_purchase_row_material_update(
+                order_id, dealer_name, material_type, postal_code, password, country,
+                state, city, address, freight, material_amount, material_amount_remaining
+            );
+            return res.status(200).json({ status: true, message: `Row Material Updated Successfully`, result: result.result });
+
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal Server Error While Update. ${error}` });
+        }
+    },
 
 }
