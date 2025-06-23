@@ -83,12 +83,16 @@ module.exports = {
     },
     motion_product_manufacturing_update: async (req, res) => {
         try {
-            const {
-                product_name, material_type_one, material_quantity, material_quality, unit, batch_number,
-                supervisor_name, total_cost, remarks,mfr_id } = req.body;
+            const disallowedFields = ['created_by', 'last_modified_by'];
+            const invalidFields = Object.keys(req.body).filter(field => disallowedFields.includes(field));
+            if (invalidFields.length > 0) {
+                return res.status(400).json({ status: false, message: `Update not allowed for fields: ${invalidFields.join(', ')}` });
+            }
+            const { product_name, material_type_one, material_quantity, material_quality, unit, batch_number,
+                supervisor_name, total_cost, remarks, mfr_id } = req.body;
             const requiredFields = [
                 'product_name', 'material_type_one', 'material_quantity', 'material_quality', 'unit',
-                'batch_number', 'supervisor_name', 'total_cost', 'remarks','mfr_id'
+                'batch_number', 'supervisor_name', 'total_cost', 'remarks', 'mfr_id'
             ];
             for (const fields of requiredFields) {
                 if (!req.body[fields]) {
@@ -97,12 +101,12 @@ module.exports = {
             };
             const productManufacturingResult = await updateOperations.motion_product_manufacturing_update(
                 product_name, material_type_one, material_quantity, material_quality, unit,
-                batch_number, supervisor_name, total_cost, remarks,mfr_id
+                batch_number, supervisor_name, total_cost, remarks, mfr_id
             );
             return res.status(200).json({ status: true, message: `Product Updated Successfully.`, result: productManufacturingResult.result });
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal server Error while update. ${error}` });
         }
-    }
+    },
 
 }
