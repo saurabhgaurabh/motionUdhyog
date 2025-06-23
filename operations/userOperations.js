@@ -219,7 +219,7 @@ module.exports = {
                 ];
                 connection.execute(insertQuery, values, (insertErr, insertResult) => {
                     if (insertErr) {
-                        console.log(insertErr, "insertErr")
+                        // console.log(insertErr, "insertErr")
                         return reject(`Something went wrong while inserting data.${insertErr}`);
                     }
                     const insertedId = insertResult.insertId;

@@ -35,12 +35,13 @@ routes.get('/motion_product_subcategories_get_routes', getController.motion_prod
 routes.get('/motion_product_sub_subcategories_get_routes', getController.motion_product_sub_subcategories_get_routes);
 routes.get('/motion_products_get_routes', getController.motion_products_get_routes);
 
- 
+
 
 
 // Your api's for Update data.
 routes.post('/motion_add_dealer_registration_update', updateController.update_dealer_registration);
 routes.post('/motion_purchase_row_material_update', updateController.motion_purchase_row_material_update);
+routes.post('/motion_employee_registration_update', updateController.motion_employee_registration_update);
 
 
 module.exports = routes;

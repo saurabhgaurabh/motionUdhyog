@@ -27,7 +27,6 @@ module.exports = {
             });
         });
     },
-
     motion_purchase_row_material_update: (
         order_id, dealer_name, material_type, postal_code, password, country,
         state, city, address, freight, material_amount, material_amount_remaining) => {
@@ -58,5 +57,23 @@ module.exports = {
             })
         });
     },
+    motion_employee_registration_update: (emp_code, name, state, city, address, postal_code,
+        qualification, adhar, pan, mobile, email) => {
+        return new Promise((resolve, reject) => {
+            const updateQuery = `update motion_employee_registration set 
+                name = ?, state = ?, city = ?, address = ?, postal_code = ?,
+                qualification = ?, adhar = ?, pan = ?, mobile = ?, email = ? where emp_code = ?`;
 
+            const updateValues = [
+                name, state, city, address, postal_code, qualification, adhar, pan, mobile, email, emp_code
+            ];
+
+            connection.execute(updateQuery, updateValues, (updateErr, updateResult) => {
+                if (updateErr) {
+                    return reject(`Error updating employee data. ${updateErr}`);
+                }
+                resolve({ status: true, message: "Employee updated successfully", result: updateResult });
+            })
+        })
+    },
 }

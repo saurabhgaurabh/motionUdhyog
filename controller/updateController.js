@@ -53,5 +53,33 @@ module.exports = {
             return res.status(500).json({ status: false, message: `Internal Server Error While Update. ${error}` });
         }
     },
+    motion_employee_registration_update: async (req, res) => {
+        try {
+            const {
+                emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email
+            } = req.body;
+
+            const requiredFields = [
+                 'emp_code', 'name', 'state', 'city', 'address', 'postal_code', 'qualification',
+                'adhar', 'pan', 'mobile', 'email'
+            ];
+            for (const fields of requiredFields) {
+                if (!req.body[fields]) {
+                    return res.status(400).json({ status: false, message: `${fields.replace(/_/g, ' ')} is required` })
+                }
+            }
+            const empRegResult = await updateOperations.motion_employee_registration_update(
+              emp_code, name, state, city, address, postal_code, qualification,
+                adhar, pan, mobile, email
+            );
+            return res.status(200).json({ status: true, message: empRegResult.message, result: empRegResult.result });
+
+        } catch (error) {
+            return res.status(500).json({
+                stratus: false,
+                message: `Internal Server Error While Update. ${error}`
+            })
+        }
+    }
 
 }
