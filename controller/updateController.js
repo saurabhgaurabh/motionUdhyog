@@ -55,6 +55,11 @@ module.exports = {
     },
     motion_employee_registration_update: async (req, res) => {
         try {
+             const disallowedFields = ['created_by', 'updated_by'];
+            const invalidFields = Object.keys(req.body).filter(field => disallowedFields.includes(field));
+            if (invalidFields.length > 0) {
+                return res.status(400).json({ status: false, message: `Update not allowed for fields: ${invalidFields.join(', ')}` });
+            }
             const {
                 emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email
             } = req.body;
