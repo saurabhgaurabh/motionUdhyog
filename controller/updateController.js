@@ -3,6 +3,11 @@ const updateOperations = require('../operations/updateOperations');
 module.exports = {
     update_dealer_registration: async (req, res) => {
         try {
+             const disallowedFields = ['created_at', 'updated_at'];
+            const invalidFields = Object.keys(req.body).filter(field => disallowedFields.includes(field));
+            if (invalidFields.length > 0) {
+                return res.status(401).json({ status: false, message: `Update not allowed for fields: ${invalidFields.join(', ')}` });
+            }
             const requiredFields = [
                 'dealer_Code', 'dealer_name', 'dealer_GST', 'mobile_number', 'adhar_number', 'pan', 'password',
                 'country', 'state', 'city', 'address', 'postal_code'

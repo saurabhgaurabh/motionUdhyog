@@ -3,6 +3,8 @@ const routes = express.Router();
 const userController = require('../controller/userController');
 const getController = require('../controller/getController');
 const updateController = require('../controller/updateController');
+const deleteController = require('../controller/deleteController');
+
 
 
 // Your api's for post data.
@@ -43,6 +45,9 @@ routes.post('/motion_add_dealer_registration_update', updateController.update_de
 routes.post('/motion_purchase_row_material_update', updateController.motion_purchase_row_material_update);
 routes.post('/motion_employee_registration_update', updateController.motion_employee_registration_update);
 routes.post('/motion_product_manufacturing_update', updateController.motion_product_manufacturing_update);
+
+// delete api's
+routes.delete('/motion_add_dealer_registration_delete', deleteController.motion_add_dealer_registration_delete);
 
 
 module.exports = routes;
