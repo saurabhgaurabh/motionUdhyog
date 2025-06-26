@@ -13,7 +13,7 @@ module.exports = {
 
                 if (checkResult.length === 0) {
                     return resolve({ message: "Dealer registration not found", status: false });
-                }
+                } 
 
                 if (checkResult[0].status === 'deleted') {
                     return resolve({ status: false, message: 'Dealer already deleted.' });
@@ -28,6 +28,5 @@ module.exports = {
                 });
             });
         });
-    }
-
+    },
 }
