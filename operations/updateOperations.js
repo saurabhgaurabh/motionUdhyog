@@ -96,4 +96,24 @@ module.exports = {
             })
         })
     },
+    motion_parties_registration_update: (
+         organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan, party_id
+    ) => {
+        return new Promise((resolve, reject) => {
+            const updateQuery = `UPDATE motion_parties_registration SET 
+            organization_name = ?, owner_name = ?, mobile = ?, email = ?,
+            gst = ?, country = ?, state = ?, city = ?, address = ?, adhar = ?, pan = ? 
+            WHERE party_id = ?`;
+ 
+            const updateValues = [
+                organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan, party_id
+            ];
+            connection.execute(updateQuery, updateValues, (updatePartyErr, updatePartyResult) => {
+                if (updatePartyErr) {
+                    return reject(`Error updating party data. ${updatePartyErr}`);
+                }
+                resolve({ status: true, message: "Party updated successfully", result: updatePartyResult });
+            })
+        })
+    }
 }

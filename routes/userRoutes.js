@@ -45,6 +45,7 @@ routes.post('/motion_add_dealer_registration_update', updateController.update_de
 routes.post('/motion_purchase_row_material_update', updateController.motion_purchase_row_material_update);
 routes.post('/motion_employee_registration_update', updateController.motion_employee_registration_update);
 routes.post('/motion_product_manufacturing_update', updateController.motion_product_manufacturing_update);
+routes.post('/motion_parties_registration_update', updateController.motion_parties_registration_update);
 
 // delete api's
 routes.delete('/motion_add_dealer_registration_delete', deleteController.motion_add_dealer_registration_delete);

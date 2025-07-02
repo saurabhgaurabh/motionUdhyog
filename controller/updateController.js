@@ -3,7 +3,7 @@ const updateOperations = require('../operations/updateOperations');
 module.exports = {
     update_dealer_registration: async (req, res) => {
         try {
-             const disallowedFields = ['created_at', 'updated_at'];
+            const disallowedFields = ['created_at', 'updated_at'];
             const invalidFields = Object.keys(req.body).filter(field => disallowedFields.includes(field));
             if (invalidFields.length > 0) {
                 return res.status(401).json({ status: false, message: `Update not allowed for fields: ${invalidFields.join(', ')}` });
@@ -36,7 +36,7 @@ module.exports = {
     },
     motion_purchase_row_material_update: async (req, res) => {
         try {
-             const disallowedFields = ['created_at', 'updated_at'];
+            const disallowedFields = ['created_at', 'updated_at'];
             const invalidFields = Object.keys(req.body).filter(field => disallowedFields.includes(field));
             if (invalidFields.length > 0) {
                 return res.status(400).json({ status: false, message: `Update not allowed for fields: ${invalidFields.join(', ')}` });
@@ -65,7 +65,7 @@ module.exports = {
     },
     motion_employee_registration_update: async (req, res) => {
         try {
-             const disallowedFields = ['created_by', 'updated_by'];
+            const disallowedFields = ['created_by', 'updated_by'];
             const invalidFields = Object.keys(req.body).filter(field => disallowedFields.includes(field));
             if (invalidFields.length > 0) {
                 return res.status(400).json({ status: false, message: `Update not allowed for fields: ${invalidFields.join(', ')}` });
@@ -123,5 +123,25 @@ module.exports = {
             return res.status(500).json({ status: false, message: `Internal server Error while update. ${error}` });
         }
     },
+    motion_parties_registration_update: async (req, res) => {
+        try {
+            const {  organization_name, owner_name, mobile, email, gst, country, state, city, address,
+                adhar, pan, party_id } = req.body;
+            const requireFields = [ 'organization_name', 'owner_name', 'mobile', 'email', 'gst', 'country', 'state', 'city',
+                'address', 'adhar', 'pan', 'party_id'];
+            for (const fields of requireFields) {
+                if (!req.body[fields]) {
+                    return res.status(400).json({ status: false, message: `${fields.replace(/_/g, ' ')} is required.` });
+                }
+            }
+            const partyRegistrationResult = await updateOperations.motion_parties_registration_update(
+                organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan, party_id
+            );
+            return res.status(200).json({ status: true, message: `Party Registration Updated Successfully.`, result: partyRegistrationResult.result });
+        } catch (error) {
+            console.log(error, "error in motion_parties_registration_update");
+            return res.status(500).json({ status: false, message: `Internal Server Error While Update. ${error}` });
+        }
+    }
 
 }

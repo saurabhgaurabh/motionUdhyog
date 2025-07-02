@@ -327,14 +327,15 @@ module.exports = {
                     // console.log(insertError, "insertError")
                     return reject(`Error while inserting Data.${insertError}`)
                 }
-                const insertedId = insertResult.insertId;
-                const fetchQuery = `select * from motion_parties_registration`;
-                connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
-                    if (fetchResult) {
-                        return reject(`Error While fetching The Data. ${fetchError}`);
-                    }
-                    resolve({ data: insertResult, message: `Parties Data Fetched successfully. ` });
-                })
+                resolve({ data: insertResult, message: `Parties Data Inserted successfully. ` });
+                // const insertedId = insertResult.insertId;
+                // const fetchQuery = `select * from motion_parties_registration`;
+                // connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
+                //     if (fetchResult) {
+                //         return reject(`Error While fetching The Data. ${fetchError}`);
+                //     }
+                //     resolve({ data: insertResult, message: `Parties Data Fetched successfully. ` });
+                // })
             })
         })
     },// Api for motion dispatch product      
