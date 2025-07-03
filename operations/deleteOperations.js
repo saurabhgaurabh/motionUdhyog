@@ -3,7 +3,7 @@ const connection = require("../config/database");
 module.exports = {
     motion_add_dealer_registration_delete: (dealer_id) => {
         return new Promise((resolve, reject) => {
-            const checkQuery = "SELECT * FROM motion_add_dealer_registration WHERE dealer_id = ?";
+            const checkQuery = "SELECT dealer_id FROM motion_add_dealer_registration WHERE dealer_id = ?";
 
             connection.execute(checkQuery, [dealer_id], (checkError, checkResult) => {
                 if (checkError) {

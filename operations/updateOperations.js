@@ -5,18 +5,18 @@ const bcrypt = require("bcrypt");
 
 module.exports = {
     update_dealer_registration: (
-        dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state,
-        city, address, postal_code) => {
+        dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, email, alt_mobile_number, 
+        country, state, city, address, postal_code) => {
         return new Promise((resolve, reject) => {
             const updateQuery = ` UPDATE motion_add_dealer_registration SET
                 dealer_name = ?, dealer_GST = ?, mobile_number = ?, 
-                adhar_number = ?, pan = ?, password = ?, country = ?, 
+                adhar_number = ?, pan = ?, password = ?, email = ?, alt_mobile_number = ?, country = ?, 
                 state = ?, city = ?, address = ?, postal_code = ?  WHERE dealer_Code = ?
         `;
 
             const values = [
-                dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country,
-                state, city, address, postal_code, dealer_Code // WHERE condition
+                dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, email, alt_mobile_number, country, state, city, address,
+                postal_code, dealer_Code
             ];
 
             connection.execute(updateQuery, values, (err, result) => {
@@ -97,14 +97,14 @@ module.exports = {
         })
     },
     motion_parties_registration_update: (
-         organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan, party_id
+        organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan, party_id
     ) => {
         return new Promise((resolve, reject) => {
             const updateQuery = `UPDATE motion_parties_registration SET 
             organization_name = ?, owner_name = ?, mobile = ?, email = ?,
             gst = ?, country = ?, state = ?, city = ?, address = ?, adhar = ?, pan = ? 
             WHERE party_id = ?`;
- 
+
             const updateValues = [
                 organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan, party_id
             ];

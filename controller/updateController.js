@@ -10,7 +10,7 @@ module.exports = {
             }
             const requiredFields = [
                 'dealer_Code', 'dealer_name', 'dealer_GST', 'mobile_number', 'adhar_number', 'pan', 'password',
-                'country', 'state', 'city', 'address', 'postal_code'
+                'email', 'alt_mobile_number', 'country', 'state', 'city', 'address', 'postal_code'
             ];
 
             for (const field of requiredFields) {
@@ -19,14 +19,13 @@ module.exports = {
                 }
             }
             const {
-                dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country,
-                state, city, address, postal_code
+                dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, email,
+                alt_mobile_number, country, state, city, address, postal_code
             } = req.body;
 
             const result = await updateOperations.update_dealer_registration(
-                dealer_Code, dealer_name, dealer_GST, mobile_number,
-                adhar_number, pan, password, country,
-                state, city, address, postal_code
+                dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, email,
+                alt_mobile_number,country, state, city, address, postal_code
             );
             return res.status(200).json({ status: true, message: result.message, result: result.result });
         }
@@ -125,9 +124,9 @@ module.exports = {
     },
     motion_parties_registration_update: async (req, res) => {
         try {
-            const {  organization_name, owner_name, mobile, email, gst, country, state, city, address,
+            const { organization_name, owner_name, mobile, email, gst, country, state, city, address,
                 adhar, pan, party_id } = req.body;
-            const requireFields = [ 'organization_name', 'owner_name', 'mobile', 'email', 'gst', 'country', 'state', 'city',
+            const requireFields = ['organization_name', 'owner_name', 'mobile', 'email', 'gst', 'country', 'state', 'city',
                 'address', 'adhar', 'pan', 'party_id'];
             for (const fields of requireFields) {
                 if (!req.body[fields]) {

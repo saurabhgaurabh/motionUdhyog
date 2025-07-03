@@ -48,7 +48,7 @@ routes.post('/motion_product_manufacturing_update', updateController.motion_prod
 routes.post('/motion_parties_registration_update', updateController.motion_parties_registration_update);
 
 // delete api's
-routes.delete('/motion_add_dealer_registration_delete', deleteController.motion_add_dealer_registration_delete);
+routes.delete('/V1/motion-dealer-delete', deleteController.motion_add_dealer_registration_delete);
 
 
 module.exports = routes;
