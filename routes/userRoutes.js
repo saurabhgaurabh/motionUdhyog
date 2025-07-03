@@ -9,7 +9,7 @@ const deleteController = require('../controller/deleteController');
 
 // Your api's for post data.
  /* NOT GET*/ routes.post('/motion_user_registration_routes', userController.motion_user_registration_routes); 
-routes.post('/motion_add_dealer_registration_routes', userController.motion_add_dealer_registration_routes);        
+routes.post('/v1/motion-add-dealer-registration-routes', userController.motion_add_dealer_registration_routes);        
 routes.post('/motion_purchase_row_material_routes', userController.motion_purchase_row_material_routes);            
 routes.post('/motion_employee_registration_routes', userController.motion_employee_registration_routes); 
 routes.post('/motion_product_manufacturing_routes', userController.motion_product_manufacturing_routes); 
@@ -41,7 +41,7 @@ routes.get('/motion_products_get_routes', getController.motion_products_get_rout
 
 
 // Your api's for Update data.
-routes.post('/motion_add_dealer_registration_update', updateController.update_dealer_registration);
+routes.post('/motion/dealer-registration', updateController.update_dealer_registration);
 routes.post('/motion_purchase_row_material_update', updateController.motion_purchase_row_material_update);
 routes.post('/motion_employee_registration_update', updateController.motion_employee_registration_update);
 routes.post('/motion_product_manufacturing_update', updateController.motion_product_manufacturing_update);

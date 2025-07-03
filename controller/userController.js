@@ -135,7 +135,7 @@ module.exports = {
                 party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan);
             return res.status(200).json({ status: true, message: `Parties Added Successfully.`, result: result });
         } catch (error) {
-            return res.status(500).json({ status: false, message: `internal server errors.${error}` });
+            return res.status(500).json({ status: false, message: `internal server error.${error}` });
         }
     }, // motion_parties_registration_routes          -----  FETCHING DATA  -------------
     motion_dispatch_product_routes: async (req, res) => {

@@ -114,21 +114,17 @@ module.exports = {
 
     verify_user_otp: (dealerCode, userOTP) => {
         return new Promise((resolve, reject) => {
-            const fetchQuery = `SELECT * FROM motion_user_registration WHERE userCode = ?`;
+            const fetchQuery = `SELECT otp_secret FROM motion_user_registration WHERE userCode = ?`;
             connection.execute(fetchQuery, [dealerCode], (err, results) => {
-                if (err || results.length === 0) { 
+                if (err || results.length === 0) {
                     return reject({ status: false, message: 'User not found.' });
                 }
                 const user = results[0];
-                const currentTime = new Date(); // not required
-                if (currentTime > user.otp_expiry) {
-                    return reject({ status: false, message: 'OTP has expired.' });
-                }
                 const isVerified = speakeasy.totp.verify({
                     secret: user.otp_secret,
                     encoding: 'base32',
                     token: userOTP,
-                    window: 1,
+                    window: 10,
                     step: 300
                 });
                 if (!isVerified) {
@@ -172,7 +168,7 @@ module.exports = {
 
                 connection.execute(insertQuery, values, (insertErr, insertresult) => {
                     if (insertErr) {
-                        console.error(insertErr);
+                        // console.error(insertErr);
                         return reject(`Something went wrong while inserting data.${insertErr}`);
                     }
                     const insertedId = insertresult.insertId;
@@ -186,7 +182,6 @@ module.exports = {
                         // Return the inserted row
                         resolve({ message: "Dealer Registered Successfully", data: fetchResult[0] });
                     })
-                    // resolve(insertresult);
                 })
             })
         })
