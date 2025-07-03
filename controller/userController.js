@@ -43,7 +43,8 @@ module.exports = {
     motion_add_dealer_registration_routes: async (req, res) => {
         try {
             // logger.info('Dealer registration initiated');
-            const requiredFields = ['dealer_Code', 'dealer_name', 'dealer_GST', 'mobile_number', 'adhar_number', 'pan', 'password', 'country',
+            const requiredFields = ['dealer_Code', 'dealer_name', 'dealer_GST', 'mobile_number', 'adhar_number',
+                'pan', 'password', 'email', 'alt_mobile_number', 'country',
                 'state', 'city', 'address', 'postal_code'];
 
             for (const field of requiredFields) {
@@ -51,8 +52,11 @@ module.exports = {
                     return res.status(500).json({ status: false, message: `${field.replace('_', ' ')} is required.` });
                 }
             }
-            const { dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state, city, address, postal_code } = req.body;
-            const result = await userOperations.motion_add_dealer_registration_routes(dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state, city, address, postal_code);
+            const { dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, email, alt_mobile_number, country, state, city, address, postal_code } = req.body;
+            const result = await userOperations.motion_add_dealer_registration_routes(
+                dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, email,
+                alt_mobile_number, country, state, city, address, postal_code
+            );
 
             return res.status(200).json({ status: true, message: 'Dealer Added Successfully.' });
         } catch (error) {
@@ -63,7 +67,7 @@ module.exports = {
     motion_purchase_row_material_routes: async (req, res) => {
         try {
             const requiredFields = ['order_id', 'dealer_name', 'material_type', 'postal_code', 'password', 'country',
-                 'state', 'city', 'address', 'freight', 'material_amount', 'material_amount_remaining'
+                'state', 'city', 'address', 'freight', 'material_amount', 'material_amount_remaining'
             ];
 
             for (field of requiredFields) {

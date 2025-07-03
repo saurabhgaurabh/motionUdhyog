@@ -141,11 +141,15 @@ module.exports = {
         })
     },
 
-    motion_add_dealer_registration_routes: (dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, country, state,
-        city, address, postal_code) => {
+    motion_add_dealer_registration_routes: (
+        dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, email, alt_mobile_number,
+        country, state, city, address, postal_code) => {
         return new Promise((resolve, reject) => {
             dealer_Code = generateRandomCode();
-            const checkQuery = `SELECT * FROM motion_add_dealer_registration WHERE dealer_Code = ? OR dealer_GST = ?`;
+            const checkQuery = `SELECT 
+            dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, email, 
+            alt_mobile_number, country, state, city, address, postal_code  FROM 
+            motion_add_dealer_registration WHERE dealer_Code = ? OR dealer_GST = ?`;
             connection.execute(checkQuery, [dealer_Code, dealer_GST], (checkErr, checkResult) => {
                 if (checkErr) {
                     return reject('Error checking existing records.');
@@ -156,32 +160,32 @@ module.exports = {
                 }
                 const insertQuery = `INSERT INTO motion_add_dealer_registration (
                         dealer_Code, dealer_name, dealer_GST, mobile_number,
-                        adhar_number, pan, password, country, state,
+                        adhar_number, pan, password, email, alt_mobile_number, country, state,
                         city, address, postal_code
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
                 const values = [
-                    dealer_Code, dealer_name, dealer_GST, mobile_number,
-                    adhar_number, pan, password, country, state,
-                    city, address, postal_code
+                    dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password,
+                    email, alt_mobile_number, country, state, city, address, postal_code
                 ];
 
-                connection.execute(insertQuery, values, (insertErr, insertresult) => {
+                connection.execute(insertQuery, values, (insertErr, insertResult) => {
                     if (insertErr) {
                         // console.error(insertErr);
                         return reject(`Something went wrong while inserting data.${insertErr}`);
                     }
-                    const insertedId = insertresult.insertId;
-                    // Fetch the inserted row
-                    const fetchQuery = `SELECT * FROM motion_add_dealer_registration`;
-                    connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
-                        if (fetchError) {
-                            console.error(fetchError);
-                            return reject(`Inserted but failed to fetch data. ${fetchError}`);
-                        }
-                        // Return the inserted row
-                        resolve({ message: "Dealer Registered Successfully", data: fetchResult[0] });
-                    })
+                    resolve({ message: "Dealer Registered Successfully", data: insertResult });
+                    // const insertedId = insertResult.insertId;
+                    // // Fetch the inserted row
+                    // const fetchQuery = `SELECT * FROM motion_add_dealer_registration`;
+                    // connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
+                    //     if (fetchError) {
+                    //         console.error(fetchError);
+                    //         return reject(`Inserted but failed to fetch data. ${fetchError}`);
+                    //     }
+                    //     // Return the inserted row
+                    //     resolve({ message: "Dealer Registered Successfully", data: fetchResult[0] });
+                    // })
                 })
             })
         })
