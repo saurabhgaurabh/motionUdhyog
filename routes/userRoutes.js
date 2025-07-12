@@ -9,8 +9,8 @@ const deleteController = require('../controller/deleteController');
 
 // Your api's for post data.
  /* NOT GET*/ routes.post('/motion_user_registration_routes', userController.motion_user_registration_routes); 
-routes.post('/v1/motion-add-dealer-registration-routes', userController.motion_add_dealer_registration_routes);        
-routes.post('/motion_purchase_row_material_routes', userController.motion_purchase_row_material_routes);            
+routes.post('/v1/motion-add-dealer-registration-post', userController.motion_add_dealer_registration_routes);        
+routes.post('/v1/motion-purchase-row-material-post', userController.motion_purchase_row_material_routes);            
 routes.post('/motion_employee_registration_routes', userController.motion_employee_registration_routes); 
 routes.post('/motion_product_manufacturing_routes', userController.motion_product_manufacturing_routes); 
 routes.post('/motion_parties_registration_routes', userController.motion_parties_registration_routes); 
@@ -27,7 +27,7 @@ routes.post('/verify_user_otp', userController.verify_user_otp);
 
 // Your api's for get data.
 routes.get('/v1/motion-add-dealer-registration-get', getController.motion_add_dealer_registration_get_routes);
-routes.get('/motion_purchase_row_material_get_routes', getController.motion_purchase_row_material_get_routes);
+routes.get('/v1/motion-purchase-row-material-get', getController.motion_purchase_row_material_get_routes);
 routes.get('/motion_employee_registration_get_routes', getController.motion_employee_registration_get_routes);
 routes.get('/motion_product_manufacturing_get_routes', getController.motion_product_manufacturing_get_routes);
 routes.get('/motion_parties_registration_get_routes', getController.motion_parties_registration_get_routes);
