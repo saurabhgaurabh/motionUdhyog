@@ -190,13 +190,12 @@ module.exports = {
             })
         })
     },    // Api for motion purchase row material  -----  FETCHING DATA  -------------
-    motion_purchase_row_material_routes: (purchase_id, order_id, dealer_name, material_type, postal_code,
+    motion_purchase_row_material_routes: (order_id, dealer_name, material_type, postal_code,
         password, country, state, city, address, freight, material_amount, material_amount_remaining) => {
         return new Promise((resolve, reject) => {
-            purchase_id = generate8DigitCode();
             order_id = generateRandomId();
-            const checkQuery = `select * from motion_purchase_row_material where order_id = ? OR dealer_name = ? OR purchase_id = ?`;
-            connection.execute(checkQuery, [purchase_id, order_id, dealer_name], (checkErr, checkResult) => {
+            const checkQuery = `select * from motion_purchase_row_material where order_id = ? OR dealer_name = ?`;
+            connection.execute(checkQuery, [order_id, dealer_name], (checkErr, checkResult) => {
                 if (checkErr) {
                     return reject('Getting existing Records.');
                 }
@@ -210,27 +209,18 @@ module.exports = {
                     reject(`Error Hashing the Password. ${Error}`)
                 }
                 const insertQuery = `insert into motion_purchase_row_material
-                 (purchase_id, order_id, dealer_name, material_type, postal_code, password, country, state, 
-                city, address, freight, material_amount, material_amount_remaining) values (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+                 (order_id, dealer_name, material_type, postal_code, password, country, state, 
+                city, address, freight, material_amount, material_amount_remaining) values (?,?,?,?,?,?,?,?,?,?,?,?)`;
                 const values = [
-                    purchase_id, order_id, dealer_name, material_type, postal_code,
+                  order_id, dealer_name, material_type, postal_code,
                     hashedPassword, country, state, city, address, freight, material_amount, material_amount_remaining
                 ];
                 connection.execute(insertQuery, values, (insertErr, insertResult) => {
                     if (insertErr) {
-                        // console.log(insertErr, "insertErr")
+                        console.log(insertErr, "insertErr")
                         return reject(`Something went wrong while inserting data.${insertErr}`);
                     }
-                    const insertedId = insertResult.insertId;
-                    const fetchQuery = `select * from motion_purchase_row_material`;
-                    connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
-                        if (fetchError) {
-                            console.error(fetchError);
-                            return reject(`Inserted but failed to fetch data. ${fetchError}`);
-                        }
-                        resolve({ message: "Purchase Row Material Registered Successfully & Data Fetched", data: fetchResult[0] })
-                    })
-                    // resolve(insertResult);
+                    resolve(insertResult);
                 })
             })
         })

@@ -76,10 +76,10 @@ module.exports = {
                 }
             }
 
-            const { purchase_id, order_id, dealer_name, material_type, postal_code, password, country, state, city, address, freight, material_amount,
+            const { order_id, dealer_name, material_type, postal_code, password, country, state, city, address, freight, material_amount,
                 material_amount_remaining } = req.body;
 
-            const result = await userOperations.motion_purchase_row_material_routes(purchase_id, order_id, dealer_name, material_type, postal_code,
+            const result = await userOperations.motion_purchase_row_material_routes(order_id, dealer_name, material_type, postal_code,
                 password, country, state, city, address, freight, material_amount, material_amount_remaining);
             return res.status(200).json({ status: true, message: 'Purchase Added Successfully.' });
         } catch (error) {
@@ -89,7 +89,8 @@ module.exports = {
     motion_employee_registration_routes: async (req, res) => {
         try {
             const requiredFields = [
-                'emp_id', 'emp_code', 'name', 'state', 'city', 'address', 'postal_code', 'qualification', 'adhar', 'pan', 'mobile', 'email'
+                'emp_id', 'emp_code', 'name', 'state', 'city', 'address', 'postal_code', 'qualification', 'adhar',
+                'pan', 'mobile', 'email'
             ];
             for (fields of requiredFields) {
                 if (!req.body[fields]) {
