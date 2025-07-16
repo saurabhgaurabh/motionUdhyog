@@ -212,7 +212,7 @@ module.exports = {
                  (order_id, dealer_name, material_type, postal_code, password, country, state, 
                 city, address, freight, material_amount, material_amount_remaining) values (?,?,?,?,?,?,?,?,?,?,?,?)`;
                 const values = [
-                  order_id, dealer_name, material_type, postal_code,
+                    order_id, dealer_name, material_type, postal_code,
                     hashedPassword, country, state, city, address, freight, material_amount, material_amount_remaining
                 ];
                 connection.execute(insertQuery, values, (insertErr, insertResult) => {
@@ -220,40 +220,39 @@ module.exports = {
                         console.log(insertErr, "insertErr")
                         return reject(`Something went wrong while inserting data.${insertErr}`);
                     }
+                    console.log(insertResult, "insertResult")
                     resolve(insertResult);
                 })
             })
         })
     },// Api for motion employee registration    -----  FETCHING DATA  -------------
-    motion_employee_registration_routes: (emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email) => {
+    motion_employee_registration_routes: (name, dob, state, city, address, postal_code, qualification, adhar,
+        pan, mobile, email, department, designation, salary) => {
         return new Promise((resolve, reject) => {
-            emp_id = generate6DigitCode();
+            // emp_id = generate6DigitCode();
             emp_code = generateRandomCode();
 
-            const checkQuery = `select * from motion_employee_registration where emp_id = ? or emp_code = ?`;
-            connection.execute(checkQuery, [emp_id, emp_code], (checkErr, checkResult) => {
+            const checkQuery = `select * from motion_employee_registration where email = ? or emp_code = ?`;
+            connection.execute(checkQuery, [email, emp_code], (checkErr, checkResult) => {
                 if (checkErr) {
                     return reject('Getting Existing Records.')
                 }
                 if (checkResult.length > 0) {
-                    return reject(`Employee id or Employees Code exists. Duplicate entry not allow. 1062`)
+                    return reject(`E-Mail or Employees Code exists. Duplicate entry not allow. 1062`)
                 }
             })
             const insertQuery = `insert into motion_employee_registration 
-            (emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email) values (?,?,?,?,?,?,?,?,?,?,?,?)`;
-            const values = [emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email];
+            (emp_code, name, dob, state, city, address, postal_code, qualification, adhar, pan, mobile, 
+            email, department, designation, salary)  values (?,?, ?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+            const values = [
+                emp_code, name, dob, state, city, address, postal_code, qualification, adhar, pan, mobile, email, department,
+                designation, salary
+            ];
             connection.execute(insertQuery, values, (insertErr, insertResult) => {
                 if (insertErr) {
                     return reject(`Data, Inserting error ${insertErr}`);
                 }
-                const insertedId = insertResult.insertId;
-                const fetchQuery = `select * from motion_employee_registration`;
-                connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
-                    if (fetchError) {
-                        return reject(`Inserted But Failed to Fetch Data. ${fetchError}`);
-                    }
-                    resolve({ message: `Employee Registered Successfully & Data Fetched`, data: fetchResult[0] });
-                })
+                resolve({ message: `Employee Registered Successfully & Data Fetched`, data: insertResult });
             })
         })
     },// Api for motion product manufacturing        -----  FETCHING DATA  -------------

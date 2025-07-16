@@ -89,17 +89,21 @@ module.exports = {
     motion_employee_registration_routes: async (req, res) => {
         try {
             const requiredFields = [
-                'emp_id', 'emp_code', 'name', 'state', 'city', 'address', 'postal_code', 'qualification', 'adhar',
-                'pan', 'mobile', 'email'
+                'name', 'dob', 'state', 'city', 'address', 'postal_code', 'qualification', 'adhar',
+                'pan', 'mobile', 'email', 'department', 'designation', 'salary'
             ];
             for (fields of requiredFields) {
                 if (!req.body[fields]) {
                     return res.status(500).json({ status: false, message: `${fields.replace('_', ' ')} 'is required'` })
                 };
             }
-            const { emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email } = req.body;
-            const result = await userOperations.motion_employee_registration_routes(emp_id, emp_code, name, state, city, address, postal_code, qualification, adhar, pan, mobile, email);
-            return res.status(200).json({ stats: true, message: 'Employee Registered Successfully.' });
+            const { name, dob, state, city, address, postal_code, qualification, adhar, pan, mobile, email,
+                 department, designation,salary  } = req.body;
+            const result = await userOperations.motion_employee_registration_routes(
+                name, dob, state, city, address, postal_code, qualification, adhar, pan, mobile, email, 
+                department, designation,salary
+            );
+            return res.status(200).json({ stats: true, message: 'Employee Registered Successfully.', result: result });
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal server Error. ${error}` });
         }
