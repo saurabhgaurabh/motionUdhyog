@@ -12,7 +12,7 @@ const deleteController = require('../controller/deleteController');
 routes.post('/v1/motion-add-dealer-registration-post', userController.motion_add_dealer_registration_routes);        
 routes.post('/v1/motion-purchase-row-material-post', userController.motion_purchase_row_material_routes);            
 routes.post('/v1/motion-employee-registration', userController.motion_employee_registration_routes); 
-routes.post('/motion_product_manufacturing_routes', userController.motion_product_manufacturing_routes); 
+routes.post('/v1/motion-product-manufacturing', userController.motion_product_manufacturing_routes); 
 routes.post('/motion_parties_registration_routes', userController.motion_parties_registration_routes); 
 routes.post('/motion_dispatch_product_routes', userController.motion_dispatch_product_routes); 
 routes.post('/motion_product_category_routes', userController.motion_product_category_routes); 

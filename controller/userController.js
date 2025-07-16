@@ -110,10 +110,10 @@ module.exports = {
     },// motion_employee_registration_routes                      -----  FETCHING DATA  -------------
     motion_product_manufacturing_routes: async (req, res) => {
         try {
-            const { mfr_id, product_name, material_type_one, material_quantity, material_quality, unit, batch_number, supervisor_name, total_cost, remarks,
+            const { product_name, material_type_one, material_quantity, material_quality, unit, batch_number, supervisor_name, total_cost, remarks,
                 created_by, last_modified_by } = req.body;
             const requiredFields = [
-                'mfr_id', 'product_name', 'material_type_one', 'material_quantity', 'material_quality', 'unit', 'batch_number',
+                'product_name', 'material_type_one', 'material_quantity', 'material_quality', 'unit', 'batch_number',
                 'supervisor_name', 'total_cost', 'remarks', 'created_by', 'last_modified_by'
             ];
             for (fields of requiredFields) {
@@ -121,7 +121,7 @@ module.exports = {
                     return res.status(404).json({ status: false, message: `${fields.replace('_', ' ')} 'is required.'` })
                 }
             }
-            const result = await userOperations.motion_product_manufacturing_routes(mfr_id, product_name, material_type_one, material_quantity,
+            const result = await userOperations.motion_product_manufacturing_routes(product_name, material_type_one, material_quantity,
                 material_quality, unit, batch_number, supervisor_name, total_cost, remarks, created_by, last_modified_by);
             return res.status(200).json({ status: true, message: `Product Manufactured Completed.`, result: result });
 

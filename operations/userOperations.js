@@ -256,7 +256,7 @@ module.exports = {
             })
         })
     },// Api for motion product manufacturing        -----  FETCHING DATA  -------------
-    motion_product_manufacturing_routes: (mfr_id, product_name, material_type_one, material_quantity, material_quality, unit, batch_number,
+    motion_product_manufacturing_routes: (product_name, material_type_one, material_quantity, material_quality, unit, batch_number,
         supervisor_name, total_cost, remarks, created_by, last_modified_by) => {
         return new Promise((resolve, reject) => {
             mfr_id = generate6DigitCode();
@@ -270,24 +270,17 @@ module.exports = {
                 }
             })
 
-            const insertQuery = `insert into motion_product_manufacturing ( mfr_id, product_name, material_type_one, material_quantity, material_quality, 
-                unit, batch_number, supervisor_name, total_cost, remarks, created_by, last_modified_by) values (?,?,?,?,?,?,?,?,?,?,?,?)`;
+            const insertQuery = `insert into motion_product_manufacturing (  product_name, material_type_one, material_quantity, material_quality, 
+                unit, batch_number, supervisor_name, total_cost, remarks, created_by, last_modified_by) values (?,?,?,?,?,?,?,?,?,?,?)`;
             const insertValues = [
-                mfr_id, product_name, material_type_one, material_quantity, material_quality, unit, batch_number, supervisor_name, total_cost, remarks,
+                product_name, material_type_one, material_quantity, material_quality, unit, batch_number, supervisor_name, total_cost, remarks,
                 created_by, last_modified_by
             ];
             connection.execute(insertQuery, insertValues, (insertErr, insertResult) => {
                 if (insertErr) {
                     return reject(`Error While Inserting Data. ${insertErr}`);
                 }
-                const insertedId = insertResult.insertId;
-                const fetchQuery = `select * from motion_product_manufacturing`;
-                connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
-                    if (fetchError) {
-                        return reject(`Failed to Fetch Data after Insertion. ${fetchError}`);
-                    }
-                    resolve({ message: `Product Manufacturing Registered Successfully & Data Fetched`, data: fetchResult[0] });
-                })
+                resolve({ message: `Product Manufacturing Registered Successfully & Data Fetched`, data: insertResult });
             })
         })
     },// Api for motion parties registration          -----  FETCHING DATA  -------------
