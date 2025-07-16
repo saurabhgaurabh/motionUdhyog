@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 
 module.exports = {
     update_dealer_registration: (
-        dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, email, alt_mobile_number, 
+        dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, email, alt_mobile_number,
         country, state, city, address, postal_code) => {
         return new Promise((resolve, reject) => {
             const updateQuery = ` UPDATE motion_add_dealer_registration SET

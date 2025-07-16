@@ -29,7 +29,7 @@ routes.post('/v1/verify-user-otp', userController.verify_user_otp);
 routes.get('/v1/motion-add-dealer-registration-get', getController.motion_add_dealer_registration_get_routes);
 routes.get('/v1/motion-purchase-row-material-get', getController.motion_purchase_row_material_get_routes);
 routes.get('/v1/motion-employee-registration-get', getController.motion_employee_registration_get_routes);
-routes.get('/motion_product_manufacturing_get_routes', getController.motion_product_manufacturing_get_routes);
+routes.get('/v1/product-manufacturing-get', getController.motion_product_manufacturing_get_routes);
 routes.get('/motion_parties_registration_get_routes', getController.motion_parties_registration_get_routes);
 routes.get('/motion_dispatch_product_get_routes', getController.motion_dispatch_product_get_routes);
 routes.get('/motion_product_category_get_routes', getController.motion_product_category_get_routes);
@@ -41,10 +41,10 @@ routes.get('/motion_products_get_routes', getController.motion_products_get_rout
 
 
 // Your api's for Update data.
-routes.patch('/v1/motion-dealer-registration', updateController.update_dealer_registration);
-routes.post('/motion_purchase_row_material_update', updateController.motion_purchase_row_material_update);
+routes.patch('/v1/dealer-registration', updateController.update_dealer_registration);
+routes.post('/purchase_row_material_update', updateController.motion_purchase_row_material_update);
 routes.patch('/v1/employee-registration-update', updateController.motion_employee_registration_update);
-routes.post('/motion_product_manufacturing_update', updateController.motion_product_manufacturing_update);
+routes.patch('/v1/product-manufacturing-update', updateController.motion_product_manufacturing_update);
 routes.post('/motion_parties_registration_update', updateController.motion_parties_registration_update);
 
 // delete api's

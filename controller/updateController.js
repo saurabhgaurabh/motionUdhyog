@@ -25,7 +25,7 @@ module.exports = {
 
             const result = await updateOperations.update_dealer_registration(
                 dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, email,
-                alt_mobile_number,country, state, city, address, postal_code
+                alt_mobile_number, country, state, city, address, postal_code
             );
             return res.status(200).json({ status: true, message: result.message, result: result.result });
         }
@@ -100,10 +100,9 @@ module.exports = {
             const disallowedFields = ['created_by', 'last_modified_by'];
             const invalidFields = Object.keys(req.body).filter(field => disallowedFields.includes(field));
             if (invalidFields.length > 0) {
-                return res.status(400).json({ status: false, message: `Update not allowed for fields: ${invalidFields.join(', ')}` });
+                return res.status(400).json({ 
+                    status: false, message: `Update not allowed for fields: ${invalidFields.join(', ')}` });
             }
-            const { product_name, material_type_one, material_quantity, material_quality, unit, batch_number,
-                supervisor_name, total_cost, remarks, mfr_id } = req.body;
             const requiredFields = [
                 'product_name', 'material_type_one', 'material_quantity', 'material_quality', 'unit',
                 'batch_number', 'supervisor_name', 'total_cost', 'remarks', 'mfr_id'
@@ -113,6 +112,9 @@ module.exports = {
                     return res.status(400).json({ status: false, message: `${fields.replace(/_/g, ' ')} is required` });
                 }
             };
+            const { product_name, material_type_one, material_quantity, material_quality, unit, batch_number,
+                supervisor_name, total_cost, remarks, mfr_id } = req.body;
+                
             const productManufacturingResult = await updateOperations.motion_product_manufacturing_update(
                 product_name, material_type_one, material_quantity, material_quality, unit,
                 batch_number, supervisor_name, total_cost, remarks, mfr_id
