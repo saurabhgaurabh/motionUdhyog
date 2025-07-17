@@ -131,9 +131,9 @@ module.exports = {
     },// motion_product_manufacturing_routes                          -----  FETCHING DATA  -------------
     motion_parties_registration_routes: async (req, res) => {
         try {
-            const { party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan } = req.body;
+            const {  organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan } = req.body;
             const requiredFields = [
-                'party_id', 'organization_name', 'owner_name', 'mobile', 'email', 'gst', 'country', 'state', 'city', 'address', 'adhar', 'pan'
+                 'organization_name', 'owner_name', 'mobile', 'email', 'gst', 'country', 'state', 'city', 'address', 'adhar', 'pan'
             ];
             for (fields of requiredFields) {
                 if (!req.body[fields]) {
@@ -141,7 +141,7 @@ module.exports = {
                 }
             }
             const result = await userOperations.motion_parties_registration_routes(
-                party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan);
+               organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan);
             return res.status(200).json({ status: true, message: `Parties Added Successfully.`, result: result });
         } catch (error) {
             return res.status(500).json({ status: false, message: `internal server error.${error}` });

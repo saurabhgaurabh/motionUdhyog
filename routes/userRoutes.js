@@ -13,7 +13,7 @@ routes.post('/v1/motion-add-dealer-registration-post', userController.motion_add
 routes.post('/v1/motion-purchase-row-material-post', userController.motion_purchase_row_material_routes);            
 routes.post('/v1/motion-employee-registration', userController.motion_employee_registration_routes); 
 routes.post('/v1/motion-product-manufacturing', userController.motion_product_manufacturing_routes); 
-routes.post('/motion_parties_registration_routes', userController.motion_parties_registration_routes); 
+routes.post('/v1/motion-parties-registration', userController.motion_parties_registration_routes); 
 routes.post('/motion_dispatch_product_routes', userController.motion_dispatch_product_routes); 
 routes.post('/motion_product_category_routes', userController.motion_product_category_routes); 
 routes.post('/motion_product_subcategories_routes', userController.motion_product_subcategories_routes); 
@@ -30,7 +30,7 @@ routes.get('/v1/motion-add-dealer-registration-get', getController.motion_add_de
 routes.get('/v1/motion-purchase-row-material-get', getController.motion_purchase_row_material_get_routes);
 routes.get('/v1/motion-employee-registration-get', getController.motion_employee_registration_get_routes);
 routes.get('/v1/product-manufacturing-get', getController.motion_product_manufacturing_get_routes);
-routes.get('/motion_parties_registration_get_routes', getController.motion_parties_registration_get_routes);
+routes.get('/v1/motion-parties-registration-get', getController.motion_parties_registration_get_routes);
 routes.get('/motion_dispatch_product_get_routes', getController.motion_dispatch_product_get_routes);
 routes.get('/motion_product_category_get_routes', getController.motion_product_category_get_routes);
 routes.get('/motion_product_subcategories_get_routes', getController.motion_product_subcategories_get_routes);

@@ -284,7 +284,7 @@ module.exports = {
             })
         })
     },// Api for motion parties registration          -----  FETCHING DATA  -------------
-    motion_parties_registration_routes: (party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) => {
+    motion_parties_registration_routes: ( organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) => {
         return new Promise((resolve, reject) => {
             party_id = generate6DigitCode();
             const checkQuery = `select * from motion_parties_registration where gst = ? OR party_id = ?`;
@@ -296,11 +296,12 @@ module.exports = {
                     return reject('GST or Party ID already exists. Duplicate entry not allow.');
                 }
             })
-            const insertQuery = `insert into motion_parties_registration (party_id,
-            organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) values (?,?,?,?,?,?,?,?,?,?,?,?)`;
+            const insertQuery = `insert into motion_parties_registration (
+            organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) values 
+            (?,?,?,?,?,?,?,?,?,?,?)`;
 
             const insertValues = [
-                party_id, organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan
+                organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan
 
             ];
             connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
@@ -309,14 +310,6 @@ module.exports = {
                     return reject(`Error while inserting Data.${insertError}`)
                 }
                 resolve({ data: insertResult, message: `Parties Data Inserted successfully. ` });
-                // const insertedId = insertResult.insertId;
-                // const fetchQuery = `select * from motion_parties_registration`;
-                // connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
-                //     if (fetchResult) {
-                //         return reject(`Error While fetching The Data. ${fetchError}`);
-                //     }
-                //     resolve({ data: insertResult, message: `Parties Data Fetched successfully. ` });
-                // })
             })
         })
     },// Api for motion dispatch product      
