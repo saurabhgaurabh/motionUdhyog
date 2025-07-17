@@ -42,10 +42,10 @@ routes.get('/motion_products_get_routes', getController.motion_products_get_rout
 
 // Your api's for Update data.
 routes.patch('/v1/dealer-registration', updateController.update_dealer_registration);
-routes.post('/purchase_row_material_update', updateController.motion_purchase_row_material_update);
+routes.post('/v1/motion/purchase_row_material_update', updateController.motion_purchase_row_material_update);
 routes.patch('/v1/employee-registration-update', updateController.motion_employee_registration_update);
-routes.patch('/v1/product-manufacturing-update', updateController.motion_product_manufacturing_update);
-routes.post('/motion_parties_registration_update', updateController.motion_parties_registration_update);
+routes.patch('/v1/motion/product-manufacturing-update', updateController.motion_product_manufacturing_update);
+routes.patch('/v1/motion-parties-registration-update', updateController.motion_parties_registration_update);
 
 // delete api's
 routes.delete('/V1/motion-dealer-delete', deleteController.motion_add_dealer_registration_delete);
