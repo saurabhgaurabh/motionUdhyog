@@ -39,6 +39,19 @@ module.exports = {
         }
     }, // verify_user_otp
 
+    user_login: async (req, res) => {
+        try {
+            const { email, password } = req.body;
+            if (!email || !password) {
+                return res.status(400).json({ status: false, message: 'Email and password are required.' });
+            }
+            const user = await userOperations.user_login(email, password);
+            return res.status(200).json({ status: true, message: 'Login successful.', user: user });
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal server error. ${error.message}` });
+        }
+    },
+
 
     motion_add_dealer_registration_routes: async (req, res) => {
         try {
@@ -98,10 +111,10 @@ module.exports = {
                 };
             }
             const { name, dob, state, city, address, postal_code, qualification, adhar, pan, mobile, email,
-                 department, designation,salary  } = req.body;
+                department, designation, salary } = req.body;
             const result = await userOperations.motion_employee_registration_routes(
-                name, dob, state, city, address, postal_code, qualification, adhar, pan, mobile, email, 
-                department, designation,salary
+                name, dob, state, city, address, postal_code, qualification, adhar, pan, mobile, email,
+                department, designation, salary
             );
             return res.status(200).json({ stats: true, message: 'Employee Registered Successfully.', result: result });
         } catch (error) {
@@ -131,9 +144,9 @@ module.exports = {
     },// motion_product_manufacturing_routes                          -----  FETCHING DATA  -------------
     motion_parties_registration_routes: async (req, res) => {
         try {
-            const {  organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan } = req.body;
+            const { organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan } = req.body;
             const requiredFields = [
-                 'organization_name', 'owner_name', 'mobile', 'email', 'gst', 'country', 'state', 'city', 'address', 'adhar', 'pan'
+                'organization_name', 'owner_name', 'mobile', 'email', 'gst', 'country', 'state', 'city', 'address', 'adhar', 'pan'
             ];
             for (fields of requiredFields) {
                 if (!req.body[fields]) {
@@ -141,7 +154,7 @@ module.exports = {
                 }
             }
             const result = await userOperations.motion_parties_registration_routes(
-               organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan);
+                organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan);
             return res.status(200).json({ status: true, message: `Parties Added Successfully.`, result: result });
         } catch (error) {
             return res.status(500).json({ status: false, message: `internal server error.${error}` });

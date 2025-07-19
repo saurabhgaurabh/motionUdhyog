@@ -141,6 +141,28 @@ module.exports = {
         })
     },
 
+    user_login: (registration_email, password) => {
+        return new Promise((resolve, reject) => {
+            const query = `SELECT registration_email, password FROM 
+            motion_user_registration WHERE registration_email = ?`;
+            connection.execute(query, [registration_email], (err, results) => {
+                if (err) {
+                    return reject({ status: false, message: 'Database error.' });
+                }
+                if (results.length === 0) {
+                    return reject({ status: false, message: 'User not found.' });
+                }
+                const user = results[0];
+                bcrypt.compare(password, user.password, (compareErr, isMatch) => {
+                    if (compareErr || !isMatch) {
+                        return reject({ status: false, message: 'Invalid password.' });
+                    }
+                    resolve({ status: true, message: 'Login successful.', user });
+                });
+            });
+        });
+    },
+
     motion_add_dealer_registration_routes: (
         dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, email, alt_mobile_number,
         country, state, city, address, postal_code) => {
@@ -284,7 +306,7 @@ module.exports = {
             })
         })
     },// Api for motion parties registration          -----  FETCHING DATA  -------------
-    motion_parties_registration_routes: ( organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) => {
+    motion_parties_registration_routes: (organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) => {
         return new Promise((resolve, reject) => {
             party_id = generate6DigitCode();
             const checkQuery = `select * from motion_parties_registration where gst = ? OR party_id = ?`;
