@@ -30,6 +30,14 @@ const fourDigitCode = () => {
   return code;
 };
 
+const randomUserCode = () => {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let code = "User-";
+  for (let i = 0; i < 6; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+};
 const generatePurchaseId = () => {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let code = "DEALER-";
@@ -52,5 +60,6 @@ module.exports = {
   generateManufacturingId,
   fourDigitCode,
   generate8DigitCode,
-  generate6DigitCode
+  generate6DigitCode,
+  randomUserCode
 };

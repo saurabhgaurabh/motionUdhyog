@@ -5,7 +5,7 @@ const speakeasy = require('speakeasy');
 module.exports = {
     motion_user_registration_routes: async (req, res) => {
         try {
-            const requiredFields = ['userCode', 'company_name', 'owner_name', 'industry_type', 'GST_number',
+            const requiredFields = [ 'company_name', 'owner_name', 'industry_type', 'GST_number',
                 'registration_email', 'mobile_number', 'password', 'confirm_password',
                 'country', 'state', 'city', 'address', 'postal_code', 'website'];
             for (const field of requiredFields) {
@@ -13,10 +13,10 @@ module.exports = {
                     return res.status(404).json({ status: false, message: `${field.replace('_', ' ')} is required.` }); //If any field is missing or empty, it stops and returns a message like: //field.replace('_', ' ') just makes the message more readable (postal_code ➝ postal code)
                 }
             }
-            const { userCode, company_name, owner_name, industry_type, GST_number, registration_email, mobile_number, password, confirm_password, country,
+            const { company_name, owner_name, industry_type, GST_number, registration_email, mobile_number, password, confirm_password, country,
                 state, city, address, postal_code, website } = req.body;
 
-            const result = await userOperations.motion_user_registration_routes(userCode, company_name, owner_name, industry_type, GST_number, registration_email,
+            const result = await userOperations.motion_user_registration_routes( company_name, owner_name, industry_type, GST_number, registration_email,
                 mobile_number, password, confirm_password, country, state, city, address, postal_code, website);
             return res.status(200).json({ status: true, message: `Registration Completed Successfully.`, result: result });
         } catch (error) {
@@ -48,6 +48,19 @@ module.exports = {
             const user = await userOperations.user_login(email, password);
             return res.status(200).json({ status: true, message: 'Login successful.', user: user });
         } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal server error. ${error.message}` });
+        }
+    },
+    user_otp_verification: async(req, res) =>{
+        try {
+            const {  userOTP } = req.body;
+            if ( !userOTP) {
+                return res.status(400).json({ status: false, message: 'User code and OTP are required.' });
+            }
+            const user = await userOperations.user_otp_verification(userCode, userOTP);
+            return res.status(200).json({ status: true, message: 'OTP verified successfully.', user: user });
+        } catch (error) {
+            console.error('Error verifying OTP:', error);
             return res.status(500).json({ status: false, message: `Internal server error. ${error.message}` });
         }
     },

@@ -23,7 +23,8 @@ routes.post('/motion_products_routes', userController.motion_products_routes); /
 
 // authentication 
 routes.post('/v1/verify-user-otp', userController.verify_user_otp);
-routes.post('v1/user-login', userController.user_login);
+routes.post('/v1/user-login', userController.user_login);
+routes.post('/v1/user-otp-verification', userController.user_otp_verification);
 
 
 
