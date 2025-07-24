@@ -5,20 +5,24 @@ const speakeasy = require('speakeasy');
 module.exports = {
     motion_user_registration_routes: async (req, res) => {
         try {
-            const requiredFields = [ 'company_name', 'owner_name', 'industry_type', 'GST_number',
-                'registration_email', 'mobile_number', 'password', 'confirm_password',
-                'country', 'state', 'city', 'address', 'postal_code', 'website'];
+            // const requiredFields = [ 'company_name', 'owner_name', 'industry_type', 'GST_number',
+            //     'registration_email', 'mobile_number', 'password', 'confirm_password',
+            //     'country', 'state', 'city', 'address', 'postal_code', 'website'];
+                 const requiredFields = [ 'owner_name','registration_email',  'password', 'confirm_password'];
             for (const field of requiredFields) {
                 if (!req.body[field]) { // checks if that field exists in the incoming request.
                     return res.status(404).json({ status: false, message: `${field.replace('_', ' ')} is required.` }); //If any field is missing or empty, it stops and returns a message like: //field.replace('_', ' ') just makes the message more readable (postal_code ➝ postal code)
                 }
             }
-            const { company_name, owner_name, industry_type, GST_number, registration_email, mobile_number, password, confirm_password, country,
-                state, city, address, postal_code, website } = req.body;
+            const { owner_name, registration_email, password, confirm_password } = req.body;
+                // const { company_name, owner_name, industry_type, GST_number, registration_email, mobile_number, password, confirm_password, country,
+                // state, city, address, postal_code, website } = req.body;
 
-            const result = await userOperations.motion_user_registration_routes( company_name, owner_name, industry_type, GST_number, registration_email,
-                mobile_number, password, confirm_password, country, state, city, address, postal_code, website);
-            return res.status(200).json({ status: true, message: `Registration Completed Successfully.`, result: result });
+            const result = await userOperations.motion_user_registration_routes( owner_name, registration_email, password, confirm_password);
+          
+            // const result = await userOperations.motion_user_registration_routes( company_name, owner_name, industry_type, GST_number, registration_email,
+            //     mobile_number, password, confirm_password, country, state, city, address, postal_code, website);
+            return res.json(200).json({ status: true, message: `Registration Completed Successfully.`, result: result });
         } catch (error) {
             return res.status(500).json({ result: [], status: false, message: `Internal Server Errors. ${error}` })
         }
