@@ -18,7 +18,8 @@ function generateOTP() {
 // modules for Operations
 module.exports = {
     motion_user_registration_routes: (
-      owner_name, registration_email, password, confirm_password
+        company_name, owner_name, industry_type, GST_number, registration_email,
+        mobile_number, password, confirm_password, country, state, city, address, postal_code, website
     ) => {
         return new Promise((resolve, reject) => {
             const userCode = randomUserCode();
@@ -52,7 +53,7 @@ module.exports = {
                        <div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
                             <h2 style="color: #4CAF50;">Welcome to ApkaUdhyog.com!</h2>      
                                 <p>Hi <strong>${owner_name}</strong>,</p>      
-                                <p>We’re excited to have <strong>${owner_name}</strong> join the ApkaUdhyog platform.</p>      
+                                <p>We’re excited to have <strong>${company_name}</strong> join the ApkaUdhyog platform.</p>      
                                 <p>To complete your registration, please use the following One-Time Password (OTP):</p>      
                             <div style="text-align: center; margin: 20px 0;">
                                 <span style="display: inline-block; background: #4CAF50; color: white; font-size: 24px; padding: 12px 24px; border-radius: 6px; letter-spacing: 2px;"> ${userOTP}</span>
@@ -82,27 +83,18 @@ module.exports = {
                                 return reject('Error hashing the confirm password.');
                             }
                             const insertQuery = `INSERT INTO motion_user_registration (
-                            userCode,  owner_name,registration_email,
-                            password, confirm_password, flag, userOTP, otp_secret, otp_expiry
-                              )   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-                            // const insertQuery = `INSERT INTO motion_user_registration (
-                            // userCode, company_name, owner_name, industry_type, GST_number, registration_email,
-                            //  mobile_number, password, confirm_password, country, state, city, address, postal_code,
-                            //   website, flag, userOTP, otp_secret, otp_expiry
-                            //   )   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                            userCode, company_name, owner_name, industry_type, GST_number, registration_email,
+                             mobile_number, password, confirm_password, country, state, city, address, postal_code,
+                              website, flag, userOTP, otp_secret, otp_expiry
+                              )   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
                             const values = [
-                                userCode,  owner_name, registration_email, hashedPassword, hashedConfirmPassword,
-                                 'unverified', userOTP
+                                userCode, company_name, owner_name, industry_type, GST_number,
+                                registration_email, mobile_number, hashedPassword, hashedConfirmPassword,
+                                country, state, city, address, postal_code, website, 'unverified', userOTP
                                 , otp_secret, otpExpiry
                             ];
-                            // const values = [
-                            //     userCode, company_name, owner_name, industry_type, GST_number,
-                            //     registration_email, mobile_number, hashedPassword, hashedConfirmPassword,
-                            //     country, state, city, address, postal_code, website, 'unverified', userOTP
-                            //     , otp_secret, otpExpiry
-                            // ];
-      
+
                             connection.execute(insertQuery, values, (insertErr, insertResult) => {
                                 if (insertErr) {
                                     // console.error(insertErr," error");
@@ -198,8 +190,8 @@ module.exports = {
             });
         });
     },
-    
-    
+
+
     motion_add_dealer_registration_routes: (
         dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, email, alt_mobile_number,
         country, state, city, address, postal_code) => {
@@ -492,6 +484,23 @@ module.exports = {
             })
         })
     },
+
+    motion_daily_tasks: (employee_name, task_month, first_half_work, second_half_work, full_day_work, total_hours, remarks) => {
+        return new Promise((resolve, reject) => {
+            const insertQuery = `INSERT INTO motion_daily_tasks (
+            employee_name, task_month, first_half_work, second_half_work, full_day_work, total_hours, remarks) VALUES 
+            (?, ?, ?, ?, ?, ?, ?)`;
+            const insertValues = [
+                employee_name,  task_month, first_half_work, second_half_work, full_day_work, total_hours, remarks
+            ];
+            connection.execute(insertQuery, insertValues, (insertErr, insertResult) => {
+                if (insertErr) {
+                    reject(`Error while inserting daily tasks data. ${insertErr}`);
+                }
+                resolve({ status: true, message: 'Daily tasks registered successfully.', data: insertResult });
+            })
+        })
+    }
 
 
 

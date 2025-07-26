@@ -5,23 +5,19 @@ const speakeasy = require('speakeasy');
 module.exports = {
     motion_user_registration_routes: async (req, res) => {
         try {
-            // const requiredFields = [ 'company_name', 'owner_name', 'industry_type', 'GST_number',
-            //     'registration_email', 'mobile_number', 'password', 'confirm_password',
-            //     'country', 'state', 'city', 'address', 'postal_code', 'website'];
-                 const requiredFields = [ 'owner_name','registration_email',  'password', 'confirm_password'];
+            const requiredFields = ['company_name', 'owner_name', 'industry_type', 'GST_number',
+                'registration_email', 'mobile_number', 'password', 'confirm_password',
+                'country', 'state', 'city', 'address', 'postal_code', 'website'];
             for (const field of requiredFields) {
                 if (!req.body[field]) { // checks if that field exists in the incoming request.
                     return res.status(404).json({ status: false, message: `${field.replace('_', ' ')} is required.` }); //If any field is missing or empty, it stops and returns a message like: //field.replace('_', ' ') just makes the message more readable (postal_code ➝ postal code)
                 }
             }
-            const { owner_name, registration_email, password, confirm_password } = req.body;
-                // const { company_name, owner_name, industry_type, GST_number, registration_email, mobile_number, password, confirm_password, country,
-                // state, city, address, postal_code, website } = req.body;
+            const { company_name, owner_name, industry_type, GST_number, registration_email, mobile_number, password, confirm_password, country,
+                state, city, address, postal_code, website } = req.body;
 
-            const result = await userOperations.motion_user_registration_routes( owner_name, registration_email, password, confirm_password);
-          
-            // const result = await userOperations.motion_user_registration_routes( company_name, owner_name, industry_type, GST_number, registration_email,
-            //     mobile_number, password, confirm_password, country, state, city, address, postal_code, website);
+            const result = await userOperations.motion_user_registration_routes(company_name, owner_name, industry_type, GST_number, registration_email,
+                mobile_number, password, confirm_password, country, state, city, address, postal_code, website);
             return res.json(200).json({ status: true, message: `Registration Completed Successfully.`, result: result });
         } catch (error) {
             return res.status(500).json({ result: [], status: false, message: `Internal Server Errors. ${error}` })
@@ -55,10 +51,10 @@ module.exports = {
             return res.status(500).json({ status: false, message: `Internal server error. ${error.message}` });
         }
     },
-    user_otp_verification: async(req, res) =>{
+    user_otp_verification: async (req, res) => {
         try {
-            const {  userOTP } = req.body;
-            if ( !userOTP) {
+            const { userOTP } = req.body;
+            if (!userOTP) {
                 return res.status(400).json({ status: false, message: 'User code and OTP are required.' });
             }
             const user = await userOperations.user_otp_verification(userCode, userOTP);
@@ -274,8 +270,27 @@ module.exports = {
         }
     }, // motion_products_routes
 
+    motion_daily_tasks: async (req, res) => {
+        try {
+            const { employee_name,  task_month, first_half_work, second_half_work, full_day_work, total_hours, remarks } = req.body;
+            const requiredFields = [
+                'employee_name',  'task_month', 'first_half_work', 'second_half_work', 'full_day_work', 'total_hours', 'remarks'
+            ];
+            for (const fields of requiredFields) {
+                if (!req.body[fields]) {
+                    return res.status(404).json({ status: false, message: `${fields.replace(/_/g, ' ')} is required.` });
+                }
+            }
+            const dailyTaskResult = await userOperations.motion_daily_tasks(
+                employee_name, task_month, first_half_work, second_half_work, full_day_work, total_hours, remarks
+            );
+            console.log(dailyTaskResult, "result in motion_daily_tasks");
+            return res.status(201).json({ status: true, message: `Daily Task Added Successfully.`, result: dailyTaskResult });
 
-
-
+        } catch (internalError) {
+            console.log(internalError, "error in motion_daily_tasks");
+            return res.status(500).json({ status: false, message: `Internal Server Error. ${internalError}` });
+        }
+    },
 
 }

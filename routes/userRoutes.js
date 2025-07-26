@@ -19,6 +19,7 @@ routes.post('/motion_product_category_routes', userController.motion_product_cat
 routes.post('/motion_product_subcategories_routes', userController.motion_product_subcategories_routes); 
 routes.post('/motion_product_sub_subcategories_routes', userController.motion_product_sub_subcategories_routes); 
 routes.post('/motion_products_routes', userController.motion_products_routes); // Products optionals
+routes.post('/v1/motion-daily-tasks', userController.motion_daily_tasks);
 
 
 // authentication 
