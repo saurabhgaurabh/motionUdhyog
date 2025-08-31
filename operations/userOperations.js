@@ -500,7 +500,7 @@ module.exports = {
                 resolve({ status: true, message: 'Daily tasks registered successfully.', data: insertResult });
             })
         })
-    }
+    },
 
 
 

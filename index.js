@@ -1,5 +1,6 @@
 // index.js
 const express = require('express');
+const ngrok = require('@ngrok/ngrok');
 const cors = require('cors');
 const approute = require('./app');
 const app = express();
@@ -15,5 +16,11 @@ app.use((req, res) => {
 })
 app.listen(PORT, () => {
   console.log(`Server has been activated via port no. ${PORT}`);
-});
 
+//   ngrok.connect(PORT).then((ngrokUrl) => {
+//     console.log(`ngrok tunnel in ${ngrokUrl}`);
+//   }).catch((err) => {
+//     console.error('Error connecting to ngrok:', err);
+// });
+
+}); 

@@ -20,13 +20,13 @@ routes.post('/motion_product_subcategories_routes', userController.motion_produc
 routes.post('/motion_product_sub_subcategories_routes', userController.motion_product_sub_subcategories_routes); 
 routes.post('/motion_products_routes', userController.motion_products_routes); // Products optionals
 routes.post('/v1/motion-daily-tasks', userController.motion_daily_tasks);
-
-
+ 
+    
 // authentication 
 routes.post('/v1/verify-user-otp', userController.verify_user_otp);
 routes.post('/v1/user-login', userController.user_login);
 routes.post('/v1/user-otp-verification', userController.user_otp_verification);
-
+ 
 
 
 
