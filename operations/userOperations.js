@@ -193,14 +193,14 @@ module.exports = {
 
 
     motion_add_dealer_registration_routes: (
-        dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, email, alt_mobile_number,
+        dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, dealing_product, email,
         country, state, city, address, postal_code) => {
         return new Promise((resolve, reject) => {
             dealer_Code = generateRandomCode();
             const checkQuery = `SELECT 
-            dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password, email, 
-            alt_mobile_number, country, state, city, address, postal_code  FROM 
-            motion_add_dealer_registration WHERE dealer_Code = ? OR dealer_GST = ?`;
+            dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, dealing_product, email, 
+         country, state, city, address, postal_code  FROM 
+            motion_add_dealer_registration WHERE dealer_Code = ? OR dealer_GST = ? order by dealer_id desc`;
             connection.execute(checkQuery, [dealer_Code, dealer_GST], (checkErr, checkResult) => {
                 if (checkErr) {
                     return reject('Error checking existing records.');
@@ -211,13 +211,13 @@ module.exports = {
                 }
                 const insertQuery = `INSERT INTO motion_add_dealer_registration (
                         dealer_Code, dealer_name, dealer_GST, mobile_number,
-                        adhar_number, pan, password, email, alt_mobile_number, country, state,
+                        adhar_number, pan, dealing_product, email, country, state,
                         city, address, postal_code
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
 
                 const values = [
-                    dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, password,
-                    email, alt_mobile_number, country, state, city, address, postal_code
+                    dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, dealing_product,
+                    email, country, state, city, address, postal_code
                 ];
 
                 connection.execute(insertQuery, values, (insertErr, insertResult) => {
@@ -225,26 +225,26 @@ module.exports = {
                         // console.error(insertErr);
                         return reject(`Something went wrong while inserting data.${insertErr}`);
                     }
-                    resolve({ message: "Dealer Registered Successfully", data: insertResult });
-                    // const insertedId = insertResult.insertId;
-                    // // Fetch the inserted row
-                    // const fetchQuery = `SELECT * FROM motion_add_dealer_registration`;
-                    // connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
-                    //     if (fetchError) {
-                    //         console.error(fetchError);
-                    //         return reject(`Inserted but failed to fetch data. ${fetchError}`);
-                    //     }
-                    //     // Return the inserted row
-                    //     resolve({ message: "Dealer Registered Successfully", data: fetchResult[0] });
-                    // })
+                    // resolve({ message: "Dealer Registered Successfully", data: insertResult });
+                    const insertedId = insertResult.insertId;
+                    // Fetch the inserted row
+                    const fetchQuery = `SELECT * FROM motion_add_dealer_registration order by dealer_id desc`;
+                    connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
+                        if (fetchError) {
+                            console.error(fetchError);
+                            return reject(`Inserted but failed to fetch data. ${fetchError}`);
+                        }
+                        // Return the inserted row
+                        resolve({ message: "Dealer Registered Successfully", data: fetchResult });
+                    })
                 })
             })
         })
     },    // Api for motion purchase row material  -----  FETCHING DATA  -------------
     motion_purchase_row_material_routes: (order_id, dealer_name, material_type, postal_code,
-        password, country, state, city, address, freight, material_amount, material_amount_remaining) => {
+        country, state, city, address, freight, material_amount, material_amount_pending) => {
         return new Promise((resolve, reject) => {
-            order_id = generateRandomId();
+            // order_id = generateRandomId();
             const checkQuery = `select * from motion_purchase_row_material where order_id = ? OR dealer_name = ?`;
             connection.execute(checkQuery, [order_id, dealer_name], (checkErr, checkResult) => {
                 if (checkErr) {
@@ -255,26 +255,26 @@ module.exports = {
                 }
             })
 
-            bcrypt.hash(password, saltRounds, (Error, hashedPassword) => {
-                if (Error) {
-                    reject(`Error Hashing the Password. ${Error}`)
+            // bcrypt.hash(password, saltRounds, (Error, hashedPassword) => {
+            //     if (Error) {
+            //         reject(`Error Hashing the Password. ${Error}`)
+            //     }
+            const insertQuery = `insert into motion_purchase_row_material
+                 (order_id, dealer_name, material_type, postal_code, country, state, 
+                city, address, freight, material_amount, material_amount_pending) values (?,?,?,?,?,?,?,?,?,?,?)`;
+            const values = [
+                order_id, dealer_name, material_type, postal_code,
+                country, state, city, address, freight, material_amount, material_amount_pending
+            ];
+            connection.execute(insertQuery, values, (insertErr, insertResult) => {
+                if (insertErr) {
+                    console.log(insertErr, "insertErr")
+                    return reject(`Something went wrong while inserting data.${insertErr}`);
                 }
-                const insertQuery = `insert into motion_purchase_row_material
-                 (order_id, dealer_name, material_type, postal_code, password, country, state, 
-                city, address, freight, material_amount, material_amount_remaining) values (?,?,?,?,?,?,?,?,?,?,?,?)`;
-                const values = [
-                    order_id, dealer_name, material_type, postal_code,
-                    hashedPassword, country, state, city, address, freight, material_amount, material_amount_remaining
-                ];
-                connection.execute(insertQuery, values, (insertErr, insertResult) => {
-                    if (insertErr) {
-                        console.log(insertErr, "insertErr")
-                        return reject(`Something went wrong while inserting data.${insertErr}`);
-                    }
-                    console.log(insertResult, "insertResult")
-                    resolve(insertResult);
-                })
+                console.log(insertResult, "insertResult")
+                resolve(insertResult);
             })
+            // })
         })
     },// Api for motion employee registration    -----  FETCHING DATA  -------------
     motion_employee_registration_routes: (name, dob, state, city, address, postal_code, qualification, adhar,
@@ -308,7 +308,7 @@ module.exports = {
         })
     },// Api for motion product manufacturing        -----  FETCHING DATA  -------------
     motion_product_manufacturing_routes: (product_name, material_type_one, material_quantity, material_quality, unit, batch_number,
-        supervisor_name, total_cost, remarks, created_by, last_modified_by) => {
+        supervisor_name, total_cost, remarks) => {
         return new Promise((resolve, reject) => {
             mfr_id = generate6DigitCode();
             const checkQuery = `select * from motion_product_manufacturing where mfr_id = ?`;
@@ -322,19 +322,31 @@ module.exports = {
             })
 
             const insertQuery = `insert into motion_product_manufacturing (  product_name, material_type_one, material_quantity, material_quality, 
-                unit, batch_number, supervisor_name, total_cost, remarks, created_by, last_modified_by) values (?,?,?,?,?,?,?,?,?,?,?)`;
+                unit, batch_number, supervisor_name, total_cost, remarks) values (?,?,?,?,?,?,?,?,?)`;
             const insertValues = [
                 product_name, material_type_one, material_quantity, material_quality, unit, batch_number, supervisor_name, total_cost, remarks,
-                created_by, last_modified_by
             ];
             connection.execute(insertQuery, insertValues, (insertErr, insertResult) => {
                 if (insertErr) {
                     return reject(`Error While Inserting Data. ${insertErr}`);
                 }
-                resolve({ message: `Product Manufacturing Registered Successfully & Data Fetched`, data: insertResult });
+                // resolve({ message: `Product Manufacturing Registered Successfully & Data Fetched`, data: insertResult });'
+                // fetch data 
+                const fetchQuery = `SELECT * FROM motion_product_manufacturing WHERE mfr_id = ?`;
+                connection.execute(fetchQuery, [mfr_id], (fetchErr, fetchResult) => {
+                    if (fetchErr) {
+                        return reject(`Inserted but failed to fetch data. ${fetchErr}`);
+                    }
+                    resolve({ message: `Product Manufacturing Registered Successfully & Data Fetched`, data: fetchResult[0] });
+                })
             })
         })
     },// Api for motion parties registration          -----  FETCHING DATA  -------------
+
+
+
+
+
     motion_parties_registration_routes: (organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) => {
         return new Promise((resolve, reject) => {
             party_id = generate6DigitCode();
@@ -352,7 +364,8 @@ module.exports = {
             (?,?,?,?,?,?,?,?,?,?,?)`;
 
             const insertValues = [
-                organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan
+                organization_name || null, owner_name || null, mobile || null, email || null, gst || null,
+                country || null, state || null, city || null, address || null, adhar || null, pan || null
 
             ];
             connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
@@ -485,13 +498,13 @@ module.exports = {
         })
     },
 
-    motion_daily_tasks: (employee_name, task_month, first_half_work, second_half_work, full_day_work, total_hours, remarks) => {
+    motion_daily_tasks: (employee_name, shift, remarks) => {
         return new Promise((resolve, reject) => {
             const insertQuery = `INSERT INTO motion_daily_tasks (
-            employee_name, task_month, first_half_work, second_half_work, full_day_work, total_hours, remarks) VALUES 
-            (?, ?, ?, ?, ?, ?, ?)`;
+            employee_name, shift, remarks) VALUES 
+            (?, ?, ?)`;
             const insertValues = [
-                employee_name,  task_month, first_half_work, second_half_work, full_day_work, total_hours, remarks
+                employee_name, shift, remarks
             ];
             connection.execute(insertQuery, insertValues, (insertErr, insertResult) => {
                 if (insertErr) {
