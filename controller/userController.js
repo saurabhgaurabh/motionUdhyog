@@ -273,7 +273,7 @@ module.exports = {
         try {
             const { employee_name, shift, total_hours, remarks } = req.body;
             const requiredFields = [
-                'employee_name',  'shift', 'remarks'
+                'employee_name',  'shift', 'total_hours', 'remarks'
             ];
             for (const fields of requiredFields) {
                 if (!req.body[fields]) {
@@ -281,7 +281,7 @@ module.exports = {
                 }
             }
             const dailyTaskResult = await userOperations.motion_daily_tasks(
-                employee_name, shift, remarks
+                employee_name, shift, total_hours, remarks
             );
             console.log(dailyTaskResult, "result in motion_daily_tasks");
             return res.status(201).json({ status: true, message: `Daily Task Added Successfully.`, result: dailyTaskResult });

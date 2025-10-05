@@ -43,7 +43,7 @@ routes.get('/motion_product_category_get_routes', getController.motion_product_c
 routes.get('/motion_product_subcategories_get_routes', getController.motion_product_subcategories_get_routes);
 routes.get('/motion_product_sub_subcategories_get_routes', getController.motion_product_sub_subcategories_get_routes);
 routes.get('/motion_products_get_routes', getController.motion_products_get_routes);
-
+routes.get('/v1/motion-daily-tasks-get', getController.motion_daily_tasks_get_routes);
 
 
 

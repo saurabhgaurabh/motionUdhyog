@@ -330,8 +330,6 @@ module.exports = {
                 if (insertErr) {
                     return reject(`Error While Inserting Data. ${insertErr}`);
                 }
-                // resolve({ message: `Product Manufacturing Registered Successfully & Data Fetched`, data: insertResult });'
-                // fetch data 
                 const fetchQuery = `SELECT * FROM motion_product_manufacturing WHERE mfr_id = ?`;
                 connection.execute(fetchQuery, [mfr_id], (fetchErr, fetchResult) => {
                     if (fetchErr) {
@@ -342,10 +340,6 @@ module.exports = {
             })
         })
     },// Api for motion parties registration          -----  FETCHING DATA  -------------
-
-
-
-
 
     motion_parties_registration_routes: (organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) => {
         return new Promise((resolve, reject) => {
@@ -498,19 +492,26 @@ module.exports = {
         })
     },
 
-    motion_daily_tasks: (employee_name, shift, remarks) => {
+    motion_daily_tasks: (employee_name, shift, total_hours, remarks) => {
         return new Promise((resolve, reject) => {
             const insertQuery = `INSERT INTO motion_daily_tasks (
-            employee_name, shift, remarks) VALUES 
-            (?, ?, ?)`;
+            employee_name, shift, total_hours, remarks) VALUES 
+            (?, ?, ?, ?)`;
             const insertValues = [
-                employee_name, shift, remarks
+                employee_name, shift, total_hours, remarks
             ];
             connection.execute(insertQuery, insertValues, (insertErr, insertResult) => {
                 if (insertErr) {
                     reject(`Error while inserting daily tasks data. ${insertErr}`);
                 }
-                resolve({ status: true, message: 'Daily tasks registered successfully.', data: insertResult });
+                 const task_id = insertResult.insertId;
+                const fetchQuery = `SELECT * FROM motion_daily_tasks WHERE task_id = ?`;
+                connection.execute(fetchQuery, [task_id], (fetchErr, fetchResult) => {
+                    if (fetchErr) {
+                        return reject(`Inserted but failed to fetch data. ${fetchErr}`);
+                    }
+                    resolve({ status: true, message: 'Daily tasks registered successfully.', data: fetchResult[0] });
+                })// resolve({ status: true, message: 'Daily tasks registered successfully.', data: insertResult });
             })
         })
     },

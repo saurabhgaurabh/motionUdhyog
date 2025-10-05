@@ -152,6 +152,15 @@ module.exports = {
                 resolve({ result: productResult, message: `Products Data Fetched.`, status: true })
             })
         })
+    },
+    motion_daily_tasks_get_routes: () => {
+        const taskQuery = `Select * from motion_daily_tasks`;
+        connection.execute(taskQuery, [], (taskError, taskResult) => {
+            if (taskError) {
+                return reject(`Something went wrong while fetching the data. ${taskError}`);
+            }
+            resolve({ result: taskResult, message: `Daily Tasks Data Fetched Successfully.`, status: true });
+        })
     }
 
 }

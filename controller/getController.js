@@ -86,5 +86,13 @@ module.exports = {
             return res.status(500).json({ status: false, message: `Internal Server Errors. ${error}` });
 
         }
+    },
+    motion_daily_tasks_get_routes: async (req, res) =>{
+        try {
+            const dailyTaskResult = await getOperations.motion_daily_tasks_get_routes();
+            return res.status(200).json({ status: true, message: `Daily Tasks Data Fetched Successfully.`, result: dailyTaskResult });
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal Server Errors. ${error}` });
+        }
     }
 }
