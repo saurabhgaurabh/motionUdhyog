@@ -20,7 +20,7 @@ routes.post('/motion_product_subcategories_routes', userController.motion_produc
 routes.post('/motion_product_sub_subcategories_routes', userController.motion_product_sub_subcategories_routes); //Products 
 routes.post('/motion_products_routes', userController.motion_products_routes); // Products optionals
 routes.post('/v1/motion-daily-tasks', userController.motion_daily_tasks); // Home
-// routes.post('/v1/motion-sales', userController.motion_sales_routes);
+routes.post('/v1/motion-sales', userController.motion_sales_routes);
 // today orders
   //monthly report
      

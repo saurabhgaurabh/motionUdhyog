@@ -290,15 +290,29 @@ module.exports = {
             return res.status(500).json({ status: false, message: `Internal Server Error. ${internalError}` });
         }
     },
-    // motion_sales_routes: async (req, res) =>{
-    //     try {
-    //         const {client_name, factory_name, product_name, product_cost, total_amount, paid_amount, pending_amount, 
-    //             delivery_date, 
-    //         } = req.body;
-    //     } catch (error) {
-    //         return res.status(500).json({ status: false, message: `Internal Server Error. ${error}`});
-    //     }
-    // }
+    motion_sales_routes: async (req, res) =>{
+        try {
+            const {customer_name, company, product_name, quantity, price, total_amount, due_amount, 
+                payment_status, remarks } = req.body;
+                const requiredFields = [
+                    'customer_name', 'company', 'product_name', 'quantity', 'price', 'total_amount', 'due_amount', 
+                    'payment_status'
+                ];
+                for (const fields of requiredFields) {
+                    if(!req.body[fields]){
+                        return res.status(404).json({status: false, message: `${fields.replace(/_/g,' ')} is required.`});
+                    }
+                }
+                const salesResult = await userOperations.motion_sales_routes(
+                    customer_name , company, product_name, quantity, price, total_amount, due_amount, 
+                    payment_status, remarks
+                );
+                console.log(salesResult," result in motion_sales_routes");
+                return res.status(201).json({status: true, message: `Sales Added Successfully.`, result: salesResult});
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal Server Error. ${error}`});
+        }
+    }
     
 
 }

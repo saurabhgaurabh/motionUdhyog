@@ -5,6 +5,7 @@ const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const speakeasy = require('speakeasy');
+const { promises } = require('nodemailer/lib/xoauth2');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -216,8 +217,9 @@ module.exports = {
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
 
                 const values = [
-                    dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, dealing_product,
-                    email, country, state, city, address, postal_code
+                    dealer_Code ?? null, dealer_name ?? null, dealer_GST ?? null, mobile_number ?? null,
+                    adhar_number ?? null, pan ?? null, dealing_product ?? null,
+                    email ?? null, country ?? null, state ?? null, city ?? null, address ?? null, postal_code ?? null
                 ];
 
                 connection.execute(insertQuery, values, (insertErr, insertResult) => {
@@ -517,7 +519,32 @@ module.exports = {
         })
     },
 
-
+    motion_sales_routes: (customer_name, company, product_name, quantity, price, total_amount, due_amount,
+        payment_status, remarks) => {
+        return new Promise((resolve, reject) => {
+            const insertQuery = `INSERT INTO motion_sales (
+                customer_name, company, product_name, quantity, price, total_amount, due_amount,
+                payment_status, remarks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            const insertValues = [
+                customer_name ?? null, company ?? null, product_name ?? null, quantity ?? null, price ?? null,
+                total_amount ?? null, due_amount ?? null, payment_status ?? null, remarks ?? null
+            ];
+            connection.execute(insertQuery, insertValues, (insertErr, insertResult) => {
+                if (insertErr) {
+                    reject(`Error while inserting sales data. ${insertErr}`);
+                } else {
+                    const sales_id = insertResult.insertId;
+                    const fetchQuery = `SELECT * FROM motion_sales WHERE sale_id = ?`;
+                    connection.execute(fetchQuery, [sales_id], (fetchErr, fetchResult) => {
+                        if (fetchErr) {
+                            return reject(`Inserted but failed to fetch data. ${fetchErr}`);
+                        }
+                        resolve({ status: true, message: 'Sales registered successfully.', data: fetchResult[0] });
+                    });
+                }
+            });
+        });
+    },
 
 
 }
