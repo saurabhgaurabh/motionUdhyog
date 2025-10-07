@@ -277,7 +277,7 @@ module.exports = {
             // })
         })
     },// Api for motion employee registration    -----  FETCHING DATA  -------------
-    motion_employee_registration_routes: (name, dob, state, city, address, postal_code, qualification, adhar,
+    motion_employee_registration_routes: (employee_name, dob, state, city, address, postal_code, qualification, adhar,
         pan, mobile, email, department, designation, salary) => {
         return new Promise((resolve, reject) => {
             // emp_id = generate6DigitCode();
@@ -293,11 +293,12 @@ module.exports = {
                 }
             })
             const insertQuery = `insert into motion_employee_registration 
-            (emp_code, name, dob, state, city, address, postal_code, qualification, adhar, pan, mobile, 
+            (emp_code, employee_name, dob, state, city, address, postal_code, qualification, adhar, pan, mobile, 
             email, department, designation, salary)  values (?,?, ?,?,?,?,?,?,?,?,?,?,?,?,?)`;
             const values = [
-                emp_code, name, dob, state, city, address, postal_code, qualification, adhar, pan, mobile, email, department,
-                designation, salary
+                emp_code, employee_name ?? null, dob ?? null, state ?? null, city ?? null, address ?? null, postal_code ?? null,
+                qualification ?? null, adhar ?? null, pan ?? null, mobile ?? null, email ?? null, department ?? null,
+                designation ?? null, salary ?? null
             ];
             connection.execute(insertQuery, values, (insertErr, insertResult) => {
                 if (insertErr) {
@@ -504,7 +505,7 @@ module.exports = {
                 if (insertErr) {
                     reject(`Error while inserting daily tasks data. ${insertErr}`);
                 }
-                 const task_id = insertResult.insertId;
+                const task_id = insertResult.insertId;
                 const fetchQuery = `SELECT * FROM motion_daily_tasks WHERE task_id = ?`;
                 connection.execute(fetchQuery, [task_id], (fetchErr, fetchResult) => {
                     if (fetchErr) {

@@ -87,7 +87,7 @@ module.exports = {
 
         }
     },
-    motion_daily_tasks_get_routes: async (req, res) =>{
+    motion_daily_tasks_get_routes: async (req, res) => {
         try {
             const dailyTaskResult = await getOperations.motion_daily_tasks_get_routes();
             return res.status(200).json({ status: true, message: `Daily Tasks Data Fetched Successfully.`, result: dailyTaskResult });

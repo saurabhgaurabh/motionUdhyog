@@ -154,13 +154,15 @@ module.exports = {
         })
     },
     motion_daily_tasks_get_routes: () => {
-        const taskQuery = `Select * from motion_daily_tasks`;
-        connection.execute(taskQuery, [], (taskError, taskResult) => {
-            if (taskError) {
-                return reject(`Something went wrong while fetching the data. ${taskError}`);
+       return new Promise((resolve, reject) => {
+        const dailyTaskQuery = `select * from motion_daily_tasks`;
+        connection.execute(dailyTaskQuery, [], (dailyTaskError, dailyTaskResult) => {
+            if (dailyTaskError) {
+                return reject(`Something went wrong while fetching data. ${dailyTaskError}`);
             }
-            resolve({ result: taskResult, message: `Daily Tasks Data Fetched Successfully.`, status: true });
+            resolve({ result: dailyTaskResult, message: `Daily Tasks Data Fetched Successfully.`, status: true })
         })
+       })
     }
 
 }

@@ -69,9 +69,8 @@ module.exports = {
     motion_add_dealer_registration_routes: async (req, res) => {
         try {
             // logger.info('Dealer registration initiated');
-            const requiredFields = ['dealer_Code', 'dealer_name', 'dealer_GST', 'mobile_number', 'adhar_number',
-                'pan', 'dealing_product', 'email', 'country',
-                'state', 'city', 'address', 'postal_code'];
+            const requiredFields = ['dealer_Code', 'dealer_name', 'mobile_number', 
+               'dealing_product', 'email','address', 'postal_code'];
 
             for (const field of requiredFields) {
                 if (!req.body[field]) {
@@ -114,18 +113,18 @@ module.exports = {
     motion_employee_registration_routes: async (req, res) => {
         try {
             const requiredFields = [
-                'name', 'state', 'city', 'address', 'postal_code', 'qualification',
-                 'mobile', 'email', 'department',
+                'employee_name', 'mobile', 'email', 'address', 'postal_code', 
+                  'department',
             ];
             for (fields of requiredFields) {
                 if (!req.body[fields]) {
                     return res.status(500).json({ status: false, message: `${fields.replace('_', ' ')} 'is required'` })
                 };
             }
-            const { name, dob, state, city, address, postal_code, qualification, adhar, pan, mobile, email,
+            const { employee_name, dob, state, city, address, postal_code, qualification, adhar, pan, mobile, email,
                 department, designation, salary } = req.body;
             const result = await userOperations.motion_employee_registration_routes(
-                name, dob, state, city, address, postal_code, qualification, adhar, pan, mobile, email,
+                employee_name, dob, state, city, address, postal_code, qualification, adhar, pan, mobile, email,
                 department, designation, salary
             );
             return res.status(200).json({ stats: true, message: 'Employee Registered Successfully.', result: result });
@@ -273,7 +272,7 @@ module.exports = {
         try {
             const { employee_name, shift, total_hours, remarks } = req.body;
             const requiredFields = [
-                'employee_name',  'shift', 'total_hours', 'remarks'
+                'employee_name',  'shift', 'total_hours'
             ];
             for (const fields of requiredFields) {
                 if (!req.body[fields]) {

@@ -30,7 +30,7 @@ routes.post('/v1/user-login', userController.user_login);
 routes.post('/v1/user-otp-verification', userController.user_otp_verification);
  
 
-
+ 
 
 // Your api's for get data.
 routes.get('/v1/motion-add-dealer-registration-get', getController.motion_add_dealer_registration_get_routes);
