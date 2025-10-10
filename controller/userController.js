@@ -91,7 +91,7 @@ module.exports = {
     },// motion_add_dealer_registration_routes                -----  FETCHING DATA  -------------
     motion_purchase_row_material_routes: async (req, res) => {
         try {
-            const requiredFields = ['dealer_name', 'material_type', 'postal_code', 'address', 'freight', 'material_amount', 'material_amount_pending'
+            const requiredFields = ['dealer_name', 'material_type', 'freight', 'material_amount', 'material_amount_pending'
             ];
 
             for (field of requiredFields) {
@@ -100,10 +100,10 @@ module.exports = {
                 }
             }
 
-            const { order_id, dealer_name, material_type, postal_code, country, state, city, address, freight, material_amount,
+            const { purchase_id, dealer_name, material_type, postal_code, country, state, city, address, freight, material_amount,
                 material_amount_pending } = req.body;
 
-            const result = await userOperations.motion_purchase_row_material_routes(order_id, dealer_name, material_type, postal_code,
+            const result = await userOperations.motion_purchase_row_material_routes(purchase_id,  dealer_name, material_type, postal_code,
                 country, state, city, address, freight, material_amount, material_amount_pending);
             return res.status(200).json({ status: true, message: 'Purchase Added Successfully.' });
         } catch (error) {

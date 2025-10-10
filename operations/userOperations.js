@@ -243,12 +243,12 @@ module.exports = {
             })
         })
     },    // Api for motion purchase row material  -----  FETCHING DATA  -------------
-    motion_purchase_row_material_routes: (order_id, dealer_name, material_type, postal_code,
+    motion_purchase_row_material_routes: (purchase_id, dealer_name, material_type, postal_code,
         country, state, city, address, freight, material_amount, material_amount_pending) => {
         return new Promise((resolve, reject) => {
             // order_id = generateRandomId();
-            const checkQuery = `select * from motion_purchase_row_material where order_id = ? OR dealer_name = ?`;
-            connection.execute(checkQuery, [order_id, dealer_name], (checkErr, checkResult) => {
+            const checkQuery = `select * from motion_purchase_row_material where purchase_id = ? OR dealer_name = ?`;
+            connection.execute(checkQuery, [purchase_id ?? null, dealer_name], (checkErr, checkResult) => {
                 if (checkErr) {
                     return reject('Getting existing Records.');
                 }
@@ -257,16 +257,13 @@ module.exports = {
                 }
             })
 
-            // bcrypt.hash(password, saltRounds, (Error, hashedPassword) => {
-            //     if (Error) {
-            //         reject(`Error Hashing the Password. ${Error}`)
-            //     }
             const insertQuery = `insert into motion_purchase_row_material
-                 (order_id, dealer_name, material_type, postal_code, country, state, 
+                 ( purchase_id, dealer_name, material_type, postal_code, country, state, 
                 city, address, freight, material_amount, material_amount_pending) values (?,?,?,?,?,?,?,?,?,?,?)`;
             const values = [
-                order_id, dealer_name, material_type, postal_code,
-                country, state, city, address, freight, material_amount, material_amount_pending
+                 purchase_id ?? null , dealer_name ?? null, material_type ?? null, postal_code ?? null,
+                country ?? null, state ?? null, city ?? null, address ?? null, freight ?? null,
+                material_amount ?? null, material_amount_pending ?? null
             ];
             connection.execute(insertQuery, values, (insertErr, insertResult) => {
                 if (insertErr) {

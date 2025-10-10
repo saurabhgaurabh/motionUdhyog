@@ -17,7 +17,7 @@ module.exports = {
     },
     motion_purchase_row_material_get_routes: () => {
         return new Promise((resolve, reject) => {
-            const query = `SELECT * FROM motion_purchase_row_material`;
+            const query = `SELECT * FROM motion_purchase_row_material order by purchase_id desc `;
             connection.execute(query, [], (getError, getResult) => {
                 if (getError) {
                     return reject(`Something went wrong while fetching purchase row material data. ${getError})`);
