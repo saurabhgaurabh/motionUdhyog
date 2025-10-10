@@ -243,39 +243,85 @@ module.exports = {
             })
         })
     },    // Api for motion purchase row material  -----  FETCHING DATA  -------------
-    motion_purchase_row_material_routes: (purchase_id, dealer_name, material_type, postal_code,
-        country, state, city, address, freight, material_amount, material_amount_pending) => {
-        return new Promise((resolve, reject) => {
-            // order_id = generateRandomId();
-            const checkQuery = `select * from motion_purchase_row_material where purchase_id = ? OR dealer_name = ?`;
-            connection.execute(checkQuery, [purchase_id ?? null, dealer_name], (checkErr, checkResult) => {
-                if (checkErr) {
-                    return reject('Getting existing Records.');
-                }
-                if (checkResult.length > 0) {
-                    return reject(`Dealer id or name exists. Duplicate entry not allow. 1062`)
-                }
-            })
+    // motion_purchase_row_material_routes: (purchase_id, dealer_name, material_type, postal_code,
+    //     country, state, city, address, freight, material_amount, material_amount_pending) => {
+    //     return new Promise((resolve, reject) => {
+    //         // order_id = generateRandomId();
+    //         const checkQuery = `select * from motion_purchase_row_material where purchase_id = ? OR dealer_name = ?`;
+    //         connection.execute(checkQuery, [purchase_id ?? null, dealer_name], (checkErr, checkResult) => {
+    //             if (checkErr) {
+    //                 return reject('Getting existing Records.');
+    //             }
+    //             if (checkResult.length > 0) {
+    //                 return reject(`Dealer id or name exists. Duplicate entry not allow. 1062`)
+    //             }
+    //         })
 
-            const insertQuery = `insert into motion_purchase_row_material
-                 ( purchase_id, dealer_name, material_type, postal_code, country, state, 
-                city, address, freight, material_amount, material_amount_pending) values (?,?,?,?,?,?,?,?,?,?,?)`;
-            const values = [
-                 purchase_id ?? null , dealer_name ?? null, material_type ?? null, postal_code ?? null,
-                country ?? null, state ?? null, city ?? null, address ?? null, freight ?? null,
-                material_amount ?? null, material_amount_pending ?? null
+    //         const insertQuery = `insert into motion_purchase_row_material
+    //              ( purchase_id, dealer_name, material_type, postal_code, country, state, 
+    //             city, address, freight, material_amount, material_amount_pending) values (?,?,?,?,?,?,?,?,?,?,?)`;
+    //         const values = [
+    //              purchase_id ?? null , dealer_name ?? null, material_type ?? null, postal_code ?? null,
+    //             country ?? null, state ?? null, city ?? null, address ?? null, freight ?? null,
+    //             material_amount ?? null, material_amount_pending ?? null
+    //         ];
+    //         connection.execute(insertQuery, values, (insertErr, insertResult) => {
+    //             if (insertErr) {
+    //                 console.log(insertErr, "insertErr")
+    //                 return reject(`Something went wrong while inserting data.${insertErr}`);
+    //             }
+    //             console.log(insertResult, "insertResult")
+    //             resolve(insertResult);
+    //         })
+    //         // })
+    //     })
+    // },
+
+    // Api for motion employee registration    -----  FETCHING DATA  -------------
+
+    addPurchaseWithProducts: (purchaseData, products) => {
+        return new Promise((resolve, reject) => {
+            const { dealer_name, postal_code, country, state, city, address, freight, total_amount, material_amount, material_amount_pending } = purchaseData;
+
+            // Main purchase row
+            const insertPurchaseQuery = `
+            INSERT INTO motion_purchase_row_material
+            (dealer_name, postal_code, country, state, city, address, freight, total_amount, material_amount, material_amount_pending)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+            const purchaseValues = [
+                dealer_name, postal_code, country, state, city, address, freight, total_amount, material_amount, material_amount_pending
             ];
-            connection.execute(insertQuery, values, (insertErr, insertResult) => {
-                if (insertErr) {
-                    console.log(insertErr, "insertErr")
-                    return reject(`Something went wrong while inserting data.${insertErr}`);
-                }
-                console.log(insertResult, "insertResult")
-                resolve(insertResult);
-            })
-            // })
-        })
-    },// Api for motion employee registration    -----  FETCHING DATA  -------------
+
+            connection.execute(insertPurchaseQuery, purchaseValues, (err, purchaseResult) => {
+                if (err) return reject(err);
+
+                const purchase_id = purchaseResult.insertId;
+
+                if (!products || products.length === 0) return resolve({ purchase_id });
+
+                // Multiple products
+                const insertProductsQuery = `
+                INSERT INTO motion_purchase_products
+                (purchase_id, product_name, quantity, price, total_amount)
+                VALUES ?
+            `;
+                const productValues = products.map(p => [
+                    purchase_id,
+                    p.product_name,
+                    parseFloat(p.quantity) || 0,
+                    parseFloat(p.price) || 0,
+                    parseFloat(p.total_amount) || 0
+                ]);
+
+                connection.query(insertProductsQuery, [productValues], (prodErr, prodResult) => {
+                    if (prodErr) return reject(prodErr);
+                    resolve({ purchase_id, productsInserted: prodResult.affectedRows });
+                });
+            });
+        });
+    },
+
     motion_employee_registration_routes: (employee_name, dob, state, city, address, postal_code, qualification, adhar,
         pan, mobile, email, department, designation, salary) => {
         return new Promise((resolve, reject) => {

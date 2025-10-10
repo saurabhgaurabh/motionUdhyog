@@ -17,7 +17,20 @@ module.exports = {
     },
     motion_purchase_row_material_get_routes: () => {
         return new Promise((resolve, reject) => {
-            const query = `SELECT * FROM motion_purchase_row_material order by purchase_id desc `;
+            const query = `SELECT 
+    p.*,
+    IFNULL(JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'product_name', pr.product_name,
+            'quantity', pr.quantity,
+            'total_amount', pr.total_amount
+        )
+    ), JSON_ARRAY()) AS products
+FROM motion_purchase_row_material p
+LEFT JOIN motion_purchase_products pr ON p.purchase_id = pr.purchase_id
+GROUP BY p.purchase_id
+ORDER BY p.purchase_id DESC;
+`;
             connection.execute(query, [], (getError, getResult) => {
                 if (getError) {
                     return reject(`Something went wrong while fetching purchase row material data. ${getError})`);
@@ -165,7 +178,8 @@ module.exports = {
         })
     },
     motion_sales_get_all: () => {
-        return new Promise((resolve, reject) => {const query = ` SELECT 
+        return new Promise((resolve, reject) => {
+            const query = ` SELECT 
                 s.sale_id,
                 s.customer_name,
                 s.company,
