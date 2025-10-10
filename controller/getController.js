@@ -94,5 +94,14 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal Server Errors. ${error}` });
         }
-    }
+    },
+    motion_sales_get_routes: async (req, res) => {
+        try {
+            const salesResult = await getOperations.motion_sales_get_all();
+            return res.status(200).json({ status: true, message: "Sales fetched successfully", result: { result: salesResult } });
+        } catch (error) {
+            return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
+        }
+    },
+
 }

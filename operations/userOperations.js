@@ -519,32 +519,84 @@ module.exports = {
         })
     },
 
-    motion_sales_routes: (customer_name, company, product_name, quantity, price, total_amount, due_amount,
-        payment_status, remarks) => {
+    // motion_sales_routes: (customer_name, company, product_name, quantity, price, total_amount, 
+    //     payment_status, remarks) => {
+    //     return new Promise((resolve, reject) => {
+    //         const insertQuery = `INSERT INTO motion_sales (
+    //             customer_name, company, product_name, quantity, price, total_amount, 
+    //             payment_status, remarks) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    //         const insertValues = [
+    //             customer_name ?? null, company ?? null, product_name ?? null, quantity ?? null, price ?? null,
+    //             total_amount ?? null, payment_status ?? null, remarks ?? null
+    //         ];
+    //         connection.execute(insertQuery, insertValues, (insertErr, insertResult) => {
+    //             if (insertErr) {
+    //                 reject(`Error while inserting sales data. ${insertErr}`);
+    //             } else {
+    //                 const sales_id = insertResult.insertId;
+    //                 const fetchQuery = `SELECT * FROM motion_sales WHERE sale_id = ?`;
+    //                 connection.execute(fetchQuery, [sales_id], (fetchErr, fetchResult) => {
+    //                     if (fetchErr) {
+    //                         return reject(`Inserted but failed to fetch data. ${fetchErr}`);
+    //                     }
+    //                     resolve({ status: true, message: 'Sales registered successfully.', data: fetchResult[0] });
+    //                 });
+    //             }
+    //         });
+    //     });
+    // },
+
+    motion_sales_routes: (customer_name, company, products, grand_total, payment_status, remarks) => {
         return new Promise((resolve, reject) => {
-            const insertQuery = `INSERT INTO motion_sales (
-                customer_name, company, product_name, quantity, price, total_amount, due_amount,
-                payment_status, remarks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            const insertValues = [
-                customer_name ?? null, company ?? null, product_name ?? null, quantity ?? null, price ?? null,
-                total_amount ?? null, due_amount ?? null, payment_status ?? null, remarks ?? null
+            // 1) Insert sale master row
+            const insertSaleSql = `INSERT INTO motion_sales (customer_name, company, grand_total, payment_status, remarks)
+                           VALUES (?, ?, ?, ?, ?)`;
+            const saleValues = [
+                customer_name ?? null,
+                company ?? null,
+                grand_total ?? 0,
+                payment_status ?? null,
+                remarks ?? null,
             ];
-            connection.execute(insertQuery, insertValues, (insertErr, insertResult) => {
-                if (insertErr) {
-                    reject(`Error while inserting sales data. ${insertErr}`);
-                } else {
-                    const sales_id = insertResult.insertId;
-                    const fetchQuery = `SELECT * FROM motion_sales WHERE sale_id = ?`;
-                    connection.execute(fetchQuery, [sales_id], (fetchErr, fetchResult) => {
-                        if (fetchErr) {
-                            return reject(`Inserted but failed to fetch data. ${fetchErr}`);
-                        }
-                        resolve({ status: true, message: 'Sales registered successfully.', data: fetchResult[0] });
-                    });
+
+            connection.execute(insertSaleSql, saleValues, (saleErr, saleResult) => {
+                if (saleErr) return reject(`Error while inserting sale master. ${saleErr}`);
+
+                const sale_id = saleResult.insertId;
+
+                // 2) Prepare bulk values for products
+                const productValues = products.map((p) => [
+                    sale_id,
+                    p.product_name,
+                    p.quantity,
+                    p.price,
+                    p.total_amount ?? (parseFloat(p.quantity || 0) * parseFloat(p.price || 0)).toFixed(2)
+                ]);
+
+                if (productValues.length === 0) {
+                    // nothing to insert - resolve with sale info
+                    return resolve({ status: true, message: 'Sale created but no products to insert.', data: { sale_id } });
                 }
+
+                const insertProductsSql = `INSERT INTO motion_sale_products (sale_id, product_name, quantity, price, total_amount) VALUES ?`;
+
+                // use connection.query for bulk VALUES ?
+                connection.query(insertProductsSql, [productValues], (prodErr, prodResult) => {
+                    if (prodErr) return reject(`Error while inserting sale products. ${prodErr}`);
+
+                    // 3) Fetch inserted sale (optional)
+                    const fetchQuery = `SELECT * FROM motion_sales WHERE sale_id = ?`;
+                    connection.execute(fetchQuery, [sale_id], (fetchErr, fetchResult) => {
+                        if (fetchErr) return reject(`Inserted but failed to fetch data. ${fetchErr}`);
+
+                        resolve({ status: true, message: 'Sales registered successfully.', data: { sale: fetchResult[0], sale_id } });
+                    });
+                });
             });
         });
     },
+
+
 
 
 }

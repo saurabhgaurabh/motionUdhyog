@@ -12,7 +12,7 @@ const deleteController = require('../controller/deleteController');
 routes.post('/v1/motion-add-dealer-registration-post', userController.motion_add_dealer_registration_routes);      // home  
 routes.post('/v1/motion-purchase-row-material-post', userController.motion_purchase_row_material_routes);  // purchase_Tab         
 routes.post('/v1/motion-employee-registration', userController.motion_employee_registration_routes); // Home emp reg
-routes.post('/v1/motion-product-manufacturing', userController.motion_product_manufacturing_routes); // Home
+routes.post('/v1/motion-product-manufacturing', userController.motion_product_manufacturing_routes); // Home product
 routes.post('/v1/motion-parties-registration', userController.motion_parties_registration_routes); // Home clients
 routes.post('/motion_dispatch_product_routes', userController.motion_dispatch_product_routes); //Home
 routes.post('/motion_product_category_routes', userController.motion_product_category_routes); //Products
@@ -44,6 +44,7 @@ routes.get('/motion_product_subcategories_get_routes', getController.motion_prod
 routes.get('/motion_product_sub_subcategories_get_routes', getController.motion_product_sub_subcategories_get_routes);
 routes.get('/motion_products_get_routes', getController.motion_products_get_routes);
 routes.get('/v1/motion-daily-tasks-get', getController.motion_daily_tasks_get_routes);
+routes.get('/v1/motion-sales-get', getController.motion_sales_get_routes);
 
 
 
@@ -56,6 +57,7 @@ routes.patch('/v1/motion-parties-registration-update', updateController.motion_p
 
 // delete api's
 routes.delete('/V1/motion-dealer-delete', deleteController.motion_add_dealer_registration_delete);
+// routes.delete('/v1-motion-sales-delete', deleteController.motion_sales_delete);
 
 
 module.exports = routes;

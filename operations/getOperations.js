@@ -154,15 +154,47 @@ module.exports = {
         })
     },
     motion_daily_tasks_get_routes: () => {
-       return new Promise((resolve, reject) => {
-        const dailyTaskQuery = `select * from motion_daily_tasks`;
-        connection.execute(dailyTaskQuery, [], (dailyTaskError, dailyTaskResult) => {
-            if (dailyTaskError) {
-                return reject(`Something went wrong while fetching data. ${dailyTaskError}`);
-            }
-            resolve({ result: dailyTaskResult, message: `Daily Tasks Data Fetched Successfully.`, status: true })
+        return new Promise((resolve, reject) => {
+            const dailyTaskQuery = `select * from motion_daily_tasks`;
+            connection.execute(dailyTaskQuery, [], (dailyTaskError, dailyTaskResult) => {
+                if (dailyTaskError) {
+                    return reject(`Something went wrong while fetching data. ${dailyTaskError}`);
+                }
+                resolve({ result: dailyTaskResult, message: `Daily Tasks Data Fetched Successfully.`, status: true })
+            })
         })
-       })
-    }
+    },
+    motion_sales_get_all: () => {
+        return new Promise((resolve, reject) => {const query = ` SELECT 
+                s.sale_id,
+                s.customer_name,
+                s.company,
+                s.grand_total,
+                s.payment_status,
+                s.remarks,
+                s.created_at,
+                JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'product_name', p.product_name,
+                        'quantity', p.quantity,
+                        'price', p.price,
+                        'total_amount', p.total_amount
+                    )
+                ) AS products
+            FROM motion_sales s
+            LEFT JOIN motion_sale_products p ON s.sale_id = p.sale_id
+            GROUP BY s.sale_id
+            ORDER BY s.sale_id DESC;
+        `;
+            connection.query(query, (err, result) => {
+                if (err) {
+                    reject(`Error while fetching sales: ${err}`);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
+    },
+
 
 }

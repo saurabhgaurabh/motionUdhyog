@@ -69,8 +69,8 @@ module.exports = {
     motion_add_dealer_registration_routes: async (req, res) => {
         try {
             // logger.info('Dealer registration initiated');
-            const requiredFields = ['dealer_Code', 'dealer_name', 'mobile_number', 
-               'dealing_product', 'email','address', 'postal_code'];
+            const requiredFields = ['dealer_Code', 'dealer_name', 'mobile_number',
+                'dealing_product', 'email', 'address', 'postal_code'];
 
             for (const field of requiredFields) {
                 if (!req.body[field]) {
@@ -80,18 +80,18 @@ module.exports = {
             const { dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, dealing_product, email, country, state, city, address, postal_code } = req.body;
             const result = await userOperations.motion_add_dealer_registration_routes(
                 dealer_Code, dealer_name, dealer_GST, mobile_number, adhar_number, pan, dealing_product, email,
-                 country, state, city, address, postal_code
+                country, state, city, address, postal_code
             );
 
             return res.status(200).json({ status: true, message: 'Dealer Added Successfully.', result: result });
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal server error. ${error}` });
-        } 
+        }
 
     },// motion_add_dealer_registration_routes                -----  FETCHING DATA  -------------
     motion_purchase_row_material_routes: async (req, res) => {
         try {
-            const requiredFields = ['dealer_name', 'material_type', 'postal_code',  'address', 'freight', 'material_amount', 'material_amount_pending'
+            const requiredFields = ['dealer_name', 'material_type', 'postal_code', 'address', 'freight', 'material_amount', 'material_amount_pending'
             ];
 
             for (field of requiredFields) {
@@ -104,7 +104,7 @@ module.exports = {
                 material_amount_pending } = req.body;
 
             const result = await userOperations.motion_purchase_row_material_routes(order_id, dealer_name, material_type, postal_code,
-               country, state, city, address, freight, material_amount, material_amount_pending);
+                country, state, city, address, freight, material_amount, material_amount_pending);
             return res.status(200).json({ status: true, message: 'Purchase Added Successfully.' });
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal server error: ${error.message || error}` })
@@ -113,8 +113,8 @@ module.exports = {
     motion_employee_registration_routes: async (req, res) => {
         try {
             const requiredFields = [
-                'employee_name', 'mobile', 'email', 'address', 'postal_code', 
-                  'department',
+                'employee_name', 'mobile', 'email', 'address', 'postal_code',
+                'department',
             ];
             for (fields of requiredFields) {
                 if (!req.body[fields]) {
@@ -135,10 +135,10 @@ module.exports = {
     motion_product_manufacturing_routes: async (req, res) => {
         try {
             const { product_name, material_type_one, material_quantity, material_quality, unit, batch_number, supervisor_name, total_cost, remarks,
-                } = req.body;
+            } = req.body;
             const requiredFields = [
                 'product_name', 'material_type_one', 'material_quantity', 'material_quality', 'unit', 'batch_number',
-                'supervisor_name', 'total_cost', 'remarks', 
+                'supervisor_name', 'total_cost', 'remarks',
             ];
             for (fields of requiredFields) {
                 if (!req.body[fields]) {
@@ -272,7 +272,7 @@ module.exports = {
         try {
             const { employee_name, shift, total_hours, remarks } = req.body;
             const requiredFields = [
-                'employee_name',  'shift', 'total_hours'
+                'employee_name', 'shift', 'total_hours'
             ];
             for (const fields of requiredFields) {
                 if (!req.body[fields]) {
@@ -290,29 +290,85 @@ module.exports = {
             return res.status(500).json({ status: false, message: `Internal Server Error. ${internalError}` });
         }
     },
-    motion_sales_routes: async (req, res) =>{
-        try {
-            const {customer_name, company, product_name, quantity, price, total_amount, due_amount, 
-                payment_status, remarks } = req.body;
-                const requiredFields = [
-                    'customer_name', 'company', 'product_name', 'quantity', 'price', 'total_amount', 'due_amount', 
-                    'payment_status'
-                ];
-                for (const fields of requiredFields) {
-                    if(!req.body[fields]){
-                        return res.status(404).json({status: false, message: `${fields.replace(/_/g,' ')} is required.`});
-                    }
-                }
-                const salesResult = await userOperations.motion_sales_routes(
-                    customer_name , company, product_name, quantity, price, total_amount, due_amount, 
-                    payment_status, remarks
-                );
-                console.log(salesResult," result in motion_sales_routes");
-                return res.status(201).json({status: true, message: `Sales Added Successfully.`, result: salesResult});
-        } catch (error) {
-            return res.status(500).json({ status: false, message: `Internal Server Error. ${error}`});
-        }
+    // motion_sales_routes: async (req, res) =>{
+    //     try {
+    //         const {customer_name, company, product_name, quantity, price, total_amount,  
+    //             payment_status, remarks } = req.body;
+    //             const requiredFields = [
+    //                 'customer_name', 'product_name', 'quantity', 'price', 'total_amount',
+    //             ];
+    //             for (const fields of requiredFields) {
+    //                 if(!req.body[fields]){
+    //                     return res.status(404).json({status: false, message: `${fields.replace(/_/g,' ')} is required.`});
+    //                 }
+    //             }
+    //             const salesResult = await userOperations.motion_sales_routes(
+    //                 customer_name , company, product_name, quantity, price, total_amount, 
+    //                 payment_status, remarks
+    //             );
+    //             console.log(salesResult," result in motion_sales_routes");
+    //             return res.status(201).json({status: true, message: `Sales Added Successfully.`, result: salesResult});
+    //     } catch (error) {
+    //         return res.status(500).json({ status: false, message: `Internal Server Error. ${error}`});
+    //     }
+    // }
+
+  
+motion_sales_routes: async (req, res) => {
+  try {
+    const {
+      customer_name,
+      company,
+      products,        // <-- expecting array now
+      grand_total,
+      payment_status,
+      remarks
+    } = req.body;
+
+    // Basic validation
+    if (!customer_name) {
+      return res.status(400).json({ status: false, message: "customer_name is required." });
     }
-    
+    if (!Array.isArray(products) || products.length === 0) {
+      return res.status(400).json({ status: false, message: "At least one product is required." });
+    }
+
+    // Validate each product item
+    for (let i = 0; i < products.length; i++) {
+      const p = products[i];
+      if (!p.product_name || String(p.product_name).trim() === "") {
+        return res.status(400).json({ status: false, message: `product_name is required for product index ${i}.` });
+      }
+      if (!p.quantity || Number.isNaN(Number(p.quantity))) {
+        return res.status(400).json({ status: false, message: `quantity is required / invalid for product index ${i}.` });
+      }
+      if (!p.price || Number.isNaN(Number(p.price))) {
+        return res.status(400).json({ status: false, message: `price is required / invalid for product index ${i}.` });
+      }
+      // optional: ensure total_amount exists or calculate it
+      if (!p.total_amount || Number.isNaN(Number(p.total_amount))) {
+        // calculate to be safe
+        p.total_amount = (parseFloat(p.quantity || 0) * parseFloat(p.price || 0)).toFixed(2);
+      }
+    }
+
+    // Now call your DB operation that inserts sale + products
+    const salesResult = await userOperations.motion_sales_routes(
+      customer_name,
+      company,
+      products,
+      grand_total,
+      payment_status,
+      remarks
+    );
+
+    return res.status(201).json({ status: true, message: "Sales Added Successfully.", result: salesResult });
+  } catch (error) {
+    console.error("Error in motion_sales_routes:", error);
+    return res.status(500).json({ status: false, message: `Internal Server Error. ${error.message || error}` });
+  }
+}
+
+
 
 }
