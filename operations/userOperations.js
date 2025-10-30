@@ -113,10 +113,10 @@ module.exports = {
         });
     },// Api for motion add dealer registration
 
-    verify_user_otp: (dealerCode, userOTP) => {
+    verify_user_otp: (userCode, userOTP) => {
         return new Promise((resolve, reject) => {
             const fetchQuery = `SELECT otp_secret FROM motion_user_registration WHERE userCode = ?`;
-            connection.execute(fetchQuery, [dealerCode], (err, results) => {
+            connection.execute(fetchQuery, [userCode], (err, results) => {
                 if (err || results.length === 0) {
                     return reject({ status: false, message: 'User not found.' });
                 }
@@ -132,7 +132,7 @@ module.exports = {
                     return reject({ status: false, message: 'Invalid OTP.' });
                 }
                 const updateQuery = `UPDATE motion_user_registration SET flag = 'verified' WHERE userCode = ?`;
-                connection.execute(updateQuery, [dealerCode], (updateErr) => {
+                connection.execute(updateQuery, [userCode], (updateErr) => {
                     if (updateErr) {
                         return reject({ status: false, message: 'Verification failed while updating user.' });
                     }
@@ -224,12 +224,9 @@ module.exports = {
 
                 connection.execute(insertQuery, values, (insertErr, insertResult) => {
                     if (insertErr) {
-                        // console.error(insertErr);
                         return reject(`Something went wrong while inserting data.${insertErr}`);
                     }
-                    // resolve({ message: "Dealer Registered Successfully", data: insertResult });
                     const insertedId = insertResult.insertId;
-                    // Fetch the inserted row
                     const fetchQuery = `SELECT * FROM motion_add_dealer_registration order by dealer_id desc`;
                     connection.execute(fetchQuery, [insertedId], (fetchError, fetchResult) => {
                         if (fetchError) {
@@ -243,54 +240,20 @@ module.exports = {
             })
         })
     },    // Api for motion purchase row material  -----  FETCHING DATA  -------------
-    // motion_purchase_row_material_routes: (purchase_id, dealer_name, material_type, postal_code,
-    //     country, state, city, address, freight, material_amount, material_amount_pending) => {
-    //     return new Promise((resolve, reject) => {
-    //         // order_id = generateRandomId();
-    //         const checkQuery = `select * from motion_purchase_row_material where purchase_id = ? OR dealer_name = ?`;
-    //         connection.execute(checkQuery, [purchase_id ?? null, dealer_name], (checkErr, checkResult) => {
-    //             if (checkErr) {
-    //                 return reject('Getting existing Records.');
-    //             }
-    //             if (checkResult.length > 0) {
-    //                 return reject(`Dealer id or name exists. Duplicate entry not allow. 1062`)
-    //             }
-    //         })
 
-    //         const insertQuery = `insert into motion_purchase_row_material
-    //              ( purchase_id, dealer_name, material_type, postal_code, country, state, 
-    //             city, address, freight, material_amount, material_amount_pending) values (?,?,?,?,?,?,?,?,?,?,?)`;
-    //         const values = [
-    //              purchase_id ?? null , dealer_name ?? null, material_type ?? null, postal_code ?? null,
-    //             country ?? null, state ?? null, city ?? null, address ?? null, freight ?? null,
-    //             material_amount ?? null, material_amount_pending ?? null
-    //         ];
-    //         connection.execute(insertQuery, values, (insertErr, insertResult) => {
-    //             if (insertErr) {
-    //                 console.log(insertErr, "insertErr")
-    //                 return reject(`Something went wrong while inserting data.${insertErr}`);
-    //             }
-    //             console.log(insertResult, "insertResult")
-    //             resolve(insertResult);
-    //         })
-    //         // })
-    //     })
-    // },
-
-    // Api for motion employee registration    -----  FETCHING DATA  -------------
 
     addPurchaseWithProducts: (purchaseData, products) => {
         return new Promise((resolve, reject) => {
-            const { dealer_name, postal_code, country, state, city, address, freight, total_amount, material_amount, material_amount_pending } = purchaseData;
-
-            // Main purchase row
+            const { dealer_name, postal_code, country, state, city, address, freight, total_amount, material_amount,
+                material_amount_pending, payment_status } = purchaseData;
             const insertPurchaseQuery = `
             INSERT INTO motion_purchase_row_material
-            (dealer_name, postal_code, country, state, city, address, freight, total_amount, material_amount, material_amount_pending)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `;
+            (dealer_name, postal_code, country, state, city, address, freight, total_amount, material_amount, 
+            material_amount_pending, payment_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            const paymentStatusValue = payment_status && payment_status.trim() !== "" ? payment_status : "pending";
             const purchaseValues = [
-                dealer_name, postal_code, country, state, city, address, freight, total_amount, material_amount, material_amount_pending
+                dealer_name, postal_code ?? null, country, state, city, address, freight, total_amount, material_amount,
+                material_amount_pending, paymentStatusValue
             ];
 
             connection.execute(insertPurchaseQuery, purchaseValues, (err, purchaseResult) => {
@@ -464,34 +427,75 @@ module.exports = {
                 if (insertError) {
                     return reject(`Error while inserting the data. ${insertError}`);
                 }
-                resolve(insertResult);
+                const insertedId = insertResult.insertId;
+                const fetchQuery = `select * from motion_product_category`
+                connection.execute((fetchQuery), [insertedId], (fetchError, fetchResult) => {
+                    if (fetchError) {
+                        return reject(`inserted but failed to get data. ${fetchError}`);
+                    }
+                    resolve({ message: 'Get Categories.', CatResult: fetchResult });
+                })
+
             })
         });
     },// Api for motion product category
+
+    // motion_product_subcategories_routes: (sub_category_name, description, category_id) => {
+    //     return new Promise((resolve, reject) => {
+    //         id = fourDigitCode();
+    //         const checkQuery = `select * from motion_product_subcategories where sub_category_name = ? or category_id = ?`;
+    //         // Check for existing product name or cat_id
+    //         connection.execute(checkQuery, [sub_category_name, category_id], (checkQueryError, checkQueryResult) => {
+    //             if (checkQueryError) {
+    //                 return reject(`Error while inserting records. ${checkQueryError}`);
+    //             }
+    //             if (checkQueryResult.length > 0) {
+    //                 return reject(`Sub Category Name or Id already exists. Duplicate Entry Not Allowed.1062`);
+    //             }
+    //         })
+    //         const insertQuery = `insert into motion_product_subcategories (sub_category_name, description, category_id ) values ( ?, ?,? )`;
+    //         const insertValues = [sub_category_name, description, category_id];
+    //         connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
+    //             if (insertError) {
+    //                 return reject(`Error While Inserting the data. ${insertError}.`);
+    //             }
+    //             // console.log(insertResult, "insertError");
+    //             resolve(insertResult);
+    //         })
+    //     })
+    // },
+
     motion_product_subcategories_routes: (sub_category_name, description, category_id) => {
         return new Promise((resolve, reject) => {
-            id = fourDigitCode();
-            const checkQuery = `select * from motion_product_subcategories where sub_category_name = ? or category_id = ?`;
-            // Check for existing product name or cat_id
-            connection.execute(checkQuery, [sub_category_name, category_id], (checkQueryError, checkQueryResult) => {
-                if (checkQueryError) {
-                    return reject(`Error while inserting records. ${checkQueryError}`);
+            const checkQuery = `
+            SELECT * 
+            FROM motion_product_subcategories 
+            WHERE LOWER(sub_category_name) = LOWER(?) AND category_id = ?
+        `;
+            connection.execute(checkQuery, [sub_category_name, category_id], (checkErr, checkRes) => {
+                if (checkErr) {
+                    return reject(`Error while checking existing records: ${checkErr}`);
                 }
-                if (checkQueryResult.length > 0) {
-                    return reject(`Sub Category Name or Id already exists. Duplicate Entry Not Allowed.1062`);
+
+                if (checkRes.length > 0) {
+                    return reject("Duplicate Entry Not Allowed: Subcategory already exists under this category.");
                 }
-            })
-            const insertQuery = `insert into motion_product_subcategories (sub_category_name, description, category_id ) values ( ?, ?,? )`;
-            const insertValues = [sub_category_name, description, category_id];
-            connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
-                if (insertError) {
-                    return reject(`Error While Inserting the data. ${insertError}.`);
-                }
-                // console.log(insertResult, "insertError");
-                resolve(insertResult);
-            })
-        })
+
+                const insertQuery = `
+                INSERT INTO motion_product_subcategories (sub_category_name, description, category_id)
+                VALUES (?, ?, ?)
+            `;
+                connection.execute(insertQuery, [sub_category_name, description, category_id], (insertErr, insertRes) => {
+                    if (insertErr) {
+                        return reject(`Error while inserting data: ${insertErr}`);
+                    }
+
+                    resolve(insertRes);
+                });
+            });
+        });
     },
+
     motion_product_sub_subcategories_routes: (sub_sub_category_name, description, sub_category_id) => {
         return new Promise((resolve, reject) => {
             const checkQuery = `select * from motion_product_sub_subcategories where sub_sub_category_name = ? or sub_category_id = ?`;
@@ -561,33 +565,6 @@ module.exports = {
             })
         })
     },
-
-    // motion_sales_routes: (customer_name, company, product_name, quantity, price, total_amount, 
-    //     payment_status, remarks) => {
-    //     return new Promise((resolve, reject) => {
-    //         const insertQuery = `INSERT INTO motion_sales (
-    //             customer_name, company, product_name, quantity, price, total_amount, 
-    //             payment_status, remarks) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-    //         const insertValues = [
-    //             customer_name ?? null, company ?? null, product_name ?? null, quantity ?? null, price ?? null,
-    //             total_amount ?? null, payment_status ?? null, remarks ?? null
-    //         ];
-    //         connection.execute(insertQuery, insertValues, (insertErr, insertResult) => {
-    //             if (insertErr) {
-    //                 reject(`Error while inserting sales data. ${insertErr}`);
-    //             } else {
-    //                 const sales_id = insertResult.insertId;
-    //                 const fetchQuery = `SELECT * FROM motion_sales WHERE sale_id = ?`;
-    //                 connection.execute(fetchQuery, [sales_id], (fetchErr, fetchResult) => {
-    //                     if (fetchErr) {
-    //                         return reject(`Inserted but failed to fetch data. ${fetchErr}`);
-    //                     }
-    //                     resolve({ status: true, message: 'Sales registered successfully.', data: fetchResult[0] });
-    //                 });
-    //             }
-    //         });
-    //     });
-    // },
 
     motion_sales_routes: (customer_name, company, products, grand_total, payment_status, remarks) => {
         return new Promise((resolve, reject) => {

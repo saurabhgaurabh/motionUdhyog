@@ -114,14 +114,17 @@ module.exports = {
 
     motion_purchase_row_material_routes: async (req, res) => {
         try {
-            const { dealer_name, postal_code, country, state, city, address, freight, total_amount, material_amount, material_amount_pending, products } = req.body;
+            const { dealer_name, postal_code, country, state, city, address, freight, total_amount, material_amount, material_amount_pending, products, payment_status } = req.body;
 
             if (!dealer_name || !Array.isArray(products) || products.length === 0) {
                 return res.status(400).json({ status: false, message: 'Dealer and products are required.' });
             }
 
             const result = await userOperations.addPurchaseWithProducts(
-                { dealer_name, postal_code, country, state, city, address, freight, total_amount, material_amount, material_amount_pending },
+                {
+                    dealer_name, postal_code, country, state, city, address, freight, total_amount, material_amount,
+                    material_amount_pending, payment_status
+                },
                 products
             );
 
@@ -160,7 +163,7 @@ module.exports = {
             const { product_name, material_type_one, material_quantity, material_quality, unit, batch_number, supervisor_name, total_cost, remarks,
             } = req.body;
             const requiredFields = [
-                'product_name', 'material_type_one', 'material_quantity', 'material_quality', 'unit', 'batch_number',
+                'product_name', 'material_type_one', 'material_quantity', 'material_quality', 'unit', 
                 'supervisor_name', 'total_cost', 'remarks',
             ];
             for (fields of requiredFields) {
@@ -230,8 +233,8 @@ module.exports = {
                 }
             }
             const result = await userOperations.motion_product_category_routes(category_name, description);
-            console.log(result, "result.")
-            return res.status(201).json({ status: true, message: `Registered Successfully.` })
+            // console.log(result, "result.")
+            return res.status(201).json({ status: true, message: `Category Add Successfully.`, result: result })
         } catch (error) {
             console.log(error, "error in motion_product_category_routes")
             return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
@@ -249,11 +252,13 @@ module.exports = {
                 }
             }
             const result = await userOperations.motion_product_subcategories_routes(sub_category_name, description, category_id);
-            // console.log(result, "result in motion_product_subcategories_routes");
             return res.status(201).json({ status: true, message: `Subcategory Registered Successfully.` });
         } catch (error) {
             console.log(error, "error in motion_product_subcategories_routes");
-            return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
+            return res.status(500).json({
+                status: false,
+                message: error?.includes('Duplicate') ? error : `Internal Server Error. ${error}`
+            });
         }
     }, // motion_product_subcategories_routes
     motion_product_sub_subcategories_routes: async (req, res) => {

@@ -85,42 +85,19 @@ ORDER BY p.purchase_id DESC;
     },
     motion_product_category_get_routes: () => {
         return new Promise((resolve, reject) => {
-            const productCategoryQuery = `
-            SELECT 
-                p.product_id, p.product_name, p.product_description, p.price, p.created_at,
-                c.category_id, c.category_name,
-                sc.sub_category_id, sc.sub_category_name,
-                ssc.sub_sub_category_id, ssc.sub_sub_category_name
-            FROM motion_products AS p
-            JOIN motion_product_category AS c ON p.category_id = c.category_id
-            JOIN motion_product_subcategories AS sc ON p.sub_category_id = sc.sub_category_id
-            JOIN motion_product_sub_subcategories AS ssc ON p.sub_sub_category_id = ssc.sub_sub_category_id
-        `;
+            const productCategoryQuery = `select * from motion_product_category;`;
             connection.execute(productCategoryQuery, [], (productCategoryError, productCategoryResult) => {
                 if (productCategoryError) {
                     return reject(`Something went wrong while fetching the data. ${productCategoryError}`);
                 }
-
-                resolve({
-                    result: productCategoryResult,
-                    status: true,
-                    message: "Product Category Fetched Successfully."
-                });
-            });
+                resolve({ result: productCategoryResult, status: true, message: "Product Category Fetched Successfully." });
+            }); 
         });
     },
     motion_product_subcategories_get_routes: () => {
         return new Promise((resolve, reject) => {
-            const subCategoryQuery = `
-            SELECT 
-                p.product_id, p.product_name, p.product_description, p.price, p.created_at,
-                c.category_id, c.category_name,
-                sc.sub_category_id, sc.sub_category_name,
-                ssc.sub_sub_category_id, ssc.sub_sub_category_name
-            FROM motion_products AS p
-            JOIN motion_product_category AS c ON p.category_id = c.category_id
-            JOIN motion_product_subcategories AS sc ON p.sub_category_id = sc.sub_category_id
-            JOIN motion_product_sub_subcategories AS ssc ON p.sub_sub_category_id = ssc.sub_sub_category_id`;
+            const subCategoryQuery = ` 
+          select * from motion_product_subcategories`;
             connection.execute(subCategoryQuery, [], (subCategoryError, subCategoryResult) => {
                 if (subCategoryError) {
                     return reject(509).json({
@@ -206,6 +183,51 @@ ORDER BY p.purchase_id DESC;
                 } else {
                     resolve(result);
                 }
+            });
+        });
+    },
+    motion_product_category_with_subcategories_get_routes: () => {
+        return new Promise((resolve, reject) => {
+            const query = `
+           SELECT 
+                c.category_id,
+                c.category_name,
+                sc.sub_category_id,
+                sc.sub_category_name
+            FROM motion_product_category AS c
+            LEFT JOIN motion_product_subcategories AS sc
+            ON c.category_id = sc.category_id
+            ORDER BY c.category_id;
+        `;
+
+            connection.execute(query, [], (err, results) => {
+                if (err) {
+                    console.error("❌ SQL Error:", err);
+                    return reject(`Database Error: ${err}`);
+                }
+
+                // ✅ Group by category
+                const categoryMap = {};
+                results.forEach(row => {
+                    if (!categoryMap[row.category_id]) {
+                        categoryMap[row.category_id] = {
+                            category_id: row.category_id,
+                            category_name: row.category_name,
+                            subcategories: []
+                        };
+                    }
+
+                    if (row.subcategory_id) {
+                        categoryMap[row.category_id].subcategories.push({
+                            subcategory_id: row.subcategory_id,
+                            subcategory_name: row.subcategory_name
+                        });
+                    }
+                });
+
+                // ✅ Convert map to array
+                const formattedData = Object.values(categoryMap);
+                resolve(formattedData);
             });
         });
     },

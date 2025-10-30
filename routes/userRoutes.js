@@ -8,25 +8,26 @@ const deleteController = require('../controller/deleteController');
 
 
 // Your api's for post data.
- /* NOT GET*/ routes.post('/v1/motion-user-registration', userController.motion_user_registration_routes); 
 routes.post('/v1/motion-add-dealer-registration-post', userController.motion_add_dealer_registration_routes);      // home  
 routes.post('/v1/motion-purchase-row-material-post', userController.motion_purchase_row_material_routes);  // purchase_Tab         
 routes.post('/v1/motion-employee-registration', userController.motion_employee_registration_routes); // Home emp reg
 routes.post('/v1/motion-product-manufacturing', userController.motion_product_manufacturing_routes); // Home product
 routes.post('/v1/motion-parties-registration', userController.motion_parties_registration_routes); // Home clients
 routes.post('/motion_dispatch_product_routes', userController.motion_dispatch_product_routes); //Home
-routes.post('/motion_product_category_routes', userController.motion_product_category_routes); //Products
-routes.post('/motion_product_subcategories_routes', userController.motion_product_subcategories_routes); //Products 
+routes.post('/v1/motion-product-category-post', userController.motion_product_category_routes); //Products
+routes.post('/v1/motion-product-subcategories-post', userController.motion_product_subcategories_routes); //Products 
 routes.post('/motion_product_sub_subcategories_routes', userController.motion_product_sub_subcategories_routes); //Products 
 routes.post('/motion_products_routes', userController.motion_products_routes); // Products optionals
 routes.post('/v1/motion-daily-tasks', userController.motion_daily_tasks); // Home
 routes.post('/v1/motion-sales', userController.motion_sales_routes);
 // today orders
-  //monthly report
+  //monthly report 
      
 // authentication 
+routes.post('/v1/motion-user-registration', userController.motion_user_registration_routes); 
 routes.post('/v1/verify-user-otp', userController.verify_user_otp);
 routes.post('/v1/user-login', userController.user_login);
+
 routes.post('/v1/user-otp-verification', userController.user_otp_verification);
  
 
@@ -39,12 +40,15 @@ routes.get('/v1/motion-employee-registration-get', getController.motion_employee
 routes.get('/v1/product-manufacturing-get', getController.motion_product_manufacturing_get_routes);
 routes.get('/v1/motion-parties-registration-get', getController.motion_parties_registration_get_routes);
 routes.get('/motion_dispatch_product_get_routes', getController.motion_dispatch_product_get_routes);
-routes.get('/motion_product_category_get_routes', getController.motion_product_category_get_routes);
-routes.get('/motion_product_subcategories_get_routes', getController.motion_product_subcategories_get_routes);
+routes.get('/v1/motion-product-category-get', getController.motion_product_category_get_routes);
+routes.get('/v1/motion-product-subcategories-get', getController.motion_product_subcategories_get_routes);
 routes.get('/motion_product_sub_subcategories_get_routes', getController.motion_product_sub_subcategories_get_routes);
 routes.get('/motion_products_get_routes', getController.motion_products_get_routes);
 routes.get('/v1/motion-daily-tasks-get', getController.motion_daily_tasks_get_routes);
 routes.get('/v1/motion-sales-get', getController.motion_sales_get_routes);
+routes.get('/v1/motion-product-category-with-subcategories-get',
+   getController.motion_product_category_with_subcategories_get_routes);
+
 
 
 

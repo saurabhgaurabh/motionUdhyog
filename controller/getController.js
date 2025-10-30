@@ -53,15 +53,16 @@ module.exports = {
     motion_product_category_get_routes: async (req, res) => {
         try {
             const productCategoryResult = await getOperations.motion_product_category_get_routes();
-            // console.log(productCategoryResult," pro result")
-            return res.status(200).json({ status: false, message: `Product Category Fetched Successfully.`, result: productCategoryResult });
+            return res.status(200).json({ status: true, message: `Product Category Fetched Successfully.`, result: productCategoryResult });
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal Server Errors. ${error}` });
         }
     },
     motion_product_subcategories_get_routes: async (req, res) => {
         try {
-            const subCategoryResult = await getOperations.motion_product_subcategories_get_routes();
+            const { category_id } = req.query;
+            // console.log("📩 Received category_id:", category_id); // Debugging
+            const subCategoryResult = await getOperations.motion_product_subcategories_get_routes(category_id);
             return res.status(200).json({ status: true, message: `sub Category Fetched Successfully.`, result: subCategoryResult })
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal Server Errors. ${error}` });
@@ -103,5 +104,23 @@ module.exports = {
             return res.status(500).json({ status: false, message: `Internal Server Error. ${error}` });
         }
     },
+    motion_product_category_with_subcategories_get_routes: async (req, res) => {
+        try {
+            const categoryResult = await getOperations.motion_product_category_with_subcategories_get_route();
+
+            return res.status(200).json({
+                status: true,
+                message: "Categories with Subcategories fetched successfully.",
+                result: categoryResult
+            });
+        } catch (error) {
+            console.error("❌ Controller Error:", error);
+            return res.status(500).json({
+                status: false,
+                message: `Internal Server Error: ${error}`
+            });
+        }
+    },
+
 
 }
