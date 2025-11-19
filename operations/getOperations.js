@@ -61,10 +61,10 @@ ORDER BY p.purchase_id DESC;
             })
         })
     },
-    motion_parties_registration_get_routes: () => {
+    motion_parties_registration_get_routes: (user_id) => {
         return new Promise((resolve, reject) => {
-            const partiesQuery = `select * from motion_parties_registration`;
-            connection.execute(partiesQuery, [], (partiesError, partiesResult) => {
+            const partiesQuery = `select * from motion_parties_registration where user_id = ?`;
+            connection.execute(partiesQuery, [user_id], (partiesError, partiesResult) => {
                 if (partiesError) {
                     return reject(`Something went wrong while fetching the Parties Data. ${partiesError}`);
                 }

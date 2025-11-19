@@ -3,54 +3,122 @@ const logger = require('../utils/logger');
 const speakeasy = require('speakeasy');
 
 module.exports = {
+    // motion_user_registration_routes: async (req, res) => {
+    //     try {
+    //         const requiredFields = ['company_name', 'owner_name', 'industry_type', 'GST_number',
+    //             'registration_email', 'mobile_number', 'password', 'confirm_password',
+    //             'country', 'state', 'city', 'address', 'postal_code', 'website'];
+    //         for (const field of requiredFields) {
+    //             if (!req.body[field]) { // checks if that field exists in the incoming request.
+    //                 return res.status(404).json({ status: false, message: `${field.replace('_', ' ')} is required.` }); //If any field is missing or empty, it stops and returns a message like: //field.replace('_', ' ') just makes the message more readable (postal_code ➝ postal code)
+    //             }
+    //         }
+    //         const { company_name, owner_name, industry_type, GST_number, registration_email, mobile_number, password, confirm_password, country,
+    //             state, city, address, postal_code, website } = req.body;
+
+    //         const result = await userOperations.motion_user_registration_routes(company_name, owner_name, industry_type, GST_number, registration_email,
+    //             mobile_number, password, confirm_password, country, state, city, address, postal_code, website);
+    //         return res.status(200).json({ status: true, message: `Registration Completed Successfully.`, result: result });
+    //     } catch (error) {
+    //         return res.status(500).json({ result: [], status: false, message: `Internal Server Errors. ${error}` })
+    //     }
+    // },// motion_user_registration_routes
+
     motion_user_registration_routes: async (req, res) => {
         try {
-            const requiredFields = ['company_name', 'owner_name', 'industry_type', 'GST_number',
+            const requiredFields = [
+                'company_name', 'owner_name', 'industry_type', 'GST_number',
                 'registration_email', 'mobile_number', 'password', 'confirm_password',
-                'country', 'state', 'city', 'address', 'postal_code', 'website'];
+                'country', 'state', 'city', 'address', 'postal_code', 'website'
+            ];
+
             for (const field of requiredFields) {
-                if (!req.body[field]) { // checks if that field exists in the incoming request.
-                    return res.status(404).json({ status: false, message: `${field.replace('_', ' ')} is required.` }); //If any field is missing or empty, it stops and returns a message like: //field.replace('_', ' ') just makes the message more readable (postal_code ➝ postal code)
+                if (!req.body[field]) {
+                    return res.status(400).json({
+                        status: false,
+                        message: `${field.replace('_', ' ')} is required.`
+                    });
                 }
             }
-            const { company_name, owner_name, industry_type, GST_number, registration_email, mobile_number, password, confirm_password, country,
-                state, city, address, postal_code, website } = req.body;
 
-            const result = await userOperations.motion_user_registration_routes(company_name, owner_name, industry_type, GST_number, registration_email,
-                mobile_number, password, confirm_password, country, state, city, address, postal_code, website);
-            return res.json(200).json({ status: true, message: `Registration Completed Successfully.`, result: result });
+            const result = await userOperations.motion_user_registration_routes(req.body);
+
+            return res.status(200).json({
+                status: true,
+                message: "Registration Completed Successfully.",
+                result: result
+            });
+
         } catch (error) {
-            return res.status(500).json({ result: [], status: false, message: `Internal Server Errors. ${error}` })
+            return res.status(500).json({
+                status: false,
+                message: `Internal Server Error: ${error}`
+            });
         }
-    },// motion_user_registration_routes
-
+    },
 
     verify_user_otp: async (req, res) => {
         try {
-            const { userCode, userOTP } = req.body;
-            if (!userCode || !userOTP) {
-                return res.status(400).json({ status: false, message: 'User code and OTP are required.' });
+            const { user_id, email, userOTP } = req.body;
+            if (!user_id || !email || !userOTP) {
+                return res.status(400).json({
+                    status: false,
+                    message: "user_id, email & OTP are required"
+                });
             }
-            const user = await userOperations.verify_user_otp(userCode, userOTP);
-            return res.status(200).json({ status: true, message: 'OTP verified successfully.', user: user });
+            const result = await userOperations.verify_user_otp(user_id, email, userOTP);
+
+            return res.status(200).json({
+                status: true,
+                message: "OTP Verified Successfully!",
+                result: result
+            });
+
         } catch (error) {
-            console.error('Error verifying OTP:', error);
-            return res.status(500).json({ status: false, message: `Internal server error. ${error.message}` });
+            return res.status(400).json({
+                status: false,
+                message: error.toString()
+            });
         }
     }, // verify_user_otp
 
     user_login: async (req, res) => {
         try {
-            const { email, password } = req.body;
-            if (!email || !password) {
-                return res.status(400).json({ status: false, message: 'Email and password are required.' });
+            const { registration_email, password } = req.body;
+            if (!registration_email || !password) {
+                return res.status(400).json({
+                    status: false,
+                    message: "Email & password required"
+                });
             }
-            const user = await userOperations.user_login(email, password);
-            return res.status(200).json({ status: true, message: 'Login successful.', user: user });
+            const result = await userOperations.user_login(registration_email, password);
+            // Now check otpSecret
+            if (!result.otp_secret || result.otp_secret === "" || result.otp_secret === null) {
+                return res.status(403).json({
+                    status: false,
+                    message: "OTP Secret not verified. Please verify OTP Secret first.",
+                    need_otp_verification: true
+                });
+            }
+            return res.status(200).json({ status: true, message: "Login Successful", result: result });
         } catch (error) {
-            return res.status(500).json({ status: false, message: `Internal server error. ${error.message}` });
+            return res.status(400).json({ status: false, message: error.toString() });
         }
     },
+    user_logout: async (req, res) => {
+        try {
+            const { user_id } = req.body;
+            if (!user_id) {
+                return res.status(400).json({ status: false, message: "user_id is required" });
+            }
+            const result = await userOperations.user_logout(user_id);
+            return res.status(200).json({ status: true, message: "Logout Successful", result: result });
+
+        } catch (error) {
+            return res.status(400).json({ status: false, message: error.toString() });
+        }
+    },
+
     user_otp_verification: async (req, res) => {
         try {
             const { userOTP } = req.body;
@@ -163,7 +231,7 @@ module.exports = {
             const { product_name, material_type_one, material_quantity, material_quality, unit, batch_number, supervisor_name, total_cost, remarks,
             } = req.body;
             const requiredFields = [
-                'product_name', 'material_type_one', 'material_quantity', 'material_quality', 'unit', 
+                'product_name', 'material_type_one', 'material_quantity', 'material_quality', 'unit',
                 'supervisor_name', 'total_cost', 'remarks',
             ];
             for (fields of requiredFields) {
@@ -181,20 +249,47 @@ module.exports = {
     },// motion_product_manufacturing_routes                          -----  FETCHING DATA  -------------
     motion_parties_registration_routes: async (req, res) => {
         try {
-            const { organization_name, owner_name, mobile, email, gst, address, country, state, city, adhar, pan } = req.body;
+            const {
+                user_id,
+                organization_name, owner_name, mobile, email, gst, address,
+                country, state, city, adhar, pan
+            } = req.body;
+            if (!user_id) {
+                return res.status(400).json({
+                    status: false,
+                    message: "user_id is required"
+                });
+            }
             const requiredFields = [
-                'organization_name', 'owner_name', 'mobile', 'email', 'gst', 'address'
+                'user_id', 'organization_name', 'owner_name', 'mobile',
+                'email', 'gst', 'address'
             ];
-            for (fields of requiredFields) {
-                if (!req.body[fields]) {
-                    return res.status(404).json({ status: false, message: `${fields.replace('_', ' ')} 'is required.'` })
+
+            for (const field of requiredFields) {
+                if (!req.body[field]) {
+                    return res.status(404).json({
+                        status: false,
+                        message: `${field.replace('_', ' ')} is required.`
+                    });
                 }
             }
+
             const result = await userOperations.motion_parties_registration_routes(
-                organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan);
-            return res.status(200).json({ status: true, message: `Parties Added Successfully.`, result: result });
+                user_id, organization_name, owner_name, mobile, email, gst,
+                country, state, city, address, adhar, pan
+            );
+
+            return res.status(200).json({
+                status: true,
+                message: "Parties Added Successfully.",
+                result: result
+            });
+
         } catch (error) {
-            return res.status(500).json({ status: false, message: `internal server error.${error}` });
+            return res.status(500).json({
+                status: false,
+                message: `Internal server error: ${error}`
+            });
         }
     }, // motion_parties_registration_routes          -----  FETCHING DATA  -------------
     motion_dispatch_product_routes: async (req, res) => {
@@ -215,7 +310,6 @@ module.exports = {
                 dispatch_id, dispatch_code, organization_name, owner_name, mobile, email, product_name, product_type,
                 quantity, height, width, color, packing_type, dispatch_mode, address, city, state, country, postal_code, gst, freight,
             );
-            // console.log(result,"result")
             return res.status(200).json({ status: true, message: 'Product Dispatch Successfully.', result: result });
         } catch (error) {
             return res.status(500).json({ status: false, message: `internal server Error. ${error}` });

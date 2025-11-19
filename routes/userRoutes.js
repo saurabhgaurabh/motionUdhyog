@@ -13,7 +13,7 @@ routes.post('/v1/motion-purchase-row-material-post', userController.motion_purch
 routes.post('/v1/motion-employee-registration', userController.motion_employee_registration_routes); // Home emp reg
 routes.post('/v1/motion-product-manufacturing', userController.motion_product_manufacturing_routes); // Home product
 routes.post('/v1/motion-parties-registration', userController.motion_parties_registration_routes); // Home clients
-routes.post('/motion_dispatch_product_routes', userController.motion_dispatch_product_routes); //Home
+routes.post('/motion_dispatch_product_routes', userController.motion_dispatch_product_routes); //Home dispatch
 routes.post('/v1/motion-product-category-post', userController.motion_product_category_routes); //Products
 routes.post('/v1/motion-product-subcategories-post', userController.motion_product_subcategories_routes); //Products 
 routes.post('/motion_product_sub_subcategories_routes', userController.motion_product_sub_subcategories_routes); //Products 
@@ -27,6 +27,8 @@ routes.post('/v1/motion-sales', userController.motion_sales_routes);
 routes.post('/v1/motion-user-registration', userController.motion_user_registration_routes); 
 routes.post('/v1/verify-user-otp', userController.verify_user_otp);
 routes.post('/v1/user-login', userController.user_login);
+routes.post('/v1/user-logout', userController.user_logout);
+
 
 routes.post('/v1/user-otp-verification', userController.user_otp_verification);
  

@@ -18,151 +18,373 @@ function generateOTP() {
 
 // modules for Operations
 module.exports = {
-    motion_user_registration_routes: (
-        company_name, owner_name, industry_type, GST_number, registration_email,
-        mobile_number, password, confirm_password, country, state, city, address, postal_code, website
-    ) => {
-        return new Promise((resolve, reject) => {
-            const userCode = randomUserCode();
-            const checkQuery = `SELECT * FROM motion_user_registration WHERE userCode = ? OR registration_email = ?`;
+    // motion_user_registration_routes: (
+    //     company_name, owner_name, industry_type, GST_number, registration_email,
+    //     mobile_number, password, confirm_password, country, state, city, address, postal_code, website
+    // ) => {
+    //     return new Promise((resolve, reject) => {
+    //         const userCode = randomUserCode();
+    //         const checkQuery = `SELECT * FROM motion_user_registration WHERE userCode = ? OR registration_email = ?`;
 
-            connection.execute(checkQuery, [userCode, registration_email], (checkErr, checkResult) => {
-                if (checkErr) { return reject(`Error checking existing records.`); }
-                if (checkResult.length > 0) {
-                    const user = checkResult[0];
-                    if (user.flag === 'verified') {
-                        return reject('User already registered and verified.');
+    //         connection.execute(checkQuery, [userCode, registration_email], (checkErr, checkResult) => {
+    //             if (checkErr) { return reject(`Error checking existing records.`); }
+    //             if (checkResult.length > 0) {
+    //                 const user = checkResult[0];
+    //                 if (user.flag === 'verified') {
+    //                     return reject('User already registered and verified.');
+    //                 }
+    //             }
+    //             const baseSecret = speakeasy.generateSecret({ length: 20 });
+    //             const otp_secret = baseSecret.base32;
+
+    //             const userOTP = speakeasy.totp({
+    //                 secret: otp_secret,
+    //                 encoding: 'base32',
+    //                 step: 300 //5 min
+    //             });
+    //             const otpExpiry = new Date(Date.now() + 5 * 60000); // 5 minutes later
+    //             //  Send OTP Email
+    //             const mailOptions = {
+    //                 from: 'leadchainsaurabh7@gmail.com',
+    //                 to: registration_email, //  Use the actual email variable
+    //                 subject: 'ApkaUdhyog.com - OTP Verification',
+    //                 text: `Hello user, your OTP is ${userOTP}`,
+    //                 html: `
+    //                 <div style="font-family: Arial, sans-serif; color: #333; padding: 20px; background-color: #f9f9f9;">
+    //                    <div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+    //                         <h2 style="color: #4CAF50;">Welcome to ApkaUdhyog.com!</h2>      
+    //                             <p>Hi <strong>${owner_name}</strong>,</p>      
+    //                             <p>We’re excited to have <strong>${company_name}</strong> join the ApkaUdhyog platform.</p>      
+    //                             <p>To complete your registration, please use the following One-Time Password (OTP):</p>      
+    //                         <div style="text-align: center; margin: 20px 0;">
+    //                             <span style="display: inline-block; background: #4CAF50; color: white; font-size: 24px; padding: 12px 24px; border-radius: 6px; letter-spacing: 2px;"> ${userOTP}</span>
+    //                         </div>      
+    //                             <p>This OTP is valid for the next 10 minutes. Please do not share it with anyone.</p>                    
+    //                             <p>If you didn’t initiate this request, please ignore this message or contact our support team.</p><br>
+    //                             <p>Regards,</p>
+    //                             <p><strong>Team ApkaUdhyog</strong></p>
+    //                             <p style="font-size: 12px; color: #999;">www.apkaudhyog.com | support@apkaudhyog.com</p>
+    //                     </div>
+    //                 </div>`
+    //             };
+    //             transporter.sendMail(mailOptions, (mailErr, info) => {
+    //                 if (mailErr) {
+    //                     console.error('Mail sending error:', mailErr);
+    //                     return reject('Failed to send OTP email.');
+    //                 }
+    //                 console.log('OTP email sent:', info.response);
+
+    //                 // hash password
+    //                 bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
+    //                     if (err) {
+    //                         return reject('Error hashing the password.');
+    //                     }
+    //                     bcrypt.hash(confirm_password, saltRounds, (err2, hashedConfirmPassword) => {
+    //                         if (err2) {
+    //                             return reject('Error hashing the confirm password.');
+    //                         }
+    //                         const insertQuery = `INSERT INTO motion_user_registration (
+    //                         userCode, company_name, owner_name, industry_type, GST_number, registration_email,
+    //                          mobile_number, password, confirm_password, country, state, city, address, postal_code,
+    //                           website, flag, userOTP, otp_secret, otp_expiry
+    //                           )   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+    //                         const values = [
+    //                             userCode, company_name, owner_name, industry_type, GST_number,
+    //                             registration_email, mobile_number, hashedPassword, hashedConfirmPassword,
+    //                             country, state, city, address, postal_code, website, 'unverified', userOTP
+    //                             , otp_secret, otpExpiry
+    //                         ];
+
+    //                         connection.execute(insertQuery, values, (insertErr, insertResult) => {
+    //                             if (insertErr) {
+    //                                 // console.error(insertErr," error");
+    //                                 return reject(`Something went wrong while inserting data || Duplicate entry not allowed. Error 1062. ${insertErr} `);
+    //                             }
+    //                             resolve({
+    //                                 result: insertResult,
+    //                                 message: `Registration initiated. OTP sent to  ${registration_email}. Successfully`
+    //                             });
+    //                         });
+    //                     });
+    //                 });
+    //             });
+    //         });
+    //     });
+    // },// Api for motion add dealer registration
+
+    //     motion_user_registration_routes: (
+    //     company_name, owner_name, industry_type, GST_number, registration_email,
+    //     mobile_number, password, confirm_password, country, state, city, address, postal_code, website
+    // ) => {
+    //     return new Promise((resolve, reject) => {
+    //         const userCode = randomUserCode();
+    //         const checkQuery = `SELECT * FROM motion_user_registration WHERE user_id = ? OR registration_email = ?`;
+
+    //         connection.execute(checkQuery, [user_id, registration_email], (checkErr, checkResult) => {
+    //             if (checkErr) return reject(`Error checking existing records: ${checkErr}`);
+
+    //             if (checkResult.length > 0) {
+    //                 const user = checkResult[0];
+    //                 if (user.flag === 'verified') {
+    //                     return reject('User already registered and verified.');
+    //                 }
+    //             }
+
+    //             const baseSecret = speakeasy.generateSecret({ length: 20 });
+    //             const otp_secret = baseSecret.base32;
+
+    //             const userOTP = speakeasy.totp({
+    //                 secret: otp_secret,
+    //                 encoding: 'base32',
+    //                 step: 900 // 15 minutes
+    //             });
+
+    //             const otpExpiry = new Date(Date.now() + 5 * 60000);
+
+    //             // ✅ Mail setup
+    //             const mailOptions = {
+    //                 from: 'leadchainsaurabh7@gmail.com',
+    //                 to: registration_email,
+    //                 subject: 'ApkaUdhyog.com - OTP Verification',
+    //                 html: `
+    //                     <div style="font-family: Arial, sans-serif; padding: 20px;">
+    //                         <h2>Welcome to ApkaUdhyog.com!</h2>
+    //                         <p>Hi <strong>${owner_name}</strong>,</p>
+    //                         <p>Your OTP is:</p>
+    //                         <h3>${userOTP}</h3>
+    //                         <p>Valid for 5 minutes. Do not share it with anyone.</p>
+    //                     </div>`
+    //             };
+
+    //             transporter.sendMail(mailOptions, (mailErr) => {
+    //                 if (mailErr) {
+    //                     console.error('Mail sending error:', mailErr);
+    //                     return reject('Failed to send OTP email.');
+    //                 }
+
+    //                 // ✅ Hash both passwords
+    //                 bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
+    //                     if (err) return reject('Error hashing the password.');
+
+    //                     bcrypt.hash(confirm_password, saltRounds, (err2, hashedConfirmPassword) => {
+    //                         if (err2) return reject('Error hashing the confirm password.');
+
+    //                         const insertQuery = `
+    //                             INSERT INTO motion_user_registration (
+    //                                 userCode, company_name, owner_name, industry_type, GST_number,
+    //                                 registration_email, mobile_number, password, confirm_password,
+    //                                 country, state, city, address, postal_code, website,
+    //                                 flag, userOTP, otp_secret, otp_expiry
+    //                             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    //                         `;
+
+    //                         const values = [
+    //                             userCode, company_name, owner_name, industry_type, GST_number,
+    //                             registration_email, mobile_number, hashedPassword, hashedConfirmPassword,
+    //                             country, state, city, address, postal_code, website,
+    //                             'unverified', userOTP, otp_secret, otpExpiry
+    //                         ];
+
+    //                         connection.execute(insertQuery, values, (insertErr, insertResult) => {
+    //                             if (insertErr) {
+    //                                 return reject(`Database insert error: ${insertErr.message}`);
+    //                             }
+    // console.log(insertResult, "insert")
+    //                             return resolve({
+    //                                 result: insertResult,
+    //                                 message: `Registration initiated. OTP sent to ${registration_email}`
+    //                             });
+    //                         });
+    //                     });
+    //                 });
+    //             });
+    //         });
+    //     });
+    // },
+
+    motion_user_registration_routes: (data) => {
+        return new Promise(async (resolve, reject) => {
+
+            const {
+                company_name, owner_name, industry_type, GST_number,
+                registration_email, mobile_number, password, confirm_password,
+                country, state, city, address, postal_code, website
+            } = data;
+
+            try {
+                const userCode = randomUserCode();
+
+                // 1. Check duplicate email
+                const checkQuery = `SELECT * FROM motion_user_registration WHERE registration_email = ? LIMIT 1`;
+                const [existing] = await connection.promise().query(checkQuery, [registration_email]);
+
+                if (existing.length > 0) {
+                    if (existing[0].flag === "verified") {
+                        return reject("User already registered and verified.");
                     }
                 }
+
+                // 2. Generate OTP + expiry time
                 const baseSecret = speakeasy.generateSecret({ length: 20 });
                 const otp_secret = baseSecret.base32;
 
                 const userOTP = speakeasy.totp({
                     secret: otp_secret,
-                    encoding: 'base32',
-                    step: 300 //5 min
+                    encoding: "base32",
+                    step: 900
                 });
-                const otpExpiry = new Date(Date.now() + 5 * 60000); // 5 minutes later
-                //  Send OTP Email
+
+                const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
+
+                // 3. Send OTP email
                 const mailOptions = {
-                    from: 'leadchainsaurabh7@gmail.com',
-                    to: registration_email, //  Use the actual email variable
-                    subject: 'ApkaUdhyog.com - OTP Verification',
-                    text: `Hello user, your OTP is ${userOTP}`,
+                    from: "leadchainsaurabh7@gmail.com",
+                    to: registration_email,
+                    subject: "ApkaUdhyog.com - OTP Verification",
                     html: `
-                    <div style="font-family: Arial, sans-serif; color: #333; padding: 20px; background-color: #f9f9f9;">
-                       <div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
-                            <h2 style="color: #4CAF50;">Welcome to ApkaUdhyog.com!</h2>      
-                                <p>Hi <strong>${owner_name}</strong>,</p>      
-                                <p>We’re excited to have <strong>${company_name}</strong> join the ApkaUdhyog platform.</p>      
-                                <p>To complete your registration, please use the following One-Time Password (OTP):</p>      
-                            <div style="text-align: center; margin: 20px 0;">
-                                <span style="display: inline-block; background: #4CAF50; color: white; font-size: 24px; padding: 12px 24px; border-radius: 6px; letter-spacing: 2px;"> ${userOTP}</span>
-                            </div>      
-                                <p>This OTP is valid for the next 10 minutes. Please do not share it with anyone.</p>                    
-                                <p>If you didn’t initiate this request, please ignore this message or contact our support team.</p><br>
-                                <p>Regards,</p>
-                                <p><strong>Team ApkaUdhyog</strong></p>
-                                <p style="font-size: 12px; color: #999;">www.apkaudhyog.com | support@apkaudhyog.com</p>
-                        </div>
-                    </div>`
+                    <h2>Welcome to ApkaUdhyog.com!</h2>
+                    <p>Dear <strong>${owner_name}</strong>,</p>
+                    <p>Your OTP is:</p>
+                    <h3>${userOTP}</h3>
+                    <p>Valid for <b>5 minutes</b>. Do not share it.</p>
+                `
                 };
-                transporter.sendMail(mailOptions, (mailErr, info) => {
-                    if (mailErr) {
-                        console.error('Mail sending error:', mailErr);
-                        return reject('Failed to send OTP email.');
-                    }
-                    console.log('OTP email sent:', info.response);
 
-                    // hash password
-                    bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
-                        if (err) {
-                            return reject('Error hashing the password.');
-                        }
-                        bcrypt.hash(confirm_password, saltRounds, (err2, hashedConfirmPassword) => {
-                            if (err2) {
-                                return reject('Error hashing the confirm password.');
-                            }
-                            const insertQuery = `INSERT INTO motion_user_registration (
-                            userCode, company_name, owner_name, industry_type, GST_number, registration_email,
-                             mobile_number, password, confirm_password, country, state, city, address, postal_code,
-                              website, flag, userOTP, otp_secret, otp_expiry
-                              )   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                await transporter.sendMail(mailOptions);
 
-                            const values = [
-                                userCode, company_name, owner_name, industry_type, GST_number,
-                                registration_email, mobile_number, hashedPassword, hashedConfirmPassword,
-                                country, state, city, address, postal_code, website, 'unverified', userOTP
-                                , otp_secret, otpExpiry
-                            ];
+                // 4. Hash passwords
+                const hashedPassword = await bcrypt.hash(password, saltRounds);
+                const hashedConfirmPassword = await bcrypt.hash(confirm_password, saltRounds);
 
-                            connection.execute(insertQuery, values, (insertErr, insertResult) => {
-                                if (insertErr) {
-                                    // console.error(insertErr," error");
-                                    return reject(`Something went wrong while inserting data || Duplicate entry not allowed. Error 1062. ${insertErr} `);
-                                }
-                                resolve({
-                                    result: insertResult,
-                                    message: `Registration initiated. OTP sent to  ${registration_email}. Successfully`
-                                });
-                            });
-                        });
-                    });
+                // 5. Insert user
+                const insertQuery = `
+                INSERT INTO motion_user_registration (
+                    userCode, company_name, owner_name, industry_type, GST_number,
+                    registration_email, mobile_number, password, confirm_password,
+                    country, state, city, address, postal_code, website,
+                    flag, userOTP, otp_secret, otp_expiry
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `;
+
+                const values = [
+                    userCode, company_name, owner_name, industry_type, GST_number,
+                    registration_email, mobile_number, hashedPassword, hashedConfirmPassword,
+                    country, state, city, address, postal_code, website,
+                    "unverified", userOTP, otp_secret, otpExpiry
+                ];
+
+                const [insertResult] = await connection.promise().query(insertQuery, values);
+
+                return resolve({
+                    user_id: insertResult.insertId,     // ⬅ Needed on frontend
+                    registration_email,
+                    userOTP,
+                    message: "Registration initiated. OTP sent to email."
                 });
-            });
+
+            } catch (error) {
+                console.error("Registration error:", error);
+                return reject(`Registration failed: ${error}`);
+            }
         });
-    },// Api for motion add dealer registration
+    },
 
-    verify_user_otp: (userCode, userOTP) => {
-        return new Promise((resolve, reject) => {
-            const fetchQuery = `SELECT otp_secret FROM motion_user_registration WHERE userCode = ?`;
-            connection.execute(fetchQuery, [userCode], (err, results) => {
-                if (err || results.length === 0) {
-                    return reject({ status: false, message: 'User not found.' });
+    verify_user_otp: (user_id, email, userOTP) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const getQuery = `SELECT * FROM motion_user_registration WHERE user_id = ? AND registration_email = ? LIMIT 1`;
+                const [rows] = await connection.promise().query(getQuery, [user_id, email]);
+
+                if (rows.length === 0) {
+                    return reject("User not found!");
                 }
-                const user = results[0];
-                const isVerified = speakeasy.totp.verify({
-                    secret: user.otp_secret,
-                    encoding: 'base32',
-                    token: userOTP,
-                    window: 10,
-                    step: 300
-                });
-                if (!isVerified) {
-                    return reject({ status: false, message: 'Invalid OTP.' });
+
+                const user = rows[0];
+
+                // OTP expiry check
+                if (new Date() > new Date(user.otp_expiry)) {
+                    return reject("OTP Expired! Please request a new one.");
                 }
-                const updateQuery = `UPDATE motion_user_registration SET flag = 'verified' WHERE userCode = ?`;
-                connection.execute(updateQuery, [userCode], (updateErr) => {
-                    if (updateErr) {
-                        return reject({ status: false, message: 'Verification failed while updating user.' });
-                    }
-                    resolve({ status: true, message: 'User verified successfully.' });
+
+                // OTP match
+                if (String(user.userOTP) !== String(userOTP)) {
+                    return reject("Invalid OTP!");
+                }
+
+                // Update user as verified
+                const updateQuery = `
+                UPDATE motion_user_registration 
+                SET flag = 'verified'
+                WHERE user_id = ?
+            `;
+                await connection.promise().query(updateQuery, [user_id]);
+
+                return resolve({
+                    user_id: user_id,
+                    email: user.registration_email,
+                    company_name: user.company_name
                 });
-            });
-        })
+
+            } catch (error) {
+                return reject(error);
+            }
+        });
     },
 
     user_login: (registration_email, password) => {
-        return new Promise((resolve, reject) => {
-            const query = `SELECT registration_email, password FROM 
-            motion_user_registration WHERE registration_email = ?`;
-            connection.execute(query, [registration_email], (err, results) => {
-                if (err) {
-                    return reject({ status: false, message: 'Database error.' });
+        return new Promise(async (resolve, reject) => {
+            try {
+                const query = `SELECT * FROM motion_user_registration WHERE registration_email = ? LIMIT 1`;
+                const [rows] = await connection.promise().query(query, [registration_email]);
+
+                if (rows.length === 0) {
+                    return reject("User not found!");
                 }
-                if (results.length === 0) {
-                    return reject({ status: false, message: 'User not found.' });
+
+                const user = rows[0];
+
+                if (user.flag !== "verified") {
+                    return reject("User not verified. Please verify OTP!");
                 }
-                const user = results[0];
-                bcrypt.compare(password, user.password, (compareErr, isMatch) => {
-                    if (compareErr || !isMatch) {
-                        return reject({ status: false, message: 'Invalid password.' });
-                    }
-                    resolve({ status: true, message: 'Login successful.', user });
+
+                const isMatch = await bcrypt.compare(password, user.password);
+                if (!isMatch) {
+                    return reject("Invalid password!");
+                }
+
+                return resolve({
+                    user_id: user.user_id,
+                    company_name: user.company_name,
+                    registration_email: user.registration_email,
+                    otp_secret: user.otp_secret   // Important for login
                 });
-            });
+
+            } catch (error) {
+                return reject(error);
+            }
         });
     },
+    user_logout: (user_id) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const query = `
+                UPDATE motion_user_registration
+                SET otp_secret = NULL
+                WHERE user_id = ?
+            `;
+                const [rows] = await connection.promise().query(query, [user_id]);
+                if (rows.affectedRows === 0) {
+                    return reject("User not found or already logged out");
+                }
+                resolve({ user_id: user_id, message: "User logged out successfully" });
+            } catch (error) {
+                reject(error || error.message);
+                console.log(error, "logout error.")
+            }
+        });
+    },
+
     user_otp_verification: (registration_email, userOTP) => {
         return new Promise((resolve, reject) => {
             const fetchQuery = `SELECT otp_secret FROM motion_user_registration WHERE registration_email = ?`;
@@ -350,42 +572,59 @@ module.exports = {
         })
     },// Api for motion parties registration          -----  FETCHING DATA  -------------
 
-    motion_parties_registration_routes: (organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) => {
+    motion_parties_registration_routes: (
+        user_id, organization_name, owner_name, mobile, email, gst,
+        country, state, city, address, adhar, pan
+    ) => {
         return new Promise((resolve, reject) => {
-            party_id = generate6DigitCode();
-            const checkQuery = `select * from motion_parties_registration where gst = ? OR party_id = ?`;
-            connection.execute(checkQuery, [party_id, gst], (checkErr, checkResult) => {
-                if (checkErr) {
-                    return reject(`Getting existing Records.`);
-                }
+
+            const party_id = generate6DigitCode();
+
+            // Check duplicates
+            const checkQuery = `
+            SELECT * FROM motion_parties_registration 
+            WHERE gst = ? OR party_id = ?
+        `;
+
+            connection.execute(checkQuery, [gst, party_id], (checkErr, checkResult) => {
+                if (checkErr) return reject(`Error checking existing records.`);
+
                 if (checkResult.length > 0) {
-                    return reject('GST or Party ID already exists. Duplicate entry not allow.');
+                    return reject(`GST or Party ID already exists. Duplicate entry not allowed.`);
                 }
-            })
-            const insertQuery = `insert into motion_parties_registration (
-            organization_name, owner_name, mobile, email, gst, country, state, city, address, adhar, pan) values 
-            (?,?,?,?,?,?,?,?,?,?,?)`;
 
-            const insertValues = [
-                organization_name || null, owner_name || null, mobile || null, email || null, gst || null,
-                country || null, state || null, city || null, address || null, adhar || null, pan || null
+                const insertQuery = `
+                INSERT INTO motion_parties_registration
+                (user_id, party_id, organization_name, owner_name, mobile, email, gst,
+                 country, state, city, address, adhar, pan)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `;
 
-            ];
-            connection.execute(insertQuery, insertValues, (insertError, insertResult) => {
-                if (insertError) {
-                    // console.log(insertError, "insertError")
-                    return reject(`Error while inserting Data.${insertError}`)
-                }
-                resolve({ data: insertResult, message: `Parties Data Inserted successfully. ` });
-            })
-        })
+                const values = [
+                    user_id, party_id, organization_name || null, owner_name || null, mobile || null,
+                    email || null, gst || null, country || null, state || null, city || null,
+                    address || null, adhar || null, pan || null
+                ];
+
+                connection.execute(insertQuery, values, (insertErr, insertResult) => {
+                    if (insertErr) {
+                        return reject(`Error inserting party data: ${insertErr}`);
+                    }
+
+                    resolve({
+                        data: insertResult,
+                        message: "Party Data Inserted Successfully"
+                    });
+                });
+            });
+        });
     },// Api for motion dispatch product      
     motion_dispatch_product_routes: (dispatch_id, dispatch_code, organization_name, owner_name, mobile, email, product_name, product_type,
         quantity, height, width, color, packing_type, dispatch_mode, address, city, state, country, postal_code, gst, freight) => {
         return new Promise((resolve, reject) => {
-            const dispatch_id = generate6DigitCode();
-            const checkQuery = `select * from motion_dispatch_product where dispatch_id = ? or dispatch_code = ?`;
-            connection.execute(checkQuery, [dispatch_id, dispatch_code], (checkErr, checkResult) => {
+            // const dispatch_id = generate6DigitCode();
+            const checkQuery = `select * from motion_dispatch_product where dispatch_id = ?`;
+            connection.execute(checkQuery, [dispatch_id], (checkErr, checkResult) => {
                 if (checkErr) {
                     return reject('Error while inserting the data.');
                 }

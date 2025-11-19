@@ -36,7 +36,15 @@ module.exports = {
     },
     motion_parties_registration_get_routes: async (req, res) => {
         try {
-            const parties_result = await getOperations.motion_parties_registration_get_routes();
+            const user_id = req.query.user_id; 
+
+            if (!user_id) {
+                return res.status(400).json({
+                    status: false,
+                    message: "user_id is required"
+                });
+            }
+            const parties_result = await getOperations.motion_parties_registration_get_routes(user_id);
             return res.status(200).json({ status: true, message: `Parties Fetched Successfully.`, result: parties_result });
         } catch (error) {
             return res.status(500).json({ status: false, message: `Internal Server Error.${error}` });
